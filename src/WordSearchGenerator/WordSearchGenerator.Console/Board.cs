@@ -13,15 +13,15 @@ namespace WordSearchGenerator.Console
       get;
     }
 
-    public string Message
-    {
-      get;
-    }
-
-    public char[,] Matrix
+    public Cell[,] Matrix
     {
       get;
       private set;
+    }
+
+    public string Message
+    {
+      get;
     }
 
     public int RowCount
@@ -73,7 +73,9 @@ namespace WordSearchGenerator.Console
 
         for (int j = 0; j < ColumnCount; j++)
         {
-          bldr.Append($" {Matrix[i, j]}");
+          var cell = Matrix[i, j];
+
+          bldr.Append(cell.Type == Cell.CellType.Empty ? " -" : $" {cell.Char}");
         }
 
         bldr.AppendLine();
@@ -83,36 +85,86 @@ namespace WordSearchGenerator.Console
       return bldr.ToString();
     }
 
-    public string PrintWords()
+    public void PrintToConsole()
+    {
+      System.Console.Write("   | ");
+
+      for (int j = 0; j < ColumnCount; j++)
+      {
+        System.Console.Write(j.ToString("00"));
+      }
+
+      System.Console.WriteLine();
+      System.Console.Write(new string('-', ColumnCount * 2 + 5));
+      System.Console.WriteLine();
+
+      for (int i = 0; i < RowCount; i++)
+      {
+        System.Console.Write($"{i:00} | ");
+
+        for (int j = 0; j < ColumnCount; j++)
+        {
+          var cell = Matrix[i, j];
+
+          switch (cell.Type)
+          {
+            case Cell.CellType.Empty:
+              System.Console.Write($" -");
+              break;
+
+            case Cell.CellType.CharFromMessage:
+              ConsoleUtils.WithBgColor(() => { System.Console.Write($" {cell.Char}");}, ConsoleColor.Red);
+              break;
+
+            default:
+              System.Console.Write($" {Matrix[i, j].Char}");
+              break;
+          }
+        }
+
+        System.Console.WriteLine();
+      }
+
+      System.Console.WriteLine();
+    }
+
+    public string PrintWords(bool showSolution)
     {
       StringBuilder bldr = new StringBuilder();
       int longestWord = Words.Max(wrd => wrd.Text.Length);
 
       foreach (WordInfo word in Words.OrderBy(wrd => wrd.NormalizedText.ToLower()))
       {
-        bldr.AppendLine(word.ToString(longestWord));
+        bldr.Append(word.ToString(longestWord, showSolution));
       }
 
       return bldr.ToString();
     }
 
+    public void PrintWordsToConsole(bool showSolution)
+    {
+      int longestWord = Words.Max(wrd => wrd.Text.Length);
+
+      foreach (WordInfo word in Words.OrderBy(wrd => wrd.NormalizedText.ToLower()))
+      {
+        System.Console.Write(word.ToString(longestWord, showSolution));
+      }
+    }
+
     private void GenerateBoard()
     {
       List<char> messageChars = Message == null ? [] : Message.ToCharArray().ToList();
-      Matrix = new char[RowCount, ColumnCount];
+      Matrix = new Cell[RowCount, ColumnCount];
       char emptyChar = '-';
 
       for (int i = 0; i < RowCount; i++)
       {
         for (int j = 0; j < ColumnCount; j++)
         {
-          Matrix[i, j] = emptyChar;
+          Matrix[i, j] = new Cell();
         }
-
-        //else board[i][j] = 'A' + rand() % 26;
       }
 
-      //Finds the placement of every word character and updates the board
       for (int i = 0; i < Words.Count; i++)
       {
         WordInfo cWord = Words[i];
@@ -131,7 +183,8 @@ namespace WordSearchGenerator.Console
           int r = dL.Row;
           int c = dL.Column;
 
-          Matrix[r, c] = word[j];
+          Matrix[r, c].Type = Cell.CellType.CharFromText;
+          Matrix[r, c].Char = word[j];
         }
       }
 
@@ -139,7 +192,7 @@ namespace WordSearchGenerator.Console
       {
         for (int j = 0; j < ColumnCount; j++)
         {
-          if (Matrix[i, j] != emptyChar)
+          if (Matrix[i, j].Type != Cell.CellType.Empty)
           {
             continue;
           }
@@ -149,7 +202,8 @@ namespace WordSearchGenerator.Console
             break;
           }
 
-          Matrix[i, j] = char.ToLower(messageChars.TakeFirst());
+          Matrix[i, j].Type = Cell.CellType.CharFromMessage;
+          Matrix[i, j].Char = messageChars.TakeFirst();
         }
       }
 
@@ -157,6 +211,45 @@ namespace WordSearchGenerator.Console
       {
         throw new Exception($"message is too long, {messageChars.Count} characters remain to be placed");
       }
+    }
+
+    #endregion
+
+    #region Vnořené typy
+
+    public class Cell
+    {
+      #region Enumy
+
+      public enum CellType
+      {
+        // Empty cell.
+        Empty,
+
+        // Char from found word.
+        CharFromText,
+
+        // Char from message.
+        CharFromMessage
+      }
+
+      #endregion
+
+      #region Vlastnosti
+
+      public char Char
+      {
+        get;
+        set;
+      }
+
+      public CellType Type
+      {
+        get;
+        set;
+      } = CellType.Empty;
+
+      #endregion
     }
 
     #endregion

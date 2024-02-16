@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Runtime.InteropServices;
+﻿using CommandLine;
 using WordSearchGenerator.Common.WoSeCon;
 using WordSearchGenerator.Common.WoSeCon.Data;
 
@@ -9,42 +8,77 @@ namespace WordSearchGenerator.Console
   {
     #region Vlastnosti
 
-    private ManualResetEvent Handle
+    private CliOptions Options
     {
       get;
-    } = new ManualResetEvent(false);
+    }
 
     private Common.WordSearchGenerator Generator
     {
       get;
     } = new Common.WordSearchGenerator();
 
+    private ManualResetEvent Handle
+    {
+      get;
+    } = new ManualResetEvent(false);
+
     #endregion
 
     #region Konstruktory
 
-    public App()
+    public App(string[] args)
     {
       ConsoleUtils.SetupConsole();
 
+      if (args?.Length == 0)
+      {
+        args = new[]
+        {
+          "--help"
+        };
+      }
+
+      try
+      {
+        ParserResult<CliOptions> cliParseResult = Parser.Default.ParseArguments<CliOptions>(args);
+
+        if (cliParseResult.Errors.Any())
+        {
+          foreach (Error error in cliParseResult.Errors)
+          {
+            if (error.Tag != ErrorType.HelpRequestedError)
+            {
+              ConsoleUtils.WithBgColor(() => { System.Console.WriteLine(error.Tag); }, ConsoleColor.Red);
+            }
+          }
+
+          Quit();
+        }
+        else
+        {
+          Options = cliParseResult.Value;
+        }
+      }
+      catch (Exception ex)
+      {
+        ConsoleUtils.WithBgColor(() => { System.Console.WriteLine(ex.Message); }, ConsoleColor.Red);
+
+        Quit();
+      }
+
       Task.Run(() =>
       {
-        string message = null;
-        Words words = new Words("words.txt");
-        WoSeCon wo = new WoSeCon(words.List, 24, 23);
+        Words words = new Words(Options.WordsFile);
+        WoSeCon wo = new WoSeCon(words.List, Options.Rows, Options.Columns);
 
         wo.Construct();
 
-        var board = new Board(wo.Words, wo.RowCount, wo.ColumnCount, message);
-        var boardStr = board.Print();
-        var wordsStr = board.PrintWords();
+        Board board = new Board(wo.Words, wo.RowCount, wo.ColumnCount, Options.Message);
 
-        System.Console.Write(boardStr);
-        System.Console.WriteLine(wordsStr);
-
-      }).ContinueWith(tsk => {
-        Quit();
-      });
+        board.PrintToConsole(); 
+        board.PrintWordsToConsole(Options.Debug);
+      }).ContinueWith(tsk => { Quit(); });
     }
 
     #endregion

@@ -1,20 +1,25 @@
 ﻿namespace WordSearchGenerator.Common.WoSeCon.Data
 {
-  public class WordInfo
+  public class WordInfo : IEquatable<WordInfo>
   {
     #region Vlastnosti
 
-    public string ToString(int longestWord)
+    public string NormalizedText
     {
-      return $"{NormalizedText}{(Reversed ? "*" : string.Empty)}".PadRight(longestWord + 2) +
-             $"{Placement.Row}:{Placement.Column} {Placement.Direction}";
+      get => Reversed ? Text.Reverse() : Text;
     }
 
     public DirectedLocation Placement
     {
       get;
       set;
-    } = null;
+    }
+
+    public bool Reversed
+    {
+      get;
+      set;
+    }
 
     public List<DirectedLocation> TestedLocations
     {
@@ -28,20 +33,38 @@
       set;
     } = null;
 
-    public string NormalizedText
-    {
-      get => Reversed ? Text.Reverse() : Text;
-    }
+    #endregion
 
-    public bool Reversed
+    #region Implementace rozhraní
+
+    public bool Equals(WordInfo other)
     {
-      get;
-      set;
+      if (ReferenceEquals(null, other))
+      {
+        return false;
+      }
+
+      if (ReferenceEquals(this, other))
+      {
+        return true;
+      }
+
+      return Text == other.Text;
     }
 
     #endregion
 
     #region Metody
+
+    public static bool operator ==(WordInfo left, WordInfo right)
+    {
+      return Equals(left, right);
+    }
+
+    public static bool operator !=(WordInfo left, WordInfo right)
+    {
+      return !Equals(left, right);
+    }
 
     public void AddToTested()
     {
@@ -51,13 +74,14 @@
 
     public bool Conflicts(WordInfo otherWord)
     {
-      List<DirectedLocation> w1Ls = GetAllLocations();
       List<DirectedLocation> w2Ls = otherWord.GetAllLocations();
 
-      if (!w2Ls.Any())
+      if (w2Ls == null || w2Ls.Count == 0)
       {
         return false;
       }
+
+      List<DirectedLocation> w1Ls = GetAllLocations();
 
       foreach (DirectedLocation l1 in w1Ls)
       {
@@ -86,14 +110,50 @@
       TestedLocations.Clear();
     }
 
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj))
+      {
+        return false;
+      }
+
+      if (ReferenceEquals(this, obj))
+      {
+        return true;
+      }
+
+      if (obj.GetType() != GetType())
+      {
+        return false;
+      }
+
+      return Equals((WordInfo)obj);
+    }
+
+    /*
+    public Dictionary<Tuple<DirectedLocation, int>, List<DirectedLocation>> KnownLocations
+    {
+      get;
+    } = new Dictionary<Tuple<DirectedLocation, int>, List<DirectedLocation>>();
+    */
+
     public List<DirectedLocation> GetAllLocations()
     {
-      List<DirectedLocation> rVal = new List<DirectedLocation>();
-
       if (Placement == null)
       {
-        return rVal;
+        return new List<DirectedLocation>(0);
       }
+
+      List<DirectedLocation> rVal = new List<DirectedLocation>(Text.Length);
+
+      /*
+      var tpl = new Tuple<DirectedLocation, int>(Placement, Text.Length);
+
+      if (KnownLocations.ContainsKey(tpl))
+      {
+        return KnownLocations[tpl];
+      }
+      */
 
       int line = Placement.Row;
       int clmn = Placement.Column;
@@ -127,7 +187,14 @@
         }
       }
 
+      //KnownLocations[tpl] = rVal;
+
       return rVal;
+    }
+
+    public override int GetHashCode()
+    {
+      return Text != null ? Text.GetHashCode() : 0;
     }
 
     public char CharAt(DirectedLocation location)
@@ -140,6 +207,18 @@
       {
         return Text[location.Row - Placement.Row];
       }
+    }
+
+    public string ToString(int longestWord, bool showSolution)
+    {
+      var str = $"{NormalizedText}{(showSolution && Reversed ? "*" : string.Empty)}".PadRight(longestWord + 2);
+
+      if (showSolution)
+      {
+        str += $"{Placement.Row}:{Placement.Column} {Placement.Direction}" + Environment.NewLine;
+      }
+
+      return str;
     }
 
     #endregion

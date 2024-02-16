@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net.WebSockets;
 using WordSearchGenerator.Common.WoSeCon.Data;
 
@@ -54,24 +55,24 @@ namespace WordSearchGenerator.Common.WoSeCon
     {
       RowCount = rowCount;
       ColumnCount = columnCount;
-      Words = words;
-
-      Twist(Words);
+      Words = Twist(words).ToList();
 
       Locator = new RandomLocator(RowCount, ColumnCount);
     }
 
-    private void Twist(List<WordInfo> words)
+    private IEnumerable<WordInfo> Twist(List<WordInfo> words)
     {
-      Random rng = new Random();
+      Random rng = new Random((int)(DateTime.Now - DateTime.Today).TotalMilliseconds);
 
-      words.ForEach(wrd =>
+      return words.OrderByDescending(wrd => wrd.Text.Length).Select(wrd =>
       {
         if (rng.Next() % 2 == 0)
         {
           wrd.Text = wrd.Text.Reverse();
           wrd.Reversed = true;
         }
+
+        return wrd;
       });
     }
 
@@ -95,7 +96,8 @@ namespace WordSearchGenerator.Common.WoSeCon
             break;
           }
 
-          cWord = Words[++cWordIndex];
+          ++cWordIndex;
+          cWord = Words[cWordIndex];
           Mode = OperationMode.Forward;
         }
         else
@@ -106,8 +108,11 @@ namespace WordSearchGenerator.Common.WoSeCon
           }
 
           cWord.DeleteTested();
-          cWord = Words[--cWordIndex];
+          --cWordIndex;
+          cWord = Words[cWordIndex];
           Mode = OperationMode.Backward;
+
+          Debug.WriteLine(cWordIndex);
         }
       }
     }

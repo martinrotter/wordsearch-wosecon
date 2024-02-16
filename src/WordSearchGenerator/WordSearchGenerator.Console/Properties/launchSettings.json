@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "WordSearchGenerator.Console": {
+      "commandName": "Project",
+      "commandLineArgs": "-r 15 -c 24 -w \"words.txt\""
+    }
+  }
+}
