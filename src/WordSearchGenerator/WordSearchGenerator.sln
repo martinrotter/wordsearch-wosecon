@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34607.119
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordSearchGenerator.Common", "WordSearchGenerator.Common\WordSearchGenerator.Common.csproj", "{264C2D15-8648-4A38-A9B0-B632F6E7C611}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordSearchGenerator.Console", "WordSearchGenerator.Console\WordSearchGenerator.Console.csproj", "{0F77181A-1191-4DE4-9937-C9456232CECB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{264C2D15-8648-4A38-A9B0-B632F6E7C611}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{264C2D15-8648-4A38-A9B0-B632F6E7C611}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{264C2D15-8648-4A38-A9B0-B632F6E7C611}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{264C2D15-8648-4A38-A9B0-B632F6E7C611}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F77181A-1191-4DE4-9937-C9456232CECB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F77181A-1191-4DE4-9937-C9456232CECB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F77181A-1191-4DE4-9937-C9456232CECB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F77181A-1191-4DE4-9937-C9456232CECB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DD8EFD94-23E1-4C35-BDB4-48435690C768}
+	EndGlobalSection
+EndGlobal
