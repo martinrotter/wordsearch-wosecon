@@ -1,11 +1,12 @@
-﻿using System.Runtime.CompilerServices;
-using System.Text;
+﻿using System.Text;
 using WordSearchGenerator.Common;
 
 namespace WordSearchGenerator.Console;
 
 public class ConsoleUtils
 {
+  #region Metody
+
   public static void SetupConsole()
   {
     System.Console.InputEncoding = System.Console.OutputEncoding = Encoding.UTF8;
@@ -30,9 +31,11 @@ public class ConsoleUtils
 
   public static void WithBgColor(Action act, ConsoleColor color)
   {
-    var back = System.Console.BackgroundColor;
+    ConsoleColor back = System.Console.BackgroundColor;
     System.Console.BackgroundColor = color;
     act();
     System.Console.BackgroundColor = back;
   }
+
+  #endregion
 }

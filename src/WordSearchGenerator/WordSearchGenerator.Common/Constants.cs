@@ -1,16 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WordSearchGenerator.Common
+﻿namespace WordSearchGenerator.Common
 {
   public static class Constants
   {
+    #region Vnořené typy
+
     public static class Names
     {
+      #region Statické prvky
+
       public const string AppName = "Word Search Generator - WoSeCon";
+
+      #endregion
     }
+
+    #endregion
   }
 }

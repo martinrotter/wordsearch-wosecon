@@ -18,7 +18,6 @@
     private List<WordInfo> Words
     {
       get;
-      set;
     } = new List<WordInfo>();
 
     #endregion

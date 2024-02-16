@@ -12,14 +12,14 @@ namespace WordSearchGenerator.Common.WoSeCon.Data
       set => List[i] = value;
     }
 
-    public int Size
-    {
-      get => (List?.Count).GetValueOrDefault(0);
-    }
-
     public List<WordInfo> List
     {
       get;
+    }
+
+    public int Size
+    {
+      get => (List?.Count).GetValueOrDefault(0);
     }
 
     #endregion

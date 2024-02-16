@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Net.WebSockets;
+﻿using System.Diagnostics;
 using WordSearchGenerator.Common.WoSeCon.Data;
 
 namespace WordSearchGenerator.Common.WoSeCon
@@ -58,22 +56,6 @@ namespace WordSearchGenerator.Common.WoSeCon
       Words = Twist(words).ToList();
 
       Locator = new RandomLocator(RowCount, ColumnCount);
-    }
-
-    private IEnumerable<WordInfo> Twist(List<WordInfo> words)
-    {
-      Random rng = new Random((int)(DateTime.Now - DateTime.Today).TotalMilliseconds);
-
-      return words.OrderByDescending(wrd => wrd.Text.Length).Select(wrd =>
-      {
-        if (rng.Next() % 2 == 0)
-        {
-          wrd.Text = wrd.Text.Reverse();
-          wrd.Reversed = true;
-        }
-
-        return wrd;
-      });
     }
 
     #endregion
@@ -182,6 +164,22 @@ namespace WordSearchGenerator.Common.WoSeCon
       }
 
       return false;
+    }
+
+    private IEnumerable<WordInfo> Twist(List<WordInfo> words)
+    {
+      Random rng = new Random((int)(DateTime.Now - DateTime.Today).TotalMilliseconds);
+
+      return words.OrderByDescending(wrd => wrd.Text.Length).Select(wrd =>
+      {
+        if (rng.Next() % 2 == 0)
+        {
+          wrd.Text = wrd.Text.Reverse();
+          wrd.Reversed = true;
+        }
+
+        return wrd;
+      });
     }
 
     #endregion

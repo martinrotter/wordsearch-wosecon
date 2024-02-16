@@ -1,13 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WordSearchGenerator.Common
+﻿namespace WordSearchGenerator.Common
 {
   public static class Utils
   {
+    #region Metody
+
+    public static string Reverse(this string s)
+    {
+      char[] rev = s.ToCharArray();
+      Array.Reverse(rev);
+      return new string(rev);
+    }
+
     public static T TakeFirst<T>(this List<T> list)
     {
       if (list == null || list.Count == 0)
@@ -16,17 +19,12 @@ namespace WordSearchGenerator.Common
       }
       else
       {
-        var first = list[0];
+        T first = list[0];
         list.RemoveAt(0);
         return first;
       }
     }
 
-    public static string Reverse(this string s)
-    {
-      var rev = s.ToCharArray();
-      Array.Reverse(rev);
-      return new string(rev);
-    }
+    #endregion
   }
 }

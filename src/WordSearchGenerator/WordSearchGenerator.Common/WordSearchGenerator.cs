@@ -2,8 +2,8 @@
 {
   public class WordSearchGenerator
   {
-    public WordSearchGenerator()
-    {
-    }
+    #region Konstruktory
+
+    #endregion
   }
 }

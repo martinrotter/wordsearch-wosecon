@@ -211,7 +211,7 @@
 
     public string ToString(int longestWord, bool showSolution)
     {
-      var str = $"{NormalizedText}{(showSolution && Reversed ? "*" : string.Empty)}".PadRight(longestWord + 2);
+      string str = $"{NormalizedText}{(showSolution && Reversed ? "*" : string.Empty)}".PadRight(longestWord + 2);
 
       if (showSolution)
       {

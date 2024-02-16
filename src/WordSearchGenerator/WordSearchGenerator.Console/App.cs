@@ -8,11 +8,6 @@ namespace WordSearchGenerator.Console
   {
     #region Vlastnosti
 
-    private CliOptions Options
-    {
-      get;
-    }
-
     private Common.WordSearchGenerator Generator
     {
       get;
@@ -22,6 +17,11 @@ namespace WordSearchGenerator.Console
     {
       get;
     } = new ManualResetEvent(false);
+
+    private CliOptions Options
+    {
+      get;
+    }
 
     #endregion
 
@@ -76,7 +76,7 @@ namespace WordSearchGenerator.Console
 
         Board board = new Board(wo.Words, wo.RowCount, wo.ColumnCount, Options.Message);
 
-        board.PrintToConsole(); 
+        board.PrintToConsole();
         board.PrintWordsToConsole(Options.Debug);
       }).ContinueWith(tsk => { Quit(); });
     }

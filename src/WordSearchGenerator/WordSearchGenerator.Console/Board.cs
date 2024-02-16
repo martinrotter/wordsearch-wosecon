@@ -73,7 +73,7 @@ namespace WordSearchGenerator.Console
 
         for (int j = 0; j < ColumnCount; j++)
         {
-          var cell = Matrix[i, j];
+          Cell cell = Matrix[i, j];
 
           bldr.Append(cell.Type == Cell.CellType.Empty ? " -" : $" {cell.Char}");
         }
@@ -104,16 +104,16 @@ namespace WordSearchGenerator.Console
 
         for (int j = 0; j < ColumnCount; j++)
         {
-          var cell = Matrix[i, j];
+          Cell cell = Matrix[i, j];
 
           switch (cell.Type)
           {
             case Cell.CellType.Empty:
-              System.Console.Write($" -");
+              System.Console.Write(" -");
               break;
 
             case Cell.CellType.CharFromMessage:
-              ConsoleUtils.WithBgColor(() => { System.Console.Write($" {cell.Char}");}, ConsoleColor.Red);
+              ConsoleUtils.WithBgColor(() => { System.Console.Write($" {cell.Char}"); }, ConsoleColor.Red);
               break;
 
             default:
