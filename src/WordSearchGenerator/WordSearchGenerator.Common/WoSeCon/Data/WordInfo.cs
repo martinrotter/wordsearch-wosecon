@@ -4,9 +4,10 @@
   {
     #region Vlastnosti
 
-    public override string ToString()
+    public string ToString(int longestWord)
     {
-      return $"{Text} - {Placement.Row}:{Placement.Column} {Placement.Direction}";
+      return $"{NormalizedText}{(Reversed ? "*" : string.Empty)}".PadRight(longestWord + 2) +
+             $"{Placement.Row}:{Placement.Column} {Placement.Direction}";
     }
 
     public DirectedLocation Placement
@@ -26,6 +27,17 @@
       get;
       set;
     } = null;
+
+    public string NormalizedText
+    {
+      get => Reversed ? Text.Reverse() : Text;
+    }
+
+    public bool Reversed
+    {
+      get;
+      set;
+    }
 
     #endregion
 

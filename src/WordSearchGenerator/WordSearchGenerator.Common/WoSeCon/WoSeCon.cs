@@ -1,4 +1,6 @@
-﻿using WordSearchGenerator.Common.WoSeCon.Data;
+﻿using System;
+using System.Net.WebSockets;
+using WordSearchGenerator.Common.WoSeCon.Data;
 
 namespace WordSearchGenerator.Common.WoSeCon
 {
@@ -54,7 +56,23 @@ namespace WordSearchGenerator.Common.WoSeCon
       ColumnCount = columnCount;
       Words = words;
 
+      Twist(Words);
+
       Locator = new RandomLocator(RowCount, ColumnCount);
+    }
+
+    private void Twist(List<WordInfo> words)
+    {
+      Random rng = new Random();
+
+      words.ForEach(wrd =>
+      {
+        if (rng.Next() % 2 == 0)
+        {
+          wrd.Text = wrd.Text.Reverse();
+          wrd.Reversed = true;
+        }
+      });
     }
 
     #endregion

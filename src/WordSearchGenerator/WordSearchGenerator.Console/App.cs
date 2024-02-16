@@ -29,20 +29,18 @@ namespace WordSearchGenerator.Console
 
       Task.Run(() =>
       {
+        string message = null;
         Words words = new Words("words.txt");
-        WoSeCon wo = new WoSeCon(words.List, 8, 9);
+        WoSeCon wo = new WoSeCon(words.List, 24, 23);
 
         wo.Construct();
 
-        var board = new Board(wo.Words, wo.RowCount, wo.ColumnCount);
+        var board = new Board(wo.Words, wo.RowCount, wo.ColumnCount, message);
         var boardStr = board.Print();
+        var wordsStr = board.PrintWords();
 
         System.Console.Write(boardStr);
-
-        foreach (WordInfo word in wo.Words)
-        {
-          System.Console.WriteLine(word.ToString());
-        }
+        System.Console.WriteLine(wordsStr);
 
       }).ContinueWith(tsk => {
         Quit();
