@@ -5,13 +5,14 @@ namespace WordSearchGenerator.Console;
 
 public class ConsoleUtils
 {
-  #region Metody
+  #region Other Stuff
 
   public static void SetupConsole()
   {
     System.Console.InputEncoding = System.Console.OutputEncoding = Encoding.UTF8;
     System.Console.Title = Constants.Names.AppName;
 
+    /*
     try
     {
       if (!System.Console.IsOutputRedirected)
@@ -27,11 +28,12 @@ public class ConsoleUtils
     {
       // Muted.
     }
+    */
   }
 
   public static void WithBgColor(Action act, ConsoleColor color)
   {
-    ConsoleColor back = System.Console.BackgroundColor;
+    var back = System.Console.BackgroundColor;
     System.Console.BackgroundColor = color;
     act();
     System.Console.BackgroundColor = back;
