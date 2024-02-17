@@ -4,7 +4,10 @@
   {
     #region Properties
 
-    public int ColumnCount { get; }
+    public int ColumnCount
+    {
+      get;
+    }
 
     public DirectedLocation this[int i]
     {
@@ -12,11 +15,17 @@
       set => Locations[i] = value;
     }
 
-    public int RowCount { get; }
+    public int RowCount
+    {
+      get;
+    }
 
     public int Size => (Locations?.Count).GetValueOrDefault(0);
 
-    private List<DirectedLocation> Locations { get; } = new List<DirectedLocation>();
+    private List<DirectedLocation> Locations
+    {
+      get;
+    } = new List<DirectedLocation>();
 
     #endregion
 

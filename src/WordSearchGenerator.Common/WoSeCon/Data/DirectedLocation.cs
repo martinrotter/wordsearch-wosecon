@@ -14,11 +14,23 @@
 
     #region Properties
 
-    public int Column { get; set; } = 0;
+    public int Column
+    {
+      get;
+      set;
+    } = 0;
 
-    public LocationDirection Direction { get; set; } = LocationDirection.Horizontal;
+    public LocationDirection Direction
+    {
+      get;
+      set;
+    } = LocationDirection.Horizontal;
 
-    public int Row { get; set; } = 0;
+    public int Row
+    {
+      get;
+      set;
+    } = 0;
 
     #endregion
 

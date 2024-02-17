@@ -6,13 +6,29 @@
 
     public string NormalizedText => Reversed ? Text.Reverse() : Text;
 
-    public DirectedLocation Placement { get; set; }
+    public DirectedLocation Placement
+    {
+      get;
+      set;
+    }
 
-    public bool Reversed { get; set; }
+    public bool Reversed
+    {
+      get;
+      set;
+    }
 
-    public List<DirectedLocation> TestedLocations { get; set; } = new List<DirectedLocation>();
+    public List<DirectedLocation> TestedLocations
+    {
+      get;
+      set;
+    } = new List<DirectedLocation>();
 
-    public string Text { get; set; } = null;
+    public string Text
+    {
+      get;
+      set;
+    } = null;
 
     #endregion
 
