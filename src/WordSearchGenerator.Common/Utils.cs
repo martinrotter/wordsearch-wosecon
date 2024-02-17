@@ -1,27 +1,28 @@
-﻿namespace WordSearchGenerator.Common;
-
-public static class Utils
+﻿namespace WordSearchGenerator.Common
 {
-  #region Other Stuff
-
-  public static string Reverse(this string s)
+  public static class Utils
   {
-    var rev = s.ToCharArray();
-    Array.Reverse(rev);
-    return new string(rev);
-  }
+    #region Other Stuff
 
-  public static T TakeFirst<T>(this List<T> list)
-  {
-    if (list == null || list.Count == 0)
+    public static string Reverse(this string s)
     {
-      return default;
+      var rev = s.ToCharArray();
+      Array.Reverse(rev);
+      return new string(rev);
     }
 
-    var first = list[0];
-    list.RemoveAt(0);
-    return first;
-  }
+    public static T TakeFirst<T>(this List<T> list)
+    {
+      if (list == null || list.Count == 0)
+      {
+        return default;
+      }
 
-  #endregion
+      var first = list[0];
+      list.RemoveAt(0);
+      return first;
+    }
+
+    #endregion
+  }
 }

@@ -1,79 +1,87 @@
-﻿namespace WordSearchGenerator.Common.WoSeCon.Data;
-
-public class RandomLocator
+﻿namespace WordSearchGenerator.Common.WoSeCon.Data
 {
-  #region Properties
-
-  public int ColumnCount { get; }
-
-  public DirectedLocation this[int i]
+  public class RandomLocator
   {
-    get => Locations[i];
-    set => Locations[i] = value;
-  }
+    #region Properties
 
-  public int RowCount { get; }
+    public int ColumnCount { get; }
 
-  public int Size => (Locations?.Count).GetValueOrDefault(0);
+    public DirectedLocation this[int i]
+    {
+      get => Locations[i];
+      set => Locations[i] = value;
+    }
 
-  private List<DirectedLocation> Locations { get; } = new();
+    public int RowCount { get; }
 
-  #endregion
+    public int Size => (Locations?.Count).GetValueOrDefault(0);
 
-  #region Constructors
+    private List<DirectedLocation> Locations { get; } = new List<DirectedLocation>();
 
-  public RandomLocator(int rowCount, int columnCount)
-  {
-    RowCount = rowCount;
-    ColumnCount = columnCount;
+    #endregion
 
-    foreach (var d in new[]
-             {
-               DirectedLocation.LocationDirection.Horizontal,
-               DirectedLocation.LocationDirection.Vertical
-             })
-      for (var c = 0; c < ColumnCount; c++)
-      for (var l = 0; l < RowCount; l++)
-        if (!((d == DirectedLocation.LocationDirection.Horizontal && c == ColumnCount - 1) ||
-              (d == DirectedLocation.LocationDirection.Vertical && l == RowCount - 1)))
+    #region Constructors
+
+    public RandomLocator(int rowCount, int columnCount)
+    {
+      RowCount = rowCount;
+      ColumnCount = columnCount;
+
+      foreach (var d in new[]
+               {
+                 DirectedLocation.LocationDirection.Horizontal,
+                 DirectedLocation.LocationDirection.Vertical
+               })
+      {
+        for (var c = 0; c < ColumnCount; c++)
+        for (var l = 0; l < RowCount; l++)
         {
-          var dL = new DirectedLocation
+          if (!((d == DirectedLocation.LocationDirection.Horizontal && c == ColumnCount - 1) ||
+                (d == DirectedLocation.LocationDirection.Vertical && l == RowCount - 1)))
           {
-            Column = c,
-            Row = l,
-            Direction = d
-          };
+            var dL = new DirectedLocation
+            {
+              Column = c,
+              Row = l,
+              Direction = d
+            };
 
-          Add(dL);
+            Add(dL);
+          }
         }
+      }
 
-    // Shuffle the list.
-    var rng = new Random((int)(DateTime.Now - DateTime.Today).TotalMilliseconds);
-    Locations = Locations.OrderBy(_ => rng.Next()).ToList();
+      // Shuffle the list.
+      var rng = new Random((int)(DateTime.Now - DateTime.Today).TotalMilliseconds);
+      Locations = Locations.OrderBy(_ => rng.Next()).ToList();
+    }
+
+    #endregion
+
+    #region Other Stuff
+
+    public void Add(DirectedLocation location)
+    {
+      Locations.Add(location);
+    }
+
+    public RandomLocator Minus(List<DirectedLocation> visitedLocations)
+    {
+      var loc = new RandomLocator(RowCount, ColumnCount);
+
+      foreach (var visitedLocation in visitedLocations)
+      {
+        loc.Remove(visitedLocation);
+      }
+
+      return loc;
+    }
+
+    public void Remove(DirectedLocation location)
+    {
+      Locations.Remove(location);
+    }
+
+    #endregion
   }
-
-  #endregion
-
-  #region Other Stuff
-
-  public void Add(DirectedLocation location)
-  {
-    Locations.Add(location);
-  }
-
-  public RandomLocator Minus(List<DirectedLocation> visitedLocations)
-  {
-    var loc = new RandomLocator(RowCount, ColumnCount);
-
-    foreach (var visitedLocation in visitedLocations) loc.Remove(visitedLocation);
-
-    return loc;
-  }
-
-  public void Remove(DirectedLocation location)
-  {
-    Locations.Remove(location);
-  }
-
-  #endregion
 }

@@ -1,15 +1,16 @@
-﻿namespace WordSearchGenerator.Console;
-
-internal class Program
+﻿namespace WordSearchGenerator.Console
 {
-  #region Other Stuff
-
-  private static void Main(string[] args)
+  internal class Program
   {
-    var app = new App(args);
+    #region Other Stuff
 
-    app.Exec();
+    private static void Main(string[] args)
+    {
+      var app = new App(args);
+
+      app.Exec();
+    }
+
+    #endregion
   }
-
-  #endregion
 }

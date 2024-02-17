@@ -1,43 +1,44 @@
 ﻿using System.Text;
 using WordSearchGenerator.Common;
 
-namespace WordSearchGenerator.Console;
-
-public class ConsoleUtils
+namespace WordSearchGenerator.Console
 {
-  #region Other Stuff
-
-  public static void SetupConsole()
+  public class ConsoleUtils
   {
-    System.Console.InputEncoding = System.Console.OutputEncoding = Encoding.UTF8;
-    System.Console.Title = Constants.Names.AppName;
+    #region Other Stuff
 
-    /*
-    try
+    public static void SetupConsole()
     {
-      if (!System.Console.IsOutputRedirected)
+      System.Console.InputEncoding = System.Console.OutputEncoding = Encoding.UTF8;
+      System.Console.Title = Constants.Names.AppName;
+
+      /*
+      try
       {
-        System.Console.WindowWidth = 200;
-        System.Console.WindowHeight = 60;
-        System.Console.BackgroundColor = ConsoleColor.White;
-        System.Console.Clear();
-        System.Console.ForegroundColor = ConsoleColor.Black;
+        if (!System.Console.IsOutputRedirected)
+        {
+          System.Console.WindowWidth = 200;
+          System.Console.WindowHeight = 60;
+          System.Console.BackgroundColor = ConsoleColor.White;
+          System.Console.Clear();
+          System.Console.ForegroundColor = ConsoleColor.Black;
+        }
       }
+      catch
+      {
+        // Muted.
+      }
+      */
     }
-    catch
+
+    public static void WithBgColor(Action act, ConsoleColor color)
     {
-      // Muted.
+      var back = System.Console.BackgroundColor;
+      System.Console.BackgroundColor = color;
+      act();
+      System.Console.BackgroundColor = back;
     }
-    */
-  }
 
-  public static void WithBgColor(Action act, ConsoleColor color)
-  {
-    var back = System.Console.BackgroundColor;
-    System.Console.BackgroundColor = color;
-    act();
-    System.Console.BackgroundColor = back;
+    #endregion
   }
-
-  #endregion
 }

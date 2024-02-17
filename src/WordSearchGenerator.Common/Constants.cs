@@ -1,17 +1,18 @@
-﻿namespace WordSearchGenerator.Common;
-
-public static class Constants
+﻿namespace WordSearchGenerator.Common
 {
-  #region Nested Types
-
-  public static class Names
+  public static class Constants
   {
-    #region Static Fields
+    #region Nested Types
 
-    public const string AppName = "Word Search Generator - WoSeCon";
+    public static class Names
+    {
+      #region Static Fields
+
+      public const string AppName = "Word Search Generator - WoSeCon";
+
+      #endregion
+    }
 
     #endregion
   }
-
-  #endregion
 }
