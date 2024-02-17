@@ -1,22 +1,37 @@
 ﻿using System.Text;
-using WordSearchGenerator.Common;
 using WordSearchGenerator.Common.WoSeCon.Data;
 
-namespace WordSearchGenerator.Console
+namespace WordSearchGenerator.Common
 {
   public class Board
   {
     #region Properties
 
-    public int ColumnCount { get; }
+    public int ColumnCount
+    {
+      get;
+    }
 
-    public Cell[,] Matrix { get; private set; }
+    public Cell[,] Matrix
+    {
+      get;
+      private set;
+    }
 
-    public string Message { get; }
+    public string Message
+    {
+      get;
+    }
 
-    public int RowCount { get; }
+    public int RowCount
+    {
+      get;
+    }
 
-    public List<WordInfo> Words { get; }
+    public List<WordInfo> Words
+    {
+      get;
+    }
 
     #endregion
 
@@ -40,7 +55,7 @@ namespace WordSearchGenerator.Console
     {
       var bldr = new StringBuilder();
 
-      bldr.Append("   | ");
+      bldr.Append("   \u239c ");
 
       for (var j = 0; j < ColumnCount; j++)
       {
@@ -48,12 +63,12 @@ namespace WordSearchGenerator.Console
       }
 
       bldr.AppendLine();
-      bldr.Append(new string('-', bldr.Length - 2));
+      bldr.Append(new string('―', bldr.Length - 2));
       bldr.AppendLine();
 
       for (var i = 0; i < RowCount; i++)
       {
-        bldr.Append($"{i:00} | ");
+        bldr.Append($"{i:00} \u2758 ");
 
         for (var j = 0; j < ColumnCount; j++)
         {
@@ -69,49 +84,6 @@ namespace WordSearchGenerator.Console
       return bldr.ToString();
     }
 
-    public void PrintToConsole()
-    {
-      System.Console.Write("   | ");
-
-      for (var j = 0; j < ColumnCount; j++)
-      {
-        System.Console.Write(j.ToString("00"));
-      }
-
-      System.Console.WriteLine();
-      System.Console.Write(new string('-', ColumnCount * 2 + 5));
-      System.Console.WriteLine();
-
-      for (var i = 0; i < RowCount; i++)
-      {
-        System.Console.Write($"{i:00} | ");
-
-        for (var j = 0; j < ColumnCount; j++)
-        {
-          var cell = Matrix[i, j];
-
-          switch (cell.Type)
-          {
-            case Cell.CellType.Empty:
-              System.Console.Write(" -");
-              break;
-
-            case Cell.CellType.CharFromMessage:
-              ConsoleUtils.WithBgColor(() => { System.Console.Write($" {cell.Char}"); }, ConsoleColor.Red);
-              break;
-
-            default:
-              System.Console.Write($" {Matrix[i, j].Char}");
-              break;
-          }
-        }
-
-        System.Console.WriteLine();
-      }
-
-      System.Console.WriteLine();
-    }
-
     public string PrintWords(bool showSolution)
     {
       var bldr = new StringBuilder();
@@ -123,16 +95,6 @@ namespace WordSearchGenerator.Console
       }
 
       return bldr.ToString();
-    }
-
-    public void PrintWordsToConsole(bool showSolution)
-    {
-      var longestWord = Words.Max(wrd => wrd.Text.Length);
-
-      foreach (var word in Words.OrderBy(wrd => wrd.NormalizedText.ToLower()))
-      {
-        System.Console.Write(word.ToString(longestWord, showSolution));
-      }
     }
 
     private void GenerateBoard()
@@ -198,7 +160,23 @@ namespace WordSearchGenerator.Console
 
     public class Cell
     {
-      #region Enums
+      #region Properties
+
+      public char Char
+      {
+        get;
+        set;
+      }
+
+      public CellType Type
+      {
+        get;
+        set;
+      } = CellType.Empty;
+
+      #endregion
+
+      #region Nested Types
 
       public enum CellType
       {
@@ -211,14 +189,6 @@ namespace WordSearchGenerator.Console
         // Char from message.
         CharFromMessage
       }
-
-      #endregion
-
-      #region Properties
-
-      public char Char { get; set; }
-
-      public CellType Type { get; set; } = CellType.Empty;
 
       #endregion
     }

@@ -1,4 +1,5 @@
 ﻿using CommandLine;
+using WordSearchGenerator.Common;
 using WordSearchGenerator.Common.WoSeCon;
 using WordSearchGenerator.Common.WoSeCon.Data;
 
@@ -8,9 +9,15 @@ namespace WordSearchGenerator.Console
   {
     #region Properties
 
-    private ManualResetEvent Handle { get; } = new ManualResetEvent(false);
+    private ManualResetEvent Handle
+    {
+      get;
+    } = new ManualResetEvent(false);
 
-    private CliOptions Options { get; }
+    private CliOptions Options
+    {
+      get;
+    }
 
     #endregion
 
@@ -54,15 +61,16 @@ namespace WordSearchGenerator.Console
 
       Task.Run(() =>
       {
-        var words = new Words(Options.WordsFile);
-        var wo = new WoSeCon(words.List, Options.Rows, Options.Columns);
+        var words = new WordsLoader(Options.WordsFile);
+        var wo = new WoSeCon(words.Words, Options.Rows, Options.Columns);
 
         wo.Construct();
 
         var board = new Board(wo.Words, wo.RowCount, wo.ColumnCount, Options.Message);
 
-        board.PrintToConsole();
-        board.PrintWordsToConsole(Options.Debug);
+        System.Console.Write(board.Print());
+        System.Console.Write(board.PrintWords(Options.Debug));
+
       }).ContinueWith(AboutToQuit);
     }
 
