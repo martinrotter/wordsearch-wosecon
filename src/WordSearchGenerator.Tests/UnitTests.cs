@@ -27,7 +27,7 @@ namespace WordSearchGenerator.Tests
     [TestMethod]
     public void FullListBigGrid()
     {
-      RunGridWithWords(NumberOfRepetitions, 130, 26, 27);
+      RunGridWithWords(NumberOfRepetitions, 130, 22, 30);
     }
 
     [TestMethod]
@@ -45,7 +45,7 @@ namespace WordSearchGenerator.Tests
     [TestMethod]
     public void BigListBigGrid()
     {
-      RunGridWithWords(NumberOfRepetitions, 25, 11, 11);
+      RunGridWithWords(NumberOfRepetitions, 25, 11, 12);
     }
 
     private void RunGridWithWords(int numberOfRepetitions, int numberOfWords, int rows, int columns)
@@ -57,13 +57,14 @@ namespace WordSearchGenerator.Tests
       var words = new WordsLoader(@$"{TestDataFolder}\words-big.txt").Words.Take(numberOfWords).ToList();
       var charCount = words.Select(wrd => wrd.Text.Length).Sum();
       List<WordInfo> hardestWords = null;
+      var hardestBacktrackings = 0;
 
       while (iter-- >= 0)
       {
         var wo = new WoSeCon(words.CloneList(), rows, columns);
 
         st.Restart();
-        wo.Construct();
+        var backtrackings = wo.Construct();
 
         var elapsed = st.ElapsedMilliseconds;
 
@@ -72,6 +73,7 @@ namespace WordSearchGenerator.Tests
         if (elapsed == stats.MaxMs)
         {
           hardestWords = wo.Words;
+          hardestBacktrackings = backtrackings;
         }
 
         Debug.WriteLine($"Left: {iter + 1}");
@@ -84,6 +86,7 @@ namespace WordSearchGenerator.Tests
       Console.WriteLine($"Total cell count: {rows * columns}");
       Console.WriteLine($"Words char count: {charCount}");
       Console.WriteLine($"Char cell count: {board.CharCellCount}");
+      Console.WriteLine($"Backtracked: {hardestBacktrackings}");
       Console.WriteLine($"% occupied: {board.PercentageOccupied}");
       Console.WriteLine($"Max miliseconds: {stats.MaxMs}");
       Console.WriteLine($"Min miliseconds: {stats.MinMs}");

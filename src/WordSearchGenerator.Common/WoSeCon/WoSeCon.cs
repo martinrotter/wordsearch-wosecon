@@ -44,8 +44,9 @@ namespace WordSearchGenerator.Common.WoSeCon
 
     #region Other Stuff
 
-    public void Construct()
+    public int Construct()
     {
+      var backtrackings = 0;
       var cWordIndex = 0;
       var cWord = Words[cWordIndex];
 
@@ -73,10 +74,13 @@ namespace WordSearchGenerator.Common.WoSeCon
 
           cWord.DeleteTested();
           --cWordIndex;
+          backtrackings++;
           cWord = Words[cWordIndex];
           Mode = OperationMode.Backward;
         }
       }
+
+      return backtrackings;
     }
 
     public bool IsValidPlacement(WordInfo cWord, DirectedLocation dL)
