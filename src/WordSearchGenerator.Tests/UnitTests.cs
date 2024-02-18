@@ -33,7 +33,7 @@ namespace WordSearchGenerator.Tests
     [TestMethod]
     public void VerySmallListSmallGrid()
     {
-      RunGridWithWords(NumberOfRepetitions, 10, 5, 9);
+      RunGridWithWords(NumberOfRepetitions, 10, 6, 8);
     }
 
     [TestMethod]
@@ -74,7 +74,7 @@ namespace WordSearchGenerator.Tests
           hardestWords = wo.Words;
         }
 
-        Debug.WriteLine($"Left: {iter}");
+        Debug.WriteLine($"Left: {iter + 1}");
       }
 
       var board = new Board(hardestWords, rows, columns);
