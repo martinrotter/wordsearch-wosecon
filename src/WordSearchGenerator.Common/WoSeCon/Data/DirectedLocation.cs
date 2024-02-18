@@ -1,6 +1,6 @@
 ﻿namespace WordSearchGenerator.Common.WoSeCon.Data
 {
-  public class DirectedLocation : IEquatable<DirectedLocation>
+  public class DirectedLocation : IEquatable<DirectedLocation>, ICloneable
   {
     #region Enums
 
@@ -18,7 +18,7 @@
     {
       get;
       set;
-    } = 0;
+    }
 
     public LocationDirection Direction
     {
@@ -30,11 +30,22 @@
     {
       get;
       set;
-    } = 0;
+    }
 
     #endregion
 
     #region Interface Implementations
+
+    public object Clone()
+    {
+      var loc = new DirectedLocation();
+
+      loc.Column = Column;
+      loc.Row = Row;
+      loc.Direction = Direction;
+
+      return loc;
+    }
 
     public bool Equals(DirectedLocation other)
     {

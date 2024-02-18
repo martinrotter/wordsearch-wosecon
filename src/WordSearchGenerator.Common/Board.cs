@@ -18,6 +18,26 @@ namespace WordSearchGenerator.Common
       private set;
     }
 
+    public int CharCellCount
+    {
+      get
+      {
+        var taken = 0;
+
+        foreach (var cell in Matrix)
+        {
+          if (cell.Type == Cell.CellType.CharFromText)
+          {
+            taken++;
+          }
+        }
+
+        return taken;
+      }
+    }
+
+    public double PercentageOccupied => 100 * (double)CharCellCount / (RowCount * ColumnCount);
+
     public string Message
     {
       get;
@@ -55,7 +75,7 @@ namespace WordSearchGenerator.Common
     {
       var bldr = new StringBuilder();
 
-      bldr.Append("   \u239c ");
+      bldr.Append("   ❘ ");
 
       for (var j = 0; j < ColumnCount; j++)
       {
@@ -63,12 +83,12 @@ namespace WordSearchGenerator.Common
       }
 
       bldr.AppendLine();
-      bldr.Append(new string('―', bldr.Length - 2));
+      bldr.Append(new string('-', bldr.Length - 1));
       bldr.AppendLine();
 
       for (var i = 0; i < RowCount; i++)
       {
-        bldr.Append($"{i:00} \u2758 ");
+        bldr.Append($"{i:00} ❘ ");
 
         for (var j = 0; j < ColumnCount; j++)
         {
@@ -160,6 +180,22 @@ namespace WordSearchGenerator.Common
 
     public class Cell
     {
+      #region Enums
+
+      public enum CellType
+      {
+        // Empty cell.
+        Empty,
+
+        // Char from found word.
+        CharFromText,
+
+        // Char from message.
+        CharFromMessage
+      }
+
+      #endregion
+
       #region Properties
 
       public char Char
@@ -173,22 +209,6 @@ namespace WordSearchGenerator.Common
         get;
         set;
       } = CellType.Empty;
-
-      #endregion
-
-      #region Nested Types
-
-      public enum CellType
-      {
-        // Empty cell.
-        Empty,
-
-        // Char from found word.
-        CharFromText,
-
-        // Char from message.
-        CharFromMessage
-      }
 
       #endregion
     }

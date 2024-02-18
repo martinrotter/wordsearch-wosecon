@@ -75,8 +75,6 @@ namespace WordSearchGenerator.Common.WoSeCon
           --cWordIndex;
           cWord = Words[cWordIndex];
           Mode = OperationMode.Backward;
-
-          Debug.WriteLine(cWordIndex);
         }
       }
     }

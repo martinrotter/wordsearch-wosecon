@@ -1,6 +1,6 @@
 ﻿namespace WordSearchGenerator.Common.WoSeCon.Data
 {
-  public class WordInfo : IEquatable<WordInfo>
+  public class WordInfo : IEquatable<WordInfo>, ICloneable
   {
     #region Properties
 
@@ -190,6 +190,26 @@
     public override int GetHashCode()
     {
       return Text != null ? Text.GetHashCode() : 0;
+    }
+
+    public object Clone()
+    {
+      var wrd = new WordInfo();
+
+      wrd.Reversed = this.Reversed;
+      wrd.Text = (string)this.Text.Clone();
+
+      if (Placement != null)
+      {
+        wrd.Placement = (DirectedLocation)this.Placement.Clone();
+      }
+
+      if (TestedLocations != null)
+      {
+        wrd.TestedLocations = this.TestedLocations.CloneList();
+      }
+
+      return wrd;
     }
 
     public char CharAt(DirectedLocation location)
