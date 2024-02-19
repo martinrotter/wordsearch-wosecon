@@ -25,6 +25,12 @@ namespace WordSearchGenerator.Tests
     #region Other Stuff
 
     [TestMethod]
+    public void OnceFullListBigGrid()
+    {
+      RunGridWithWords(1, 130, 23, 27);
+    }
+
+    [TestMethod]
     public void FullListBigGrid()
     {
       RunGridWithWords(NumberOfRepetitions, 130, 22, 30);
@@ -48,18 +54,25 @@ namespace WordSearchGenerator.Tests
       RunGridWithWords(NumberOfRepetitions, 25, 11, 12);
     }
 
-    private void RunGridWithWords(int numberOfRepetitions, int numberOfWords, int rows, int columns)
+    [TestMethod]
+    public void Svesedlice()
+    {
+      RunGridWithWords(1, -1, 9, 16, "svesedlice.txt");
+    }
+
+    private void RunGridWithWords(int numberOfRepetitions, int numberOfWords, int rows, int columns, string fileName = null)
     {
       var iter = numberOfRepetitions;
       var stats = new Stats();
       var st = new Stopwatch();
-
-      var words = new WordsLoader(@$"{TestDataFolder}\words-big.txt").Words.Take(numberOfWords).ToList();
+      var fullFilePath = Path.Combine(TestDataFolder, fileName ?? "words-big.txt");
+      var loader = new WordsLoader(fullFilePath);
+      var words = numberOfWords > 0 ? loader.Words.Take(numberOfWords).ToList() : loader.Words;
       var charCount = words.Select(wrd => wrd.Text.Length).Sum();
       List<WordInfo> hardestWords = null;
       var hardestBacktrackings = 0;
 
-      while (iter-- >= 0)
+      while (--iter >= 0)
       {
         var wo = new WoSeCon(words.CloneList(), rows, columns);
 

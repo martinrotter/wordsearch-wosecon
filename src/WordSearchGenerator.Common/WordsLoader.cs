@@ -19,10 +19,8 @@ namespace WordSearchGenerator.Common
     public WordsLoader(string fileName)
     {
       Words = File.ReadAllText(fileName, Encoding.UTF8)
-        .Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).Select(txt => new WordInfo
-        {
-          Text = txt
-        }).ToList();
+        .Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).Select(txt => new WordInfo { Text = txt })
+        .ToList();
     }
 
     #endregion

@@ -1,7 +1,6 @@
 ﻿using CommandLine;
 using WordSearchGenerator.Common;
 using WordSearchGenerator.Common.WoSeCon;
-using WordSearchGenerator.Common.WoSeCon.Data;
 
 namespace WordSearchGenerator.Console
 {
@@ -29,10 +28,7 @@ namespace WordSearchGenerator.Console
 
       if (args?.Length == 0)
       {
-        args = new[]
-        {
-          "--help"
-        };
+        args = new[] { "--help" };
       }
 
       try
@@ -70,7 +66,6 @@ namespace WordSearchGenerator.Console
 
         System.Console.Write(board.Print());
         System.Console.Write(board.PrintWords(Options.Debug));
-
       }).ContinueWith(AboutToQuit);
     }
 

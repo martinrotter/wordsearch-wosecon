@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using WordSearchGenerator.Common.WoSeCon.Data;
+﻿using WordSearchGenerator.Common.WoSeCon.Data;
 
 namespace WordSearchGenerator.Common.WoSeCon
 {
@@ -17,15 +16,33 @@ namespace WordSearchGenerator.Common.WoSeCon
 
     #region Properties
 
-    public int ColumnCount { get; }
+    public int ColumnCount
+    {
+      get;
+    }
 
-    public RandomLocator Locator { get; set; }
+    public RandomLocator Locator
+    {
+      get;
+      set;
+    }
 
-    public OperationMode Mode { get; set; }
+    public OperationMode Mode
+    {
+      get;
+      set;
+    }
 
-    public int RowCount { get; }
+    public int RowCount
+    {
+      get;
+    }
 
-    public List<WordInfo> Words { get; set; }
+    public List<WordInfo> Words
+    {
+      get;
+      set;
+    }
 
     #endregion
 
@@ -69,7 +86,7 @@ namespace WordSearchGenerator.Common.WoSeCon
         {
           if (cWordIndex == 0)
           {
-            throw new Exception("fail");
+            throw new Exception("given words cannot fit into the grid");
           }
 
           cWord.DeleteTested();
@@ -117,11 +134,11 @@ namespace WordSearchGenerator.Common.WoSeCon
     public bool LocateOne(WordInfo cWord)
     {
       var tested = cWord.TestedLocations;
-      var l = Locator.Minus(tested);
       RandomLocator localLocator = null;
-
+      
       if (Mode == OperationMode.Backward)
       {
+        var l = RandomLocator.Minus(RowCount, ColumnCount, tested);
         var dL = cWord.Placement;
         Locator.Add(dL);
         cWord.AddToTested();

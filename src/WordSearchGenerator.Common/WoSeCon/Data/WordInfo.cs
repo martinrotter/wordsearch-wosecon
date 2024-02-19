@@ -28,11 +28,31 @@
     {
       get;
       set;
-    } = null;
+    }
 
     #endregion
 
     #region Interface Implementations
+
+    public object Clone()
+    {
+      var wrd = new WordInfo();
+
+      wrd.Reversed = Reversed;
+      wrd.Text = (string)Text.Clone();
+
+      if (Placement != null)
+      {
+        wrd.Placement = (DirectedLocation)Placement.Clone();
+      }
+
+      if (TestedLocations != null)
+      {
+        wrd.TestedLocations = TestedLocations.CloneList();
+      }
+
+      return wrd;
+    }
 
     public bool Equals(WordInfo other)
     {
@@ -159,9 +179,7 @@
         {
           var d = new DirectedLocation
           {
-            Row = line,
-            Column = clmn + i,
-            Direction = DirectedLocation.LocationDirection.Horizontal
+            Row = line, Column = clmn + i, Direction = DirectedLocation.LocationDirection.Horizontal
           };
 
           rVal.Add(d);
@@ -173,9 +191,7 @@
         {
           var d = new DirectedLocation
           {
-            Row = line + i,
-            Column = clmn,
-            Direction = DirectedLocation.LocationDirection.Vertical
+            Row = line + i, Column = clmn, Direction = DirectedLocation.LocationDirection.Vertical
           };
 
           rVal.Add(d);
@@ -190,26 +206,6 @@
     public override int GetHashCode()
     {
       return Text != null ? Text.GetHashCode() : 0;
-    }
-
-    public object Clone()
-    {
-      var wrd = new WordInfo();
-
-      wrd.Reversed = this.Reversed;
-      wrd.Text = (string)this.Text.Clone();
-
-      if (Placement != null)
-      {
-        wrd.Placement = (DirectedLocation)this.Placement.Clone();
-      }
-
-      if (TestedLocations != null)
-      {
-        wrd.TestedLocations = this.TestedLocations.CloneList();
-      }
-
-      return wrd;
     }
 
     public char CharAt(DirectedLocation location)

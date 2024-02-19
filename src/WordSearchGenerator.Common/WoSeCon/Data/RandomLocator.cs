@@ -38,8 +38,7 @@
 
       foreach (var d in new[]
                {
-                 DirectedLocation.LocationDirection.Horizontal,
-                 DirectedLocation.LocationDirection.Vertical
+                 DirectedLocation.LocationDirection.Horizontal, DirectedLocation.LocationDirection.Vertical
                })
       {
         for (var c = 0; c < ColumnCount; c++)
@@ -48,12 +47,7 @@
           if (!((d == DirectedLocation.LocationDirection.Horizontal && c == ColumnCount - 1) ||
                 (d == DirectedLocation.LocationDirection.Vertical && l == RowCount - 1)))
           {
-            var dL = new DirectedLocation
-            {
-              Column = c,
-              Row = l,
-              Direction = d
-            };
+            var dL = new DirectedLocation { Column = c, Row = l, Direction = d };
 
             Add(dL);
           }
@@ -74,9 +68,12 @@
       Locations.Add(location);
     }
 
-    public RandomLocator Minus(List<DirectedLocation> visitedLocations)
+    public static RandomLocator Minus(
+      int rowCount,
+      int columnCount,
+      List<DirectedLocation> visitedLocations)
     {
-      var loc = new RandomLocator(RowCount, ColumnCount);
+      var loc = new RandomLocator(rowCount, columnCount);
 
       foreach (var visitedLocation in visitedLocations)
       {
