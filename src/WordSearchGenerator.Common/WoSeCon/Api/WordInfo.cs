@@ -101,7 +101,9 @@
           return true;
         }
 
-        if (wordLetter.Row == otherWordLetter.Row && wordLetter.Column == otherWordLetter.Column && wordLetter.Direction != otherWordLetter.Direction)
+        if (wordLetter.Row == otherWordLetter.Row &&
+            wordLetter.Column == otherWordLetter.Column &&
+            wordLetter.Direction != otherWordLetter.Direction)
         {
           // Two words intersect.
           if (CharAt(otherWordLetter) != otherWord.CharAt(otherWordLetter))
@@ -166,10 +168,19 @@
 
       int row = Placement.Row;
       int column = Placement.Column;
-      bool tweakRow = Placement.Direction == DirectedLocation.LocationDirection.TopBottom || Placement.Direction == DirectedLocation.LocationDirection.BottomTop;
-      bool tweakColumn = Placement.Direction == DirectedLocation.LocationDirection.LeftToRight || Placement.Direction == DirectedLocation.LocationDirection.RightToLeft;
-      bool addRow = Placement.Direction == DirectedLocation.LocationDirection.TopBottom;
-      bool addColumn = Placement.Direction == DirectedLocation.LocationDirection.LeftToRight;
+
+      bool tweakRow = Placement.Direction != DirectedLocation.LocationDirection.LeftToRight &&
+                      Placement.Direction != DirectedLocation.LocationDirection.RightToLeft;
+
+      bool tweakColumn = Placement.Direction != DirectedLocation.LocationDirection.TopBottom &&
+                         Placement.Direction != DirectedLocation.LocationDirection.BottomTop;
+
+      bool addRow = Placement.Direction == DirectedLocation.LocationDirection.TopBottom ||
+                    Placement.Direction == DirectedLocation.LocationDirection.LeftTopRightBottom;
+
+      bool addColumn = Placement.Direction == DirectedLocation.LocationDirection.LeftToRight ||
+                       Placement.Direction == DirectedLocation.LocationDirection.LeftTopRightBottom ||
+                       Placement.Direction == DirectedLocation.LocationDirection.LeftBottomRightTop;
 
       for (int i = 0; i < Text.Length; i++)
       {
@@ -195,7 +206,8 @@
 
     public char CharAt(DirectedLocation location)
     {
-      if (Placement.Direction == DirectedLocation.LocationDirection.LeftToRight || Placement.Direction == DirectedLocation.LocationDirection.RightToLeft)
+      if (Placement.Direction == DirectedLocation.LocationDirection.LeftToRight ||
+          Placement.Direction == DirectedLocation.LocationDirection.RightToLeft)
       {
         int idx = location.Column - Placement.Column;
         return Text[idx < 0 ? -idx : idx];
@@ -223,6 +235,14 @@
     {
       switch (location.Direction)
       {
+        case DirectedLocation.LocationDirection.LeftTopRightBottom:
+          return location.Row + Text.Length <= rowCount &&
+                 location.Column + Text.Length <= columnCount;
+
+        case DirectedLocation.LocationDirection.LeftBottomRightTop:
+          return location.Row - Text.Length >= -1 &&
+                 location.Column + Text.Length <= columnCount;
+
         case DirectedLocation.LocationDirection.LeftToRight:
           return location.Column + Text.Length <= columnCount;
 

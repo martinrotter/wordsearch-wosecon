@@ -39,15 +39,24 @@
       RowCount = rowCount;
       ColumnCount = columnCount;
 
-      foreach (DirectedLocation.LocationDirection d in new[]
-               {
-                 DirectedLocation.LocationDirection.LeftToRight, DirectedLocation.LocationDirection.TopBottom, DirectedLocation.LocationDirection.RightToLeft, DirectedLocation.LocationDirection.BottomTop
-               })
+      foreach (DirectedLocation.LocationDirection d in Enum.GetValues<DirectedLocation.LocationDirection>())
       {
         for (int column = 0; column < ColumnCount; column++)
         for (int row = 0; row < RowCount; row++)
         {
-          if (!((d == DirectedLocation.LocationDirection.LeftToRight && column == ColumnCount - 1) || (d == DirectedLocation.LocationDirection.RightToLeft && column == 0) || (d == DirectedLocation.LocationDirection.TopBottom && row == RowCount - 1) || (d == DirectedLocation.LocationDirection.BottomTop && row == 0)))
+          if (!(
+                (d == DirectedLocation.LocationDirection.LeftToRight &&
+                 column == ColumnCount - 1) ||
+                (d == DirectedLocation.LocationDirection.RightToLeft &&
+                 column == 0) ||
+                (d == DirectedLocation.LocationDirection.TopBottom &&
+                 row == RowCount - 1) ||
+                (d == DirectedLocation.LocationDirection.BottomTop &&
+                 row == 0) ||
+                (d == DirectedLocation.LocationDirection.LeftTopRightBottom &&
+                 (row == RowCount - 1 || column == ColumnCount - 1)) ||
+                (d == DirectedLocation.LocationDirection.LeftBottomRightTop &&
+                 (row == 0 || column == ColumnCount - 1))))
           {
             DirectedLocation dl = new DirectedLocation
             {

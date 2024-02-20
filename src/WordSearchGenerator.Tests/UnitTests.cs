@@ -27,7 +27,7 @@ namespace WordSearchGenerator.Tests
     [TestMethod]
     public void OnceFullListBigGrid()
     {
-      RunGridWithWords(1, 130, 25, 25);
+      RunGridWithWords(1, 130, 22, 25);
     }
 
     [TestMethod]
@@ -52,6 +52,18 @@ namespace WordSearchGenerator.Tests
     public void BigListBigGrid()
     {
       RunGridWithWords(NumberOfRepetitions, 25, 12, 18);
+    }
+
+    [TestMethod]
+    public void FillAllGridDiagonal2()
+    {
+      RunGridWithWords(1, -1, 3, 3, "words-small-diagonal.txt");
+    }
+
+    [TestMethod]
+    public void FillAllGridDiagonal()
+    {
+      RunGridWithWords(1, -1, 2, 2, "words-tiny-diagonal.txt");
     }
 
     [TestMethod]

@@ -6,7 +6,7 @@
 
     public enum LocationDirection
     {
-      // TODO: Arrows: ↖ ↗ ↘ ↙
+      // TODO: Arrows: ↖ ↙
 
       // Horizontal →.
       LeftToRight = 0,
@@ -18,7 +18,13 @@
       TopBottom = 2,
 
       // Vertical ↑.
-      BottomTop = 3
+      BottomTop = 3,
+
+      // Diagonal ↘.
+      LeftTopRightBottom = 4,
+
+      // Diagonal ↗.
+      LeftBottomRightTop = 5
     }
 
     #endregion
