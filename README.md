@@ -1,12 +1,17 @@
 # wordsearch-wosecon
-Simple .NET/WPF library/app for creating word search puzzles via WoSeCon algorithm. See the [paper](docs/68-IJSES-V6N1.pdf) for more info about it.
+Simple .NET (cross platform) library for creating word search puzzles via WoSeCon algorithm. See the [paper](docs/68-IJSES-V6N1.pdf) for more info about it. The algorithm was enhanced to support diagonal word matching and opposite directions (reversed words) so now this algorithm implementation support full 8 directions.
 
-The algorithm uses backtracking approach and is exhaustive. In other words if there is at least one solution to given list of words and matrix size, the algorithm will find it, but it may run very long for crazy huge number of words with small matrix size.
+There are some .NET-specific optimizations made, like some unnecessary allocations were avoided etc.
 
-For regular lists of words (like 30 words) and normally sized matrix (like 20x30 rows/columns), the results are fast and within seconds.
+The algorithm uses backtracking approach and is exhaustive. In other words if there is at least one solution to given list of words and matrix size, the algorithm will find it, but it may run very very long for crazy huge number of words with small matrix size.
 
-## Console version
-Console version is able to generate word search puzzle according to input parameters. To save puzzle to file, use output redirection.
+For regular lists of words (like 50 words) and normally sized matrix (like 20x30 rows/columns), the results are fast and within seconds.
+
+## GUI frontend
+**TODO**
+
+## Console frontend
+Console frontend is able to generate word search puzzle according to input parameters. To save puzzle to file, use output redirection.
 
 ```
 WordSearchGenerator.Console --help
