@@ -27,7 +27,7 @@ namespace WordSearchGenerator.Tests
     [TestMethod]
     public void OnceFullListBigGrid()
     {
-      RunGridWithWords(1, 130, 23, 27);
+      RunGridWithWords(1, 130, 20, 32);
     }
 
     [TestMethod]
@@ -45,7 +45,7 @@ namespace WordSearchGenerator.Tests
     [TestMethod]
     public void SmallListBigGrid()
     {
-      RunGridWithWords(NumberOfRepetitions, 14, 11, 11);
+      RunGridWithWords(NumberOfRepetitions, 14, 7, 12);
     }
 
     [TestMethod]
@@ -116,6 +116,7 @@ namespace WordSearchGenerator.Tests
       Console.WriteLine($"Average miliseconds: {stats.AverageMs}");
       Console.WriteLine();
       Console.Write(board.Print());
+      Console.Write(board.PrintIntersections());
       Console.Write(board.PrintWords(true));
     }
 

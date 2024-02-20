@@ -39,28 +39,31 @@
       RowCount = rowCount;
       ColumnCount = columnCount;
 
-      foreach (DirectedLocation.LocationDirection d in new []{
-        DirectedLocation.LocationDirection.LeftToRight,
-        DirectedLocation.LocationDirection.TopBottom
-      })
+      foreach (DirectedLocation.LocationDirection d in new[]
+               {
+                 DirectedLocation.LocationDirection.LeftToRight, DirectedLocation.LocationDirection.TopBottom, DirectedLocation.LocationDirection.RightToLeft, DirectedLocation.LocationDirection.BottomTop
+               })
       {
         for (int column = 0; column < ColumnCount; column++)
         for (int row = 0; row < RowCount; row++)
         {
-          if (!((d == DirectedLocation.LocationDirection.LeftToRight && column == ColumnCount - 1) ||
-                (d == DirectedLocation.LocationDirection.RightToLeft && column == 0) ||
-                (d == DirectedLocation.LocationDirection.TopBottom && row == RowCount - 1) ||
-                (d == DirectedLocation.LocationDirection.BottomTop && row == 0)))
+          if (!((d == DirectedLocation.LocationDirection.LeftToRight && column == ColumnCount - 1) || (d == DirectedLocation.LocationDirection.RightToLeft && column == 0) || (d == DirectedLocation.LocationDirection.TopBottom && row == RowCount - 1) || (d == DirectedLocation.LocationDirection.BottomTop && row == 0)))
           {
-            DirectedLocation dl = new DirectedLocation { Column = column, Row = row, Direction = d };
+            DirectedLocation dl = new DirectedLocation
+            {
+              Column = column,
+              Row = row,
+              Direction = d
+            };
+
             AddAvailableLocation(dl);
           }
         }
       }
 
       // Shuffle the list.
-      //Random rng = new Random((int)(DateTime.Now - DateTime.Today).TotalMilliseconds);
-      //AvailableLocations = AvailableLocations.OrderBy(_ => rng.Next()).ToList();
+      Random rng = new Random((int)(DateTime.Now - DateTime.Today).TotalMilliseconds);
+      AvailableLocations = AvailableLocations.OrderBy(_ => rng.Next()).ToList();
     }
 
     #endregion
@@ -72,10 +75,7 @@
       AvailableLocations.Add(location);
     }
 
-    public static RandomLocator GetWithoutLocations(
-      int rowCount,
-      int columnCount,
-      List<DirectedLocation> visitedLocations)
+    public static RandomLocator GetWithoutLocations(int rowCount, int columnCount, List<DirectedLocation> visitedLocations)
     {
       RandomLocator loc = new RandomLocator(rowCount, columnCount);
 

@@ -28,7 +28,10 @@ namespace WordSearchGenerator.Console
 
       if (args?.Length == 0)
       {
-        args = new[] { "--help" };
+        args = new[]
+        {
+          "--help"
+        };
       }
 
       try
@@ -66,6 +69,11 @@ namespace WordSearchGenerator.Console
 
         System.Console.Write(board.Print());
         System.Console.Write(board.PrintWords(Options.Debug));
+
+        if (Options.Debug)
+        {
+          System.Console.Write(board.PrintIntersections());
+        }
       }).ContinueWith(AboutToQuit);
     }
 
@@ -80,9 +88,16 @@ namespace WordSearchGenerator.Console
 
     private void QuitCheckException(Exception exception)
     {
-      if (exception != null)
+      if (exception is AggregateException aggr)
+      {
+        System.Console.WriteLine($"Error: {string.Join(", ", aggr.InnerExceptions.Select(ex => ex.Message))}.");
+
+        Environment.ExitCode = 1;
+      }
+      else if (exception != null)
       {
         System.Console.WriteLine($"Error: {exception.Message}.");
+
         Environment.ExitCode = 1;
       }
       else

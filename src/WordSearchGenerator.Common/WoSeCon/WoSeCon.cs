@@ -50,7 +50,7 @@ namespace WordSearchGenerator.Common.WoSeCon
     {
       RowCount = rowCount;
       ColumnCount = columnCount;
-      Words = words;
+      Words = Sort(words);
 
       GlobalLocator = new RandomLocator(RowCount, ColumnCount);
     }
@@ -58,6 +58,11 @@ namespace WordSearchGenerator.Common.WoSeCon
     #endregion
 
     #region Other Stuff
+
+    private List<WordInfo> Sort(List<WordInfo> words)
+    {
+      return words.OrderByDescending(wrd => wrd.Text.Length).ToList();
+    }
 
     public int Construct()
     {
@@ -99,47 +104,15 @@ namespace WordSearchGenerator.Common.WoSeCon
       return backtrackings;
     }
 
-    private bool WillFit(WordInfo word, DirectedLocation location)
-    {
-      switch (location.Direction)
-      {
-        case DirectedLocation.LocationDirection.LeftToRight:
-          return location.Column + word.Text.Length <= ColumnCount;
-
-        case DirectedLocation.LocationDirection.RightToLeft:
-          return location.Column - word.Text.Length >= -1;
-
-        case DirectedLocation.LocationDirection.TopBottom:
-          return location.Row + word.Text.Length <= RowCount;
-
-        case DirectedLocation.LocationDirection.BottomTop:
-        default:
-          return location.Row - word.Text.Length >= -1;
-      }
-    }
-
     public bool IsValidPlacement(WordInfo word, DirectedLocation location)
     {
       word.Placement = location;
 
-      if (!WillFit(word, location))
+      if (!word.WillFit(location, RowCount, ColumnCount))
       {
         word.Placement = null;
         return false;
       }
-      /*
-      word.Placement = location;
-      List<DirectedLocation> letterLocations = word.GetAllLetterLocations();
-
-      foreach (DirectedLocation letterLocation in letterLocations)
-      {
-        if (letterLocation.Row < 0 || letterLocation.Row > RowCount - 1 || letterLocation.Column < 0 || letterLocation.Column > ColumnCount - 1)
-        {
-          // We are out of matrix bounds.
-          word.Placement = null;
-          return false;
-        }
-      }*/
 
       foreach (WordInfo wordToCheck in Words)
       {

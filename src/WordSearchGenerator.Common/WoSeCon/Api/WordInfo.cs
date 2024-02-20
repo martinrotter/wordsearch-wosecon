@@ -175,8 +175,8 @@
       {
         DirectedLocation d = new DirectedLocation
         {
-          Row = tweakRow ? (addRow ? row + i : row - i) : row,
-          Column = tweakColumn ? (addColumn ? column + i : column - i) : column,
+          Row = tweakRow ? addRow ? row + i : row - i : row,
+          Column = tweakColumn ? addColumn ? column + i : column - i : column,
           Direction = Placement.Direction
         };
 
@@ -217,6 +217,25 @@
       }
 
       return str;
+    }
+
+    public bool WillFit(DirectedLocation location, int rowCount, int columnCount)
+    {
+      switch (location.Direction)
+      {
+        case DirectedLocation.LocationDirection.LeftToRight:
+          return location.Column + Text.Length <= columnCount;
+
+        case DirectedLocation.LocationDirection.RightToLeft:
+          return location.Column - Text.Length >= -1;
+
+        case DirectedLocation.LocationDirection.TopBottom:
+          return location.Row + Text.Length <= rowCount;
+
+        case DirectedLocation.LocationDirection.BottomTop:
+        default:
+          return location.Row - Text.Length >= -1;
+      }
     }
 
     #endregion

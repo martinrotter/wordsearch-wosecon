@@ -107,6 +107,26 @@ namespace WordSearchGenerator.Common
       return bldr.ToString();
     }
 
+    public string PrintIntersections()
+    {
+      StringBuilder bldr = new StringBuilder();
+
+      for (int i = 0; i < RowCount; i++)
+      {
+        for (int j = 0; j < ColumnCount; j++)
+        {
+          if (Matrix[i, j].Intersections >= 2)
+          {
+            bldr.AppendLine($"Crossing: {i}x{j} -> {Matrix[i, j].Intersections}");
+          }
+        }
+      }
+
+      bldr.AppendLine();
+
+      return bldr.ToString();
+    }
+
     public string PrintWords(bool showSolution)
     {
       StringBuilder bldr = new StringBuilder();
@@ -116,6 +136,8 @@ namespace WordSearchGenerator.Common
       {
         bldr.Append(word.ToString(longestWord, showSolution));
       }
+
+      bldr.AppendLine();
 
       return bldr.ToString();
     }
@@ -131,26 +153,26 @@ namespace WordSearchGenerator.Common
         Matrix[i, j] = new Cell();
       }
 
-      for (int i = 0; i < Words.Count; i++)
+      foreach (WordInfo word in Words)
       {
-        WordInfo cWord = Words[i];
-        List<DirectedLocation> locations = cWord.GetAllLetterLocations();
+        List<DirectedLocation> locations = word.GetAllLetterLocations();
 
         if (!locations.Any())
         {
           throw new Exception("no locations");
         }
 
-        string word = cWord.Text;
+        string wordText = word.Text;
 
-        for (int j = 0; j < word.Length; j++)
+        for (int j = 0; j < wordText.Length; j++)
         {
-          DirectedLocation dL = locations[j];
-          int r = dL.Row;
-          int c = dL.Column;
+          DirectedLocation letterLocation = locations[j];
+          int r = letterLocation.Row;
+          int c = letterLocation.Column;
 
           Matrix[r, c].Type = Cell.CellType.CharFromText;
-          Matrix[r, c].Char = word[j];
+          Matrix[r, c].Char = wordText[j];
+          Matrix[r, c].Intersections++;
         }
       }
 
@@ -202,6 +224,12 @@ namespace WordSearchGenerator.Common
       #region Properties
 
       public char Char
+      {
+        get;
+        set;
+      }
+
+      public int Intersections
       {
         get;
         set;
