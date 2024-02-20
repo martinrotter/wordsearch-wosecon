@@ -59,8 +59,8 @@
       }
 
       // Shuffle the list.
-      Random rng = new Random((int)(DateTime.Now - DateTime.Today).TotalMilliseconds);
-      AvailableLocations = AvailableLocations.OrderBy(_ => rng.Next()).ToList();
+      //Random rng = new Random((int)(DateTime.Now - DateTime.Today).TotalMilliseconds);
+      //AvailableLocations = AvailableLocations.OrderBy(_ => rng.Next()).ToList();
     }
 
     #endregion
