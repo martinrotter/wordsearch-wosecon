@@ -27,7 +27,7 @@ namespace WordSearchGenerator.Tests
     [TestMethod]
     public void OnceFullListBigGrid()
     {
-      RunGridWithWords(1, 130, 20, 32);
+      RunGridWithWords(1, 130, 25, 25);
     }
 
     [TestMethod]
