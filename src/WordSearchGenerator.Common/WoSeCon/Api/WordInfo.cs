@@ -176,7 +176,8 @@
                          Placement.Direction != DirectedLocation.LocationDirection.BottomTop;
 
       bool addRow = Placement.Direction == DirectedLocation.LocationDirection.TopBottom ||
-                    Placement.Direction == DirectedLocation.LocationDirection.LeftTopRightBottom;
+                    Placement.Direction == DirectedLocation.LocationDirection.LeftTopRightBottom ||
+                    Placement.Direction == DirectedLocation.LocationDirection.RightTopLeftBottom;
 
       bool addColumn = Placement.Direction == DirectedLocation.LocationDirection.LeftToRight ||
                        Placement.Direction == DirectedLocation.LocationDirection.LeftTopRightBottom ||
@@ -235,6 +236,14 @@
     {
       switch (location.Direction)
       {
+        case DirectedLocation.LocationDirection.RightTopLeftBottom:
+          return location.Column - Text.Length >= -1 &&
+                 location.Row + Text.Length <= rowCount;
+
+        case DirectedLocation.LocationDirection.RightBottomLeftTop:
+          return location.Column - Text.Length >= -1 &&
+                 location.Row - Text.Length >= -1;
+
         case DirectedLocation.LocationDirection.LeftTopRightBottom:
           return location.Row + Text.Length <= rowCount &&
                  location.Column + Text.Length <= columnCount;

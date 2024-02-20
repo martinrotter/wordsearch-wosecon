@@ -56,7 +56,11 @@
                 (d == DirectedLocation.LocationDirection.LeftTopRightBottom &&
                  (row == RowCount - 1 || column == ColumnCount - 1)) ||
                 (d == DirectedLocation.LocationDirection.LeftBottomRightTop &&
-                 (row == 0 || column == ColumnCount - 1))))
+                 (row == 0 || column == ColumnCount - 1)) ||
+                (d == DirectedLocation.LocationDirection.RightTopLeftBottom &&
+                 (row == RowCount - 1 || column == 0)) ||
+                (d == DirectedLocation.LocationDirection.RightBottomLeftTop &&
+                 (row == 0 || column == 0))))
           {
             DirectedLocation dl = new DirectedLocation
             {
