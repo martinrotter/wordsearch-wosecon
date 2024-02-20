@@ -33,11 +33,11 @@ namespace WordSearchGenerator.Console
 
       try
       {
-        var cliParseResult = Parser.Default.ParseArguments<CliOptions>(args);
+        ParserResult<CliOptions> cliParseResult = Parser.Default.ParseArguments<CliOptions>(args);
 
         if (cliParseResult.Errors.Any())
         {
-          foreach (var error in cliParseResult.Errors)
+          foreach (Error error in cliParseResult.Errors)
           {
             if (error.Tag != ErrorType.HelpRequestedError)
             {
@@ -57,12 +57,12 @@ namespace WordSearchGenerator.Console
 
       Task.Run(() =>
       {
-        var words = new WordsLoader(Options.WordsFile);
-        var wo = new WoSeCon(words.Words, Options.Rows, Options.Columns);
+        WordsLoader words = new WordsLoader(Options.WordsFile);
+        WoSeCon wo = new WoSeCon(words.Words, Options.Rows, Options.Columns, true);
 
         wo.Construct();
 
-        var board = new Board(wo.Words, wo.RowCount, wo.ColumnCount, Options.Message);
+        Board board = new Board(wo.Words, wo.RowCount, wo.ColumnCount, Options.Message);
 
         System.Console.Write(board.Print());
         System.Console.Write(board.PrintWords(Options.Debug));

@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using WordSearchGenerator.Common;
 using WordSearchGenerator.Common.WoSeCon;
-using WordSearchGenerator.Common.WoSeCon.Data;
+using WordSearchGenerator.Common.WoSeCon.Api;
 
 namespace WordSearchGenerator.Tests
 {
@@ -74,24 +74,24 @@ namespace WordSearchGenerator.Tests
 
     private void RunGridWithWords(int numberOfRepetitions, int numberOfWords, int rows, int columns, string fileName = null, bool twist = true)
     {
-      var iter = numberOfRepetitions;
-      var stats = new Stats();
-      var st = new Stopwatch();
-      var fullFilePath = Path.Combine(TestDataFolder, fileName ?? "words-big.txt");
-      var loader = new WordsLoader(fullFilePath);
-      var words = numberOfWords > 0 ? loader.Words.Take(numberOfWords).ToList() : loader.Words;
-      var charCount = words.Select(wrd => wrd.Text.Length).Sum();
+      int iter = numberOfRepetitions;
+      Stats stats = new Stats();
+      Stopwatch st = new Stopwatch();
+      string fullFilePath = Path.Combine(TestDataFolder, fileName ?? "words-big.txt");
+      WordsLoader loader = new WordsLoader(fullFilePath);
+      List<WordInfo>? words = numberOfWords > 0 ? loader.Words.Take(numberOfWords).ToList() : loader.Words;
+      int charCount = words.Select(wrd => wrd.Text.Length).Sum();
       List<WordInfo> hardestWords = null;
-      var hardestBacktrackings = 0;
+      int hardestBacktrackings = 0;
 
       while (--iter >= 0)
       {
-        var wo = new WoSeCon(words.CloneList(), rows, columns, twist);
+        WoSeCon wo = new WoSeCon(words.CloneList(), rows, columns, twist);
 
         st.Restart();
-        var backtrackings = wo.Construct();
+        int backtrackings = wo.Construct();
 
-        var elapsed = st.ElapsedMilliseconds;
+        long elapsed = st.ElapsedMilliseconds;
 
         stats.SetResult(elapsed);
 
@@ -104,7 +104,7 @@ namespace WordSearchGenerator.Tests
         Debug.WriteLine($"Left: {iter + 1}");
       }
 
-      var board = new Board(hardestWords, rows, columns);
+      Board board = new Board(hardestWords, rows, columns);
 
       Console.WriteLine($"Total cell count: {rows * columns}");
       Console.WriteLine($"Words char count: {charCount}");
@@ -127,11 +127,20 @@ namespace WordSearchGenerator.Tests
     {
       #region Properties
 
-      public long MinMs => AllResults.Min();
+      public long MinMs
+      {
+        get => AllResults.Min();
+      }
 
-      public long MaxMs => AllResults.Max();
+      public long MaxMs
+      {
+        get => AllResults.Max();
+      }
 
-      public long AverageMs => AllResults.Sum() / AllResults.Count;
+      public long AverageMs
+      {
+        get => AllResults.Sum() / AllResults.Count;
+      }
 
       public List<long> AllResults
       {

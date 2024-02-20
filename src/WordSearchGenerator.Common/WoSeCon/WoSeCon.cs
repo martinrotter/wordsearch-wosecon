@@ -1,4 +1,4 @@
-﻿using WordSearchGenerator.Common.WoSeCon.Data;
+﻿using WordSearchGenerator.Common.WoSeCon.Api;
 
 namespace WordSearchGenerator.Common.WoSeCon
 {
@@ -21,10 +21,9 @@ namespace WordSearchGenerator.Common.WoSeCon
       get;
     }
 
-    public RandomLocator Locator
+    public RandomLocator GlobalLocator
     {
       get;
-      set;
     }
 
     public OperationMode Mode
@@ -41,7 +40,6 @@ namespace WordSearchGenerator.Common.WoSeCon
     public List<WordInfo> Words
     {
       get;
-      set;
     }
 
     #endregion
@@ -54,7 +52,7 @@ namespace WordSearchGenerator.Common.WoSeCon
       ColumnCount = columnCount;
       Words = twistWords ? Twist(words).ToList() : words;
 
-      Locator = new RandomLocator(RowCount, ColumnCount);
+      GlobalLocator = new RandomLocator(RowCount, ColumnCount);
     }
 
     #endregion
@@ -63,36 +61,37 @@ namespace WordSearchGenerator.Common.WoSeCon
 
     public int Construct()
     {
-      var backtrackings = 0;
-      var cWordIndex = 0;
-      var cWord = Words[cWordIndex];
+      int backtrackings = 0;
+      int wordIndex = 0;
+      WordInfo word = Words[wordIndex];
 
       Mode = OperationMode.Forward;
 
       while (true)
       {
-        if (LocateOne(cWord))
+        if (PlaceWord(word))
         {
-          if (cWordIndex == Words.Count - 1)
+          if (wordIndex == Words.Count - 1)
           {
+            // Last word was placed, we are done.
             break;
           }
 
-          ++cWordIndex;
-          cWord = Words[cWordIndex];
+          ++wordIndex;
+          word = Words[wordIndex];
           Mode = OperationMode.Forward;
         }
         else
         {
-          if (cWordIndex == 0)
+          if (wordIndex == 0)
           {
             throw new Exception("given words cannot fit into the grid");
           }
 
-          cWord.DeleteTested();
-          --cWordIndex;
+          word.ClearTestedLocations();
+          --wordIndex;
           backtrackings++;
-          cWord = Words[cWordIndex];
+          word = Words[wordIndex];
           Mode = OperationMode.Backward;
         }
       }
@@ -100,29 +99,30 @@ namespace WordSearchGenerator.Common.WoSeCon
       return backtrackings;
     }
 
-    public bool IsValidPlacement(WordInfo cWord, DirectedLocation dL)
+    public bool IsValidPlacement(WordInfo word, DirectedLocation location)
     {
-      cWord.Placement = dL;
-      var wordLocations = cWord.GetAllLocations();
+      word.Placement = location;
+      List<DirectedLocation> letterLocations = word.GetAllLetterLocations();
 
-      foreach (var l in wordLocations)
+      foreach (DirectedLocation l in letterLocations)
       {
         if (l.Row > RowCount - 1 || l.Column > ColumnCount - 1)
         {
-          cWord.Placement = null;
+          // We are out of matrix bounds.
+          word.Placement = null;
           return false;
         }
       }
 
-      for (var i = 0; i < Words.Count; i++)
+      for (int i = 0; i < Words.Count; i++)
       {
-        var wToCheck = Words[i];
+        WordInfo wordToCheck = Words[i];
 
-        if (cWord != wToCheck)
+        if (word != wordToCheck)
         {
-          if (cWord.Conflicts(wToCheck))
+          if (word.ConflictsWithWord(wordToCheck))
           {
-            cWord.Placement = null;
+            word.Placement = null;
             return false;
           }
         }
@@ -131,33 +131,33 @@ namespace WordSearchGenerator.Common.WoSeCon
       return true;
     }
 
-    public bool LocateOne(WordInfo cWord)
+    public bool PlaceWord(WordInfo word)
     {
-      var tested = cWord.TestedLocations;
+      List<DirectedLocation> testedLocations = word.TestedLocations;
       RandomLocator localLocator = null;
-      
+
       if (Mode == OperationMode.Backward)
       {
-        var l = RandomLocator.Minus(RowCount, ColumnCount, tested);
-        var dL = cWord.Placement;
-        Locator.Add(dL);
-        cWord.AddToTested();
+        RandomLocator l = RandomLocator.GetWithoutLocations(RowCount, ColumnCount, testedLocations);
+        DirectedLocation wordLocation = word.Placement;
+        GlobalLocator.AddAvailableLocation(wordLocation);
+        word.MarkAsTestedOnPlacement();
         localLocator = l;
       }
       else
       {
-        localLocator = Locator;
+        localLocator = GlobalLocator;
       }
 
-      var locationIndex = 0;
+      int locationIndex = 0;
 
       while (locationIndex < localLocator.Size)
       {
-        var suitableLocation = localLocator[locationIndex];
+        DirectedLocation suitableLocation = localLocator[locationIndex];
 
-        if (IsValidPlacement(cWord, suitableLocation))
+        if (IsValidPlacement(word, suitableLocation))
         {
-          Locator.Remove(suitableLocation);
+          GlobalLocator.RemoveAvailableLocation(suitableLocation);
           return true;
         }
 
@@ -169,7 +169,7 @@ namespace WordSearchGenerator.Common.WoSeCon
 
     private IEnumerable<WordInfo> Twist(List<WordInfo> words)
     {
-      var rng = new Random((int)(DateTime.Now - DateTime.Today).TotalMilliseconds);
+      Random rng = new Random((int)(DateTime.Now - DateTime.Today).TotalMilliseconds);
 
       return words.OrderByDescending(wrd => wrd.Text.Length).Select(wrd =>
       {

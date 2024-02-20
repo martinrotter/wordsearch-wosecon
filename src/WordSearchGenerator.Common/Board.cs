@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using WordSearchGenerator.Common.WoSeCon.Data;
+using WordSearchGenerator.Common.WoSeCon.Api;
 
 namespace WordSearchGenerator.Common
 {
@@ -22,9 +22,9 @@ namespace WordSearchGenerator.Common
     {
       get
       {
-        var taken = 0;
+        int taken = 0;
 
-        foreach (var cell in Matrix)
+        foreach (Cell cell in Matrix)
         {
           if (cell.Type == Cell.CellType.CharFromText)
           {
@@ -36,7 +36,10 @@ namespace WordSearchGenerator.Common
       }
     }
 
-    public double PercentageOccupied => 100 * (double)CharCellCount / (RowCount * ColumnCount);
+    public double PercentageOccupied
+    {
+      get => 100 * (double)CharCellCount / (RowCount * ColumnCount);
+    }
 
     public string Message
     {
@@ -73,11 +76,11 @@ namespace WordSearchGenerator.Common
 
     public string Print()
     {
-      var bldr = new StringBuilder();
+      StringBuilder bldr = new StringBuilder();
 
       bldr.Append("   ❘ ");
 
-      for (var j = 0; j < ColumnCount; j++)
+      for (int j = 0; j < ColumnCount; j++)
       {
         bldr.Append(j.ToString("00"));
       }
@@ -86,13 +89,13 @@ namespace WordSearchGenerator.Common
       bldr.Append(new string('-', bldr.Length - 1));
       bldr.AppendLine();
 
-      for (var i = 0; i < RowCount; i++)
+      for (int i = 0; i < RowCount; i++)
       {
         bldr.Append($"{i:00} ❘ ");
 
-        for (var j = 0; j < ColumnCount; j++)
+        for (int j = 0; j < ColumnCount; j++)
         {
-          var cell = Matrix[i, j];
+          Cell cell = Matrix[i, j];
 
           bldr.Append(cell.Type == Cell.CellType.Empty ? " -" : $" {cell.Char}");
         }
@@ -106,10 +109,10 @@ namespace WordSearchGenerator.Common
 
     public string PrintWords(bool showSolution)
     {
-      var bldr = new StringBuilder();
-      var longestWord = Words.Max(wrd => wrd.Text.Length);
+      StringBuilder bldr = new StringBuilder();
+      int longestWord = Words.Max(wrd => wrd.Text.Length);
 
-      foreach (var word in Words.OrderBy(wrd => wrd.NormalizedText.ToLower()))
+      foreach (WordInfo word in Words.OrderBy(wrd => wrd.NormalizedText.ToLower()))
       {
         bldr.Append(word.ToString(longestWord, showSolution));
       }
@@ -119,40 +122,40 @@ namespace WordSearchGenerator.Common
 
     private void GenerateBoard()
     {
-      var messageChars = Message == null ? [] : Message.ToCharArray().ToList();
+      List<char> messageChars = Message == null ? [] : Message.ToCharArray().ToList();
       Matrix = new Cell[RowCount, ColumnCount];
 
-      for (var i = 0; i < RowCount; i++)
-      for (var j = 0; j < ColumnCount; j++)
+      for (int i = 0; i < RowCount; i++)
+      for (int j = 0; j < ColumnCount; j++)
       {
         Matrix[i, j] = new Cell();
       }
 
-      for (var i = 0; i < Words.Count; i++)
+      for (int i = 0; i < Words.Count; i++)
       {
-        var cWord = Words[i];
-        var locations = cWord.GetAllLocations();
+        WordInfo cWord = Words[i];
+        List<DirectedLocation> locations = cWord.GetAllLetterLocations();
 
         if (!locations.Any())
         {
           throw new Exception("no locations");
         }
 
-        var word = cWord.Text;
+        string word = cWord.Text;
 
-        for (var j = 0; j < word.Length; j++)
+        for (int j = 0; j < word.Length; j++)
         {
-          var dL = locations[j];
-          var r = dL.Row;
-          var c = dL.Column;
+          DirectedLocation dL = locations[j];
+          int r = dL.Row;
+          int c = dL.Column;
 
           Matrix[r, c].Type = Cell.CellType.CharFromText;
           Matrix[r, c].Char = word[j];
         }
       }
 
-      for (var i = 0; i < RowCount; i++)
-      for (var j = 0; j < ColumnCount; j++)
+      for (int i = 0; i < RowCount; i++)
+      for (int j = 0; j < ColumnCount; j++)
       {
         if (Matrix[i, j].Type != Cell.CellType.Empty)
         {

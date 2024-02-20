@@ -1,10 +1,13 @@
-﻿namespace WordSearchGenerator.Common.WoSeCon.Data
+﻿namespace WordSearchGenerator.Common.WoSeCon.Api
 {
   public class WordInfo : IEquatable<WordInfo>, ICloneable
   {
     #region Properties
 
-    public string NormalizedText => Reversed ? Text.Reverse() : Text;
+    public string NormalizedText
+    {
+      get => Reversed ? Text.Reverse() : Text;
+    }
 
     public DirectedLocation Placement
     {
@@ -36,7 +39,7 @@
 
     public object Clone()
     {
-      var wrd = new WordInfo();
+      WordInfo wrd = new WordInfo();
 
       wrd.Reversed = Reversed;
       wrd.Text = (string)Text.Clone();
@@ -83,34 +86,34 @@
       return !Equals(left, right);
     }
 
-    public void AddToTested()
+    public void MarkAsTestedOnPlacement()
     {
       TestedLocations.Add(Placement);
       Placement = null;
     }
 
-    public bool Conflicts(WordInfo otherWord)
+    public bool ConflictsWithWord(WordInfo otherWord)
     {
-      var w2Ls = otherWord.GetAllLocations();
+      List<DirectedLocation> otherWordLocations = otherWord.GetAllLetterLocations();
 
-      if (w2Ls == null || w2Ls.Count == 0)
+      if (otherWordLocations == null || otherWordLocations.Count == 0)
       {
         return false;
       }
 
-      var w1Ls = GetAllLocations();
+      List<DirectedLocation> wordLocations = GetAllLetterLocations();
 
-      foreach (var l1 in w1Ls)
-      foreach (var l2 in w2Ls)
+      foreach (DirectedLocation wordLetter in wordLocations)
+      foreach (DirectedLocation otherWordLetter in otherWordLocations)
       {
-        if (l1 == l2)
+        if (wordLetter == otherWordLetter)
         {
           return true;
         }
 
-        if (l1.Row == l2.Row && l1.Column == l2.Column && l1.Direction != l2.Direction)
+        if (wordLetter.Row == otherWordLetter.Row && wordLetter.Column == otherWordLetter.Column && wordLetter.Direction != otherWordLetter.Direction)
         {
-          if (CharAt(l2) != otherWord.CharAt(l2))
+          if (CharAt(otherWordLetter) != otherWord.CharAt(otherWordLetter))
           {
             return true;
           }
@@ -120,7 +123,7 @@
       return false;
     }
 
-    public void DeleteTested()
+    public void ClearTestedLocations()
     {
       TestedLocations.Clear();
     }
@@ -152,55 +155,49 @@
     } = new Dictionary<Tuple<DirectedLocation, int>, List<DirectedLocation>>();
     */
 
-    public List<DirectedLocation> GetAllLocations()
+    public List<DirectedLocation> GetAllLetterLocations()
     {
       if (Placement == null)
       {
         return new List<DirectedLocation>(0);
       }
 
-      var rVal = new List<DirectedLocation>(Text.Length);
+      List<DirectedLocation> letterLocations = new List<DirectedLocation>(Text.Length);
 
       /*
       var tpl = new Tuple<DirectedLocation, int>(Placement, Text.Length);
 
-      if (KnownLocations.ContainsKey(tpl))
+      if (KnownLocations.TryGetValue(tpl, out List<DirectedLocation> locations))
       {
-        return KnownLocations[tpl];
+        return locations;
       }
       */
 
-      var line = Placement.Row;
-      var clmn = Placement.Column;
+      int line = Placement.Row;
+      int clmn = Placement.Column;
 
       if (Placement.Direction == DirectedLocation.LocationDirection.Horizontal)
       {
-        for (var i = 0; i < Text.Length; i++)
+        for (int i = 0; i < Text.Length; i++)
         {
-          var d = new DirectedLocation
-          {
-            Row = line, Column = clmn + i, Direction = DirectedLocation.LocationDirection.Horizontal
-          };
+          DirectedLocation d = new DirectedLocation { Row = line, Column = clmn + i, Direction = DirectedLocation.LocationDirection.Horizontal };
 
-          rVal.Add(d);
+          letterLocations.Add(d);
         }
       }
       else
       {
-        for (var i = 0; i < Text.Length; i++)
+        for (int i = 0; i < Text.Length; i++)
         {
-          var d = new DirectedLocation
-          {
-            Row = line + i, Column = clmn, Direction = DirectedLocation.LocationDirection.Vertical
-          };
+          DirectedLocation d = new DirectedLocation { Row = line + i, Column = clmn, Direction = DirectedLocation.LocationDirection.Vertical };
 
-          rVal.Add(d);
+          letterLocations.Add(d);
         }
       }
 
       //KnownLocations[tpl] = rVal;
 
-      return rVal;
+      return letterLocations;
     }
 
     public override int GetHashCode()
@@ -220,7 +217,7 @@
 
     public string ToString(int longestWord, bool showSolution)
     {
-      var str = $"{NormalizedText}{(showSolution && Reversed ? "*" : string.Empty)}".PadRight(longestWord + 2);
+      string str = $"{NormalizedText}{(showSolution && Reversed ? "*" : string.Empty)}".PadRight(longestWord + 2);
 
       if (showSolution)
       {

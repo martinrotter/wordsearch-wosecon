@@ -1,4 +1,4 @@
-﻿namespace WordSearchGenerator.Common.WoSeCon.Data
+﻿namespace WordSearchGenerator.Common.WoSeCon.Api
 {
   public class DirectedLocation : IEquatable<DirectedLocation>, ICloneable
   {
@@ -38,7 +38,7 @@
 
     public object Clone()
     {
-      var loc = new DirectedLocation();
+      DirectedLocation loc = new DirectedLocation();
 
       loc.Column = Column;
       loc.Row = Row;

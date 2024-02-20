@@ -6,7 +6,7 @@
 
     private static void Main(string[] args)
     {
-      var app = new App(args);
+      App app = new App(args);
 
       app.Exec();
     }

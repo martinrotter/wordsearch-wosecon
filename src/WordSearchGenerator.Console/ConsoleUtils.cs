@@ -33,7 +33,7 @@ namespace WordSearchGenerator.Console
 
     public static void WithBgColor(Action act, ConsoleColor color)
     {
-      var back = System.Console.BackgroundColor;
+      ConsoleColor back = System.Console.BackgroundColor;
       System.Console.BackgroundColor = color;
       act();
       System.Console.BackgroundColor = back;

@@ -6,7 +6,7 @@
 
     public static string Reverse(this string s)
     {
-      var rev = s.ToCharArray();
+      char[] rev = s.ToCharArray();
       Array.Reverse(rev);
       return new string(rev);
     }
@@ -18,7 +18,7 @@
         return default;
       }
 
-      var first = list[0];
+      T first = list[0];
       list.RemoveAt(0);
       return first;
     }
