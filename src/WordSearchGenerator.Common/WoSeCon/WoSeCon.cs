@@ -48,11 +48,11 @@ namespace WordSearchGenerator.Common.WoSeCon
 
     #region Constructors
 
-    public WoSeCon(List<WordInfo> words, int rowCount, int columnCount)
+    public WoSeCon(List<WordInfo> words, int rowCount, int columnCount, bool twistWords = false)
     {
       RowCount = rowCount;
       ColumnCount = columnCount;
-      Words = Twist(words).ToList();
+      Words = twistWords ? Twist(words).ToList() : words;
 
       Locator = new RandomLocator(RowCount, ColumnCount);
     }

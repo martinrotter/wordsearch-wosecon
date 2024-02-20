@@ -51,7 +51,19 @@ namespace WordSearchGenerator.Tests
     [TestMethod]
     public void BigListBigGrid()
     {
-      RunGridWithWords(NumberOfRepetitions, 25, 11, 12);
+      RunGridWithWords(NumberOfRepetitions, 25, 9, 16);
+    }
+
+    [TestMethod]
+    public void FillAllGrid()
+    {
+      RunGridWithWords(1, -1, 2, 2, "words-tiny.txt", false);
+    }
+
+    [TestMethod]
+    public void FillAllGrid2()
+    {
+      RunGridWithWords(1, -1, 3, 3, "words-small.txt", false);
     }
 
     [TestMethod]
@@ -60,7 +72,7 @@ namespace WordSearchGenerator.Tests
       RunGridWithWords(1, -1, 9, 16, "svesedlice.txt");
     }
 
-    private void RunGridWithWords(int numberOfRepetitions, int numberOfWords, int rows, int columns, string fileName = null)
+    private void RunGridWithWords(int numberOfRepetitions, int numberOfWords, int rows, int columns, string fileName = null, bool twist = true)
     {
       var iter = numberOfRepetitions;
       var stats = new Stats();
@@ -74,7 +86,7 @@ namespace WordSearchGenerator.Tests
 
       while (--iter >= 0)
       {
-        var wo = new WoSeCon(words.CloneList(), rows, columns);
+        var wo = new WoSeCon(words.CloneList(), rows, columns, twist);
 
         st.Restart();
         var backtrackings = wo.Construct();
@@ -94,8 +106,6 @@ namespace WordSearchGenerator.Tests
 
       var board = new Board(hardestWords, rows, columns);
 
-      Console.WriteLine(board.Print());
-
       Console.WriteLine($"Total cell count: {rows * columns}");
       Console.WriteLine($"Words char count: {charCount}");
       Console.WriteLine($"Char cell count: {board.CharCellCount}");
@@ -104,6 +114,9 @@ namespace WordSearchGenerator.Tests
       Console.WriteLine($"Max miliseconds: {stats.MaxMs}");
       Console.WriteLine($"Min miliseconds: {stats.MinMs}");
       Console.WriteLine($"Average miliseconds: {stats.AverageMs}");
+      Console.WriteLine();
+      Console.Write(board.Print());
+      Console.Write(board.PrintWords(true));
     }
 
     #endregion
