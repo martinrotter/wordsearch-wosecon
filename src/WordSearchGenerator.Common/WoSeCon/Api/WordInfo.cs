@@ -22,6 +22,12 @@
       set;
     }
 
+    public string PrintableText
+    {
+      get;
+      set;
+    }
+
     #endregion
 
     #region Interface Implementations
@@ -31,6 +37,7 @@
       WordInfo wrd = new WordInfo();
 
       wrd.Text = (string)Text.Clone();
+      wrd.PrintableText = (string)PrintableText.Clone();
 
       if (Placement != null)
       {
@@ -222,7 +229,7 @@
 
     public string ToString(int longestWord, bool showSolution)
     {
-      string str = Text.PadRight(longestWord + 2);
+      string str = PrintableText.PadRight(longestWord + 2);
 
       if (showSolution)
       {

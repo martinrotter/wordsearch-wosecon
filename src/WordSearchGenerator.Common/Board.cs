@@ -130,9 +130,9 @@ namespace WordSearchGenerator.Common
     public string PrintWords(bool showSolution)
     {
       StringBuilder bldr = new StringBuilder();
-      int longestWord = Words.Max(wrd => wrd.Text.Length);
+      int longestWord = Words.Max(wrd => wrd.PrintableText.Length);
 
-      foreach (WordInfo word in Words.OrderBy(wrd => wrd.Text.ToLower()))
+      foreach (WordInfo word in Words.OrderBy(wrd => wrd.PrintableText.ToLower()))
       {
         bldr.Append(word.ToString(longestWord, showSolution));
       }
