@@ -4,18 +4,7 @@
   {
     #region Properties
 
-    public string NormalizedText
-    {
-      get => Reversed ? Text.Reverse() : Text;
-    }
-
     public DirectedLocation Placement
-    {
-      get;
-      set;
-    }
-
-    public bool Reversed
     {
       get;
       set;
@@ -41,7 +30,6 @@
     {
       WordInfo wrd = new WordInfo();
 
-      wrd.Reversed = Reversed;
       wrd.Text = (string)Text.Clone();
 
       if (Placement != null)
@@ -108,11 +96,14 @@
       {
         if (wordLetter == otherWordLetter)
         {
+          // Two words have same letter in same position and direction.
+          // Not allowed.
           return true;
         }
 
         if (wordLetter.Row == otherWordLetter.Row && wordLetter.Column == otherWordLetter.Column && wordLetter.Direction != otherWordLetter.Direction)
         {
+          // Two words intersect.
           if (CharAt(otherWordLetter) != otherWord.CharAt(otherWordLetter))
           {
             return true;
@@ -173,26 +164,23 @@
       }
       */
 
-      int line = Placement.Row;
-      int clmn = Placement.Column;
+      int row = Placement.Row;
+      int column = Placement.Column;
+      bool tweakRow = Placement.Direction == DirectedLocation.LocationDirection.TopBottom || Placement.Direction == DirectedLocation.LocationDirection.BottomTop;
+      bool tweakColumn = Placement.Direction == DirectedLocation.LocationDirection.LeftToRight || Placement.Direction == DirectedLocation.LocationDirection.RightToLeft;
+      bool addRow = Placement.Direction == DirectedLocation.LocationDirection.TopBottom;
+      bool addColumn = Placement.Direction == DirectedLocation.LocationDirection.LeftToRight;
 
-      if (Placement.Direction == DirectedLocation.LocationDirection.Horizontal)
+      for (int i = 0; i < Text.Length; i++)
       {
-        for (int i = 0; i < Text.Length; i++)
+        DirectedLocation d = new DirectedLocation
         {
-          DirectedLocation d = new DirectedLocation { Row = line, Column = clmn + i, Direction = DirectedLocation.LocationDirection.Horizontal };
+          Row = tweakRow ? (addRow ? row + i : row - i) : row,
+          Column = tweakColumn ? (addColumn ? column + i : column - i) : column,
+          Direction = Placement.Direction
+        };
 
-          letterLocations.Add(d);
-        }
-      }
-      else
-      {
-        for (int i = 0; i < Text.Length; i++)
-        {
-          DirectedLocation d = new DirectedLocation { Row = line + i, Column = clmn, Direction = DirectedLocation.LocationDirection.Vertical };
-
-          letterLocations.Add(d);
-        }
+        letterLocations.Add(d);
       }
 
       //KnownLocations[tpl] = rVal;
@@ -207,17 +195,21 @@
 
     public char CharAt(DirectedLocation location)
     {
-      if (Placement.Direction == DirectedLocation.LocationDirection.Horizontal)
+      if (Placement.Direction == DirectedLocation.LocationDirection.LeftToRight || Placement.Direction == DirectedLocation.LocationDirection.RightToLeft)
       {
-        return Text[location.Column - Placement.Column];
+        int idx = location.Column - Placement.Column;
+        return Text[idx < 0 ? -idx : idx];
       }
-
-      return Text[location.Row - Placement.Row];
+      else
+      {
+        int idx = location.Row - Placement.Row;
+        return Text[idx < 0 ? -idx : idx];
+      }
     }
 
     public string ToString(int longestWord, bool showSolution)
     {
-      string str = $"{NormalizedText}{(showSolution && Reversed ? "*" : string.Empty)}".PadRight(longestWord + 2);
+      string str = Text.PadRight(longestWord + 2);
 
       if (showSolution)
       {

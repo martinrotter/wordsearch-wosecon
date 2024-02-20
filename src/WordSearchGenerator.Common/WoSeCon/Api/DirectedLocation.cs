@@ -6,8 +6,19 @@
 
     public enum LocationDirection
     {
-      Horizontal = 0,
-      Vertical = 1
+      // TODO: Arrows: ↖ ↗ ↘ ↙
+
+      // Horizontal →.
+      LeftToRight = 0,
+
+      // Horizontal ←.
+      RightToLeft = 1,
+
+      // Vertical ↓.
+      TopBottom = 2,
+
+      // Vertical ↑.
+      BottomTop = 3
     }
 
     #endregion
@@ -24,7 +35,7 @@
     {
       get;
       set;
-    } = LocationDirection.Horizontal;
+    } = LocationDirection.LeftToRight;
 
     public int Row
     {

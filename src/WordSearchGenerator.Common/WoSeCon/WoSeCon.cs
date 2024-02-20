@@ -46,11 +46,11 @@ namespace WordSearchGenerator.Common.WoSeCon
 
     #region Constructors
 
-    public WoSeCon(List<WordInfo> words, int rowCount, int columnCount, bool twistWords = false)
+    public WoSeCon(List<WordInfo> words, int rowCount, int columnCount)
     {
       RowCount = rowCount;
       ColumnCount = columnCount;
-      Words = twistWords ? Twist(words).ToList() : words;
+      Words = words;
 
       GlobalLocator = new RandomLocator(RowCount, ColumnCount);
     }
@@ -99,25 +99,50 @@ namespace WordSearchGenerator.Common.WoSeCon
       return backtrackings;
     }
 
+    private bool WillFit(WordInfo word, DirectedLocation location)
+    {
+      switch (location.Direction)
+      {
+        case DirectedLocation.LocationDirection.LeftToRight:
+          return location.Column + word.Text.Length <= ColumnCount;
+
+        case DirectedLocation.LocationDirection.RightToLeft:
+          return location.Column - word.Text.Length >= -1;
+
+        case DirectedLocation.LocationDirection.TopBottom:
+          return location.Row + word.Text.Length <= RowCount;
+
+        case DirectedLocation.LocationDirection.BottomTop:
+        default:
+          return location.Row - word.Text.Length >= -1;
+      }
+    }
+
     public bool IsValidPlacement(WordInfo word, DirectedLocation location)
     {
       word.Placement = location;
+
+      if (!WillFit(word, location))
+      {
+        word.Placement = null;
+        return false;
+      }
+      /*
+      word.Placement = location;
       List<DirectedLocation> letterLocations = word.GetAllLetterLocations();
 
-      foreach (DirectedLocation l in letterLocations)
+      foreach (DirectedLocation letterLocation in letterLocations)
       {
-        if (l.Row > RowCount - 1 || l.Column > ColumnCount - 1)
+        if (letterLocation.Row < 0 || letterLocation.Row > RowCount - 1 || letterLocation.Column < 0 || letterLocation.Column > ColumnCount - 1)
         {
           // We are out of matrix bounds.
           word.Placement = null;
           return false;
         }
-      }
+      }*/
 
-      for (int i = 0; i < Words.Count; i++)
+      foreach (WordInfo wordToCheck in Words)
       {
-        WordInfo wordToCheck = Words[i];
-
         if (word != wordToCheck)
         {
           if (word.ConflictsWithWord(wordToCheck))
@@ -165,22 +190,6 @@ namespace WordSearchGenerator.Common.WoSeCon
       }
 
       return false;
-    }
-
-    private IEnumerable<WordInfo> Twist(List<WordInfo> words)
-    {
-      Random rng = new Random((int)(DateTime.Now - DateTime.Today).TotalMilliseconds);
-
-      return words.OrderByDescending(wrd => wrd.Text.Length).Select(wrd =>
-      {
-        if (rng.Next() % 2 == 0)
-        {
-          wrd.Text = wrd.Text.Reverse();
-          wrd.Reversed = true;
-        }
-
-        return wrd;
-      });
     }
 
     #endregion

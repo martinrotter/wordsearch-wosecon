@@ -112,7 +112,7 @@ namespace WordSearchGenerator.Common
       StringBuilder bldr = new StringBuilder();
       int longestWord = Words.Max(wrd => wrd.Text.Length);
 
-      foreach (WordInfo word in Words.OrderBy(wrd => wrd.NormalizedText.ToLower()))
+      foreach (WordInfo word in Words.OrderBy(wrd => wrd.Text.ToLower()))
       {
         bldr.Append(word.ToString(longestWord, showSolution));
       }

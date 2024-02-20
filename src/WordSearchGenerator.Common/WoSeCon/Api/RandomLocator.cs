@@ -39,14 +39,20 @@
       RowCount = rowCount;
       ColumnCount = columnCount;
 
-      foreach (DirectedLocation.LocationDirection d in new[] { DirectedLocation.LocationDirection.Horizontal, DirectedLocation.LocationDirection.Vertical })
+      foreach (DirectedLocation.LocationDirection d in new []{
+        DirectedLocation.LocationDirection.LeftToRight,
+        DirectedLocation.LocationDirection.TopBottom
+      })
       {
-        for (int c = 0; c < ColumnCount; c++)
-        for (int l = 0; l < RowCount; l++)
+        for (int column = 0; column < ColumnCount; column++)
+        for (int row = 0; row < RowCount; row++)
         {
-          if (!((d == DirectedLocation.LocationDirection.Horizontal && c == ColumnCount - 1) || (d == DirectedLocation.LocationDirection.Vertical && l == RowCount - 1)))
+          if (!((d == DirectedLocation.LocationDirection.LeftToRight && column == ColumnCount - 1) ||
+                (d == DirectedLocation.LocationDirection.RightToLeft && column == 0) ||
+                (d == DirectedLocation.LocationDirection.TopBottom && row == RowCount - 1) ||
+                (d == DirectedLocation.LocationDirection.BottomTop && row == 0)))
           {
-            DirectedLocation dl = new DirectedLocation { Column = c, Row = l, Direction = d };
+            DirectedLocation dl = new DirectedLocation { Column = column, Row = row, Direction = d };
             AddAvailableLocation(dl);
           }
         }

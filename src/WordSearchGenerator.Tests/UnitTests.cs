@@ -51,19 +51,19 @@ namespace WordSearchGenerator.Tests
     [TestMethod]
     public void BigListBigGrid()
     {
-      RunGridWithWords(NumberOfRepetitions, 25, 9, 16);
+      RunGridWithWords(NumberOfRepetitions, 25, 12, 18);
     }
 
     [TestMethod]
     public void FillAllGrid()
     {
-      RunGridWithWords(1, -1, 2, 2, "words-tiny.txt", false);
+      RunGridWithWords(1, -1, 2, 2, "words-tiny.txt");
     }
 
     [TestMethod]
     public void FillAllGrid2()
     {
-      RunGridWithWords(1, -1, 3, 3, "words-small.txt", false);
+      RunGridWithWords(1, -1, 3, 3, "words-small.txt");
     }
 
     [TestMethod]
@@ -72,7 +72,7 @@ namespace WordSearchGenerator.Tests
       RunGridWithWords(1, -1, 9, 16, "svesedlice.txt");
     }
 
-    private void RunGridWithWords(int numberOfRepetitions, int numberOfWords, int rows, int columns, string fileName = null, bool twist = true)
+    private void RunGridWithWords(int numberOfRepetitions, int numberOfWords, int rows, int columns, string fileName = null)
     {
       int iter = numberOfRepetitions;
       Stats stats = new Stats();
@@ -86,7 +86,7 @@ namespace WordSearchGenerator.Tests
 
       while (--iter >= 0)
       {
-        WoSeCon wo = new WoSeCon(words.CloneList(), rows, columns, twist);
+        WoSeCon wo = new WoSeCon(words.CloneList(), rows, columns);
 
         st.Restart();
         int backtrackings = wo.Construct();

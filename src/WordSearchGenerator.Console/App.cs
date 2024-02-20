@@ -58,7 +58,7 @@ namespace WordSearchGenerator.Console
       Task.Run(() =>
       {
         WordsLoader words = new WordsLoader(Options.WordsFile);
-        WoSeCon wo = new WoSeCon(words.Words, Options.Rows, Options.Columns, true);
+        WoSeCon wo = new WoSeCon(words.Words, Options.Rows, Options.Columns);
 
         wo.Construct();
 
