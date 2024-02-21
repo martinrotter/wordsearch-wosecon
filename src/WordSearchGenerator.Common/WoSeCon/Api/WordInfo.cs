@@ -98,24 +98,42 @@
 
       List<DirectedLocation> wordLocations = GetAllLetterLocations();
 
-      foreach (DirectedLocation wordLetter in wordLocations)
-      foreach (DirectedLocation otherWordLetter in otherWordLocations)
+      // TODO: dodělat aby se zabránilo kompletnímu překrývání slov.
+      // Možná řešení
+      // - kontrola prefixovosti seznamu slov: porovná každé dvě dvojice
+      // slov a kontroluje zda 1. slovo netvoří prefix 2. slova
+      // - ještě lepší možná ne prefixovost seznam ale obsahujici seznam: kontrolovat
+      // zda je slovo obsaženo v kterémkoliv jiném slově
+      //
+      // - u těchto slov které jsou obsažený v jiném slově dovolit maximálně 1 průsečík
+      // s ostatními slovy.
+      //
+      // NEBO by stačilo upravit podmínku na nesměrovost dole kde by se kontrolovalo
+      // taky jestli ty směry neleží v jedné lince, tak by se nemohly
+      // 2 slova protínat pokud leží v jedné lajně
+      foreach (DirectedLocation wordLetterLoc in wordLocations)
       {
-        if (wordLetter == otherWordLetter)
+        foreach (DirectedLocation otherWordLetterLoc in otherWordLocations)
         {
-          // Two words have same letter in same position and direction.
-          // Not allowed.
-          return true;
-        }
-
-        if (wordLetter.Row == otherWordLetter.Row &&
-            wordLetter.Column == otherWordLetter.Column &&
-            wordLetter.Direction != otherWordLetter.Direction)
-        {
-          // Two words intersect.
-          if (CharAt(otherWordLetter) != otherWord.CharAt(otherWordLetter))
+          if (wordLetterLoc.Row == otherWordLetterLoc.Row &&
+              wordLetterLoc.Column == otherWordLetterLoc.Column &&
+              DirectedLocation.IsSameLine(wordLetterLoc.Direction, otherWordLetterLoc.Direction))
           {
+            // Two words share same position of one of their letters
+            // with the same direction.
+            // Not allowed.
             return true;
+          }
+
+          if (wordLetterLoc.Row == otherWordLetterLoc.Row &&
+              wordLetterLoc.Column == otherWordLetterLoc.Column &&
+              wordLetterLoc.Direction != otherWordLetterLoc.Direction)
+          {
+            // Two words intersect.
+            if (CharAt(otherWordLetterLoc) != otherWord.CharAt(otherWordLetterLoc))
+            {
+              return true;
+            }
           }
         }
       }

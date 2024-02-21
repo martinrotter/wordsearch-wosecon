@@ -41,6 +41,11 @@ namespace WordSearchGenerator.Common
       get => 100 * (double)CharCellCount / (RowCount * ColumnCount);
     }
 
+    public int IntersectionCount
+    {
+      get => Matrix.OfType<Cell>().Count(cl => cl.Intersections >= 2);
+    }
+
     public string Message
     {
       get;

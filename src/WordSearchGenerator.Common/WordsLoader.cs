@@ -20,16 +20,21 @@ namespace WordSearchGenerator.Common
 
     public WordsLoader(string fileName, bool processCharacters = true)
     {
-      Words = File.ReadAllText(fileName, Encoding.UTF8).Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).Select(txt => new WordInfo
-      {
-        Text = processCharacters ? ProcessCharacters(txt) : txt,
-        PrintableText = txt
-      }).ToList();
+      Words = ProcessString(File.ReadAllText(fileName, Encoding.UTF8), processCharacters);
     }
 
     #endregion
 
     #region Other Stuff
+
+    private List<WordInfo> ProcessString(string lines, bool processCharacters)
+    {
+      return lines.Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.RemoveEmptyEntries).Select(txt => new WordInfo
+      {
+        Text = processCharacters ? ProcessCharacters(txt) : txt,
+        PrintableText = txt
+      }).ToList();
+    }
 
     private static string RemoveDiacritics(string text)
     {

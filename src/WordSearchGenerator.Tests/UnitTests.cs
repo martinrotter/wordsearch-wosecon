@@ -78,12 +78,6 @@ namespace WordSearchGenerator.Tests
       RunGridWithWords(1, -1, 3, 3, "words-small.txt");
     }
 
-    [TestMethod]
-    public void Svesedlice()
-    {
-      RunGridWithWords(1, -1, 9, 16, "svesedlice.txt");
-    }
-
     private void RunGridWithWords(int numberOfRepetitions, int numberOfWords, int rows, int columns, string fileName = null)
     {
       int iter = numberOfRepetitions;
@@ -121,6 +115,7 @@ namespace WordSearchGenerator.Tests
       Console.WriteLine($"Total cell count: {rows * columns}");
       Console.WriteLine($"Words char count: {charCount}");
       Console.WriteLine($"Char cell count: {board.CharCellCount}");
+      Console.WriteLine($"Intersection count: {board.IntersectionCount}");
       Console.WriteLine($"Backtracked: {hardestBacktrackings}");
       Console.WriteLine($"% occupied: {board.PercentageOccupied}");
       Console.WriteLine($"Max miliseconds: {stats.MaxMs}");

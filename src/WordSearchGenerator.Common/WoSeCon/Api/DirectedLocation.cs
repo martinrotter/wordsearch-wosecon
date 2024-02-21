@@ -7,33 +7,41 @@
     public enum LocationDirection
     {
       // Horizontal →.
-      LeftToRight = 0,
+      LeftToRight = 1,
 
       // Horizontal ←.
-      RightToLeft = 1,
+      RightToLeft = 10,
 
       // Vertical ↓.
       TopBottom = 2,
 
       // Vertical ↑.
-      BottomTop = 3,
+      BottomTop = 9,
 
       // Diagonal ↘.
-      LeftTopRightBottom = 4,
-
-      // Diagonal ↗.
-      LeftBottomRightTop = 5,
-
-      // Diagonal ↙.
-      RightTopLeftBottom = 6,
+      LeftTopRightBottom = 3,
 
       // Diagonal ↖.
-      RightBottomLeftTop = 7
+      RightBottomLeftTop = 8,
+
+      // Diagonal ↗.
+      LeftBottomRightTop = 4,
+
+      // Diagonal ↙.
+      RightTopLeftBottom = 7
     }
 
     #endregion
 
     #region Properties
+
+    /// <summary>
+    /// If both directions lie in one "line", then returns true.
+    /// </summary>
+    public static bool IsSameLine(LocationDirection d1, LocationDirection d2)
+    {
+      return d1 == d2 || (int)d1 + (int)d2 == 11;
+    }
 
     public int Column
     {

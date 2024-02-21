@@ -88,7 +88,10 @@
       AvailableLocations.Add(location);
     }
 
-    public static RandomLocator GetWithoutLocations(int rowCount, int columnCount, List<DirectedLocation> visitedLocations)
+    public static RandomLocator GetWithoutLocations(
+      int rowCount,
+      int columnCount,
+      List<DirectedLocation> visitedLocations)
     {
       RandomLocator loc = new RandomLocator(rowCount, columnCount);
 
