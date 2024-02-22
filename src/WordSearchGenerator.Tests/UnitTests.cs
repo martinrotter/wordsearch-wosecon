@@ -110,7 +110,7 @@ namespace WordSearchGenerator.Tests
         Debug.WriteLine($"Left: {iter + 1}");
       }
 
-      Board board = new Board(hardestWords, rows, columns);
+      Board board = new Board(hardestWords, rows, columns, false);
 
       Console.WriteLine($"Total cell count: {rows * columns}");
       Console.WriteLine($"Words char count: {charCount}");

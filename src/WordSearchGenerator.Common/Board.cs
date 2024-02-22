@@ -12,6 +12,11 @@ namespace WordSearchGenerator.Common
       get;
     }
 
+    public bool HtmlOutput
+    {
+      get;
+    }
+
     public Cell[,] Matrix
     {
       get;
@@ -61,16 +66,34 @@ namespace WordSearchGenerator.Common
       get;
     }
 
+    private Random Rng
+    {
+      get;
+    } = new Random((int)(DateTime.Now - DateTime.Today).TotalMilliseconds);
+
+    public double BlindRate
+    {
+      get;
+    }
+
     #endregion
 
     #region Constructors
 
-    public Board(List<WordInfo> words, int rowCount, int columnCount, string message = null)
+    public Board(
+      List<WordInfo> words,
+      int rowCount,
+      int columnCount,
+      bool htmlOutput,
+      double blindRate = default,
+      string message = null)
     {
       Words = words;
       RowCount = rowCount;
       ColumnCount = columnCount;
+      HtmlOutput = htmlOutput;
       Message = message;
+      BlindRate = blindRate;
 
       GenerateBoard();
     }
@@ -176,7 +199,7 @@ namespace WordSearchGenerator.Common
           int c = letterLocation.Column;
 
           Matrix[r, c].Type = Cell.CellType.CharFromText;
-          Matrix[r, c].Char = wordText[j];
+          Matrix[r, c].Char = ShouldBeBlind() ? ' ' : wordText[j];
           Matrix[r, c].Intersections++;
         }
       }
@@ -202,6 +225,11 @@ namespace WordSearchGenerator.Common
       {
         throw new Exception($"message is too long, {messageChars.Count} characters remain to be placed");
       }
+    }
+
+    private bool ShouldBeBlind()
+    {
+      return BlindRate > 0.0 && Rng.NextDouble() <= BlindRate;
     }
 
     #endregion

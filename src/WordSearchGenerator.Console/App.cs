@@ -60,12 +60,12 @@ namespace WordSearchGenerator.Console
 
       Task.Run(() =>
       {
-        WordsLoader words = new WordsLoader(Options.WordsFile, false);
+        WordsLoader words = new WordsLoader(Options.WordsFile, Options.ProcessWords);
         WoSeCon wo = new WoSeCon(words.Words, Options.Rows, Options.Columns);
 
         wo.Construct();
 
-        Board board = new Board(wo.Words, wo.RowCount, wo.ColumnCount, Options.Message);
+        Board board = new Board(wo.Words, wo.RowCount, wo.ColumnCount, Options.HtmlOutput, Options.BlindRate, Options.Message);
 
         System.Console.Write(board.Print());
         System.Console.Write(board.PrintWords(Options.Debug));

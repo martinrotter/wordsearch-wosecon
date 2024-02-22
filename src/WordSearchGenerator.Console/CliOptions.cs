@@ -20,6 +20,35 @@ namespace WordSearchGenerator.Console
       set;
     }
 
+    [Option('b', Default = 0.0, HelpText = "Number from 0.0 to 1.0. Defines % of cells to be marked as " +
+                                           "'hidden' so that puzzle solving person has to determine " +
+                                           "what character belongs to those hidden spots.")]
+    public double BlindRate
+    {
+      get;
+      set;
+    }
+
+    [Option('h', Default = false, HelpText = "Output the puzzle in a nicely formatted HTML document. " +
+                                             "Use redirection to save to some file.")]
+
+    public bool HtmlOutput
+    {
+      get;
+      set;
+    }
+
+    [Option(
+      'p',
+      Default = true,
+      HelpText = "Process input wordlist - replace accented characters, " +
+                 "convert to uppercase and remove spaces and other non-word characters.")]
+    public bool ProcessWords
+    {
+      get;
+      set;
+    }
+
     [Option('m', HelpText = "Target message to be found when puzzle is completed.")]
     public string Message
     {
