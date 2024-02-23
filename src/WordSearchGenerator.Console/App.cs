@@ -47,7 +47,13 @@ namespace WordSearchGenerator.Console
             {
               throw new Exception(error.Tag.ToString());
             }
+            else
+            {
+              Quit();
+            }
           }
+
+          Options = new CliOptions();
         }
         else
         {

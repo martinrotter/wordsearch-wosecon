@@ -3,6 +3,9 @@
     "WordSearchGenerator.Console": {
       "commandName": "Project",
       "commandLineArgs": "-r 22 -c 30 -w \"words.txt\""
+    },
+    "WordSearchGenerator.ConsoleEmpty": {
+      "commandName": "Project"
     }
   }
 }

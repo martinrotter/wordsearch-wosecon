@@ -16,12 +16,25 @@ Console frontend is able to generate word search puzzle according to input param
 ```
 WordSearchGenerator.Console --help
 
-Copyright (C) 2024 WordSearchGenerator.Console
-  -d             (Default: false) Also print solution and other information for debugging purposes.
   -c             (Default: 20) Specify number of columns for the puzzle.
-  -r             (Default: 20) Specify number of rows for the puzzle.
-  -w, --words    Required. Specify words file name. One word per line is expected.
+
+  -d             (Default: false) Also print solution and other information for debugging purposes.
+
+  -b             (Default: 0) Number from 0.0 to 1.0. Defines % of cells to be marked as 'hidden' so that puzzle solving person
+                 has to determine what character belongs to those hidden spots.
+
+  -h             (Default: false) Output the puzzle in a nicely formatted HTML document. Use redirection to save to some file.
+
+  -p             (Default: true) Process input wordlist - replace accented characters, convert to uppercase and remove spaces
+                 and other non-word characters.
+
   -m             Target message to be found when puzzle is completed.
+
+  -r             (Default: 20) Specify number of rows for the puzzle.
+
+  -w, --words    Specify words file name. One word per line is expected. Words can also be provided via standard input.
+
   --help         Display this help screen.
+
   --version      Display version information.
 ```
