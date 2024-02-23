@@ -1,4 +1,5 @@
-﻿using CommandLine;
+﻿using System.Text;
+using CommandLine;
 using WordSearchGenerator.Common;
 using WordSearchGenerator.Common.WoSeCon;
 
@@ -26,7 +27,7 @@ namespace WordSearchGenerator.Console
     {
       ConsoleUtils.SetupConsole();
 
-      if (args?.Length == 0)
+      if (args?.Length == 0 && !System.Console.IsInputRedirected)
       {
         args = new[]
         {
@@ -60,15 +61,28 @@ namespace WordSearchGenerator.Console
 
       Task.Run(() =>
       {
-        WordsLoader words = new WordsLoader(Options.WordsFile, Options.ProcessWords);
+        string loadedWords = null;
+
+        if (System.Console.IsInputRedirected)
+        {
+          using (StreamReader rdr = new StreamReader(System.Console.OpenStandardInput()))
+          {
+            loadedWords = rdr.ReadToEnd();
+          }
+        }
+        else
+        {
+          loadedWords = File.ReadAllText(Options.WordsFile, Encoding.UTF8);
+        }
+
+        var words = new WordsLoader(loadedWords, Options.ProcessWords);
         WoSeCon wo = new WoSeCon(words.Words, Options.Rows, Options.Columns);
 
         wo.Construct();
 
         Board board = new Board(wo.Words, wo.RowCount, wo.ColumnCount, Options.HtmlOutput, Options.BlindRate, Options.Message);
 
-        System.Console.Write(board.Print());
-        System.Console.Write(board.PrintWords(Options.Debug));
+        System.Console.Write(board.Print(Options.Debug));
 
         if (Options.Debug)
         {

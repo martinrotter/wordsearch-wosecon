@@ -102,7 +102,12 @@ namespace WordSearchGenerator.Common
 
     #region Other Stuff
 
-    public string Print()
+    public string Print(bool showSolution)
+    {
+      return PrintBoard() + PrintWords(showSolution);
+    }
+
+    public string PrintBoard()
     {
       StringBuilder bldr = new StringBuilder();
 

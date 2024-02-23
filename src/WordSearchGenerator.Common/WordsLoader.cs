@@ -18,9 +18,9 @@ namespace WordSearchGenerator.Common
 
     #region Constructors
 
-    public WordsLoader(string fileName, bool processCharacters = true)
+    public WordsLoader(string words, bool processCharacters = true)
     {
-      Words = ProcessString(File.ReadAllText(fileName, Encoding.UTF8), processCharacters);
+      Words = ProcessString(words, processCharacters);
     }
 
     #endregion

@@ -63,7 +63,8 @@ namespace WordSearchGenerator.Console
       set;
     }
 
-    [Option('w', "words", Required = true, HelpText = "Specify words file name. One word per line is expected.")]
+    [Option('w', "words", HelpText = "Specify words file name. One word per line is expected. " +
+                                     "Words can also be provided via standard input.")]
     public string WordsFile
     {
       get;

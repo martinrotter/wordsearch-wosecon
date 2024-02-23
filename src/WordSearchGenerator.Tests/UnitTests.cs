@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Text;
 using WordSearchGenerator.Common;
 using WordSearchGenerator.Common.WoSeCon;
 using WordSearchGenerator.Common.WoSeCon.Api;
@@ -84,7 +85,7 @@ namespace WordSearchGenerator.Tests
       Stats stats = new Stats();
       Stopwatch st = new Stopwatch();
       string fullFilePath = Path.Combine(TestDataFolder, fileName ?? "words-big.txt");
-      WordsLoader loader = new WordsLoader(fullFilePath);
+      WordsLoader loader = new WordsLoader(File.ReadAllText(fullFilePath, Encoding.UTF8));
       List<WordInfo>? words = numberOfWords > 0 ? loader.Words.Take(numberOfWords).ToList() : loader.Words;
       int charCount = words.Select(wrd => wrd.Text.Length).Sum();
       List<WordInfo> hardestWords = null;
@@ -122,9 +123,8 @@ namespace WordSearchGenerator.Tests
       Console.WriteLine($"Min miliseconds: {stats.MinMs}");
       Console.WriteLine($"Average miliseconds: {stats.AverageMs}");
       Console.WriteLine();
-      Console.Write(board.Print());
+      Console.Write(board.Print(true));
       Console.Write(board.PrintIntersections());
-      Console.Write(board.PrintWords(true));
     }
 
     #endregion
