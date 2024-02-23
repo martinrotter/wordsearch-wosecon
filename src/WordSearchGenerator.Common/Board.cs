@@ -203,9 +203,15 @@ namespace WordSearchGenerator.Common
           int r = letterLocation.Row;
           int c = letterLocation.Column;
 
-          Matrix[r, c].Type = Cell.CellType.CharFromText;
-          Matrix[r, c].Char = ShouldBeBlind() ? ' ' : wordText[j];
-          Matrix[r, c].Intersections++;
+          Cell cell = Matrix[r, c];
+
+          cell.Type = Cell.CellType.CharFromText;
+          cell.Words.Add(word);
+
+          if (cell.Char == default)
+          {
+            cell.Char = ShouldBeBlind() ? ' ' : wordText[j];
+          }
         }
       }
 
@@ -247,10 +253,10 @@ namespace WordSearchGenerator.Common
 
       public enum CellType
       {
-        // Empty cell.
+        // Empty cell -> no character from any word is on it.
         Empty,
 
-        // Char from found word.
+        // Char from found word(s).
         CharFromText,
 
         // Char from message.
@@ -269,9 +275,13 @@ namespace WordSearchGenerator.Common
 
       public int Intersections
       {
-        get;
-        set;
+        get => Words.Count;
       }
+
+      public List<WordInfo> Words
+      {
+        get;
+      } = new List<WordInfo>();
 
       public CellType Type
       {
