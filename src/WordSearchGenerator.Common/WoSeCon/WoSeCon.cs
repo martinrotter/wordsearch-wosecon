@@ -64,9 +64,11 @@ namespace WordSearchGenerator.Common.WoSeCon
       return words.OrderByDescending(wrd => wrd.Text.Length).ToList();
     }
 
-    public int Construct()
+    public void Construct(CancellationToken? ct)
     {
-      int backtrackings = 0;
+      Backtrackings = 0;
+      TestesPositions = 0L;
+
       int wordIndex = 0;
       WordInfo word = Words[wordIndex];
 
@@ -74,6 +76,11 @@ namespace WordSearchGenerator.Common.WoSeCon
 
       while (true)
       {
+        if (ct?.IsCancellationRequested == true)
+        {
+          throw new TaskCanceledException();
+        }
+
         if (PlaceWord(word))
         {
           if (wordIndex == Words.Count - 1)
@@ -95,13 +102,23 @@ namespace WordSearchGenerator.Common.WoSeCon
 
           word.ClearTestedLocations();
           --wordIndex;
-          backtrackings++;
+          Backtrackings++;
           word = Words[wordIndex];
           Mode = OperationMode.Backward;
         }
       }
+    }
 
-      return backtrackings;
+    public int Backtrackings
+    {
+      get;
+      private set;
+    }
+
+    public long TestesPositions
+    {
+      get;
+      private set;
     }
 
     public bool IsValidPlacement(WordInfo word, DirectedLocation location)
@@ -151,6 +168,8 @@ namespace WordSearchGenerator.Common.WoSeCon
 
       while (locationIndex < localLocator.Size)
       {
+        TestesPositions++;
+
         DirectedLocation suitableLocation = localLocator[locationIndex];
 
         if (IsValidPlacement(word, suitableLocation))

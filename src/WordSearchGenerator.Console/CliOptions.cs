@@ -6,14 +6,14 @@ namespace WordSearchGenerator.Console
   {
     #region Properties
 
-    [Option('c', Default = 20, HelpText = "Specify number of columns for the puzzle.")]
+    [Option('c', "cols", Default = 20, HelpText = "Specify number of columns for the puzzle.")]
     public int Columns
     {
       get;
       set;
     }
 
-    [Option('d', Default = false, HelpText = "Also print solution and other information for debugging purposes.")]
+    [Option('d', "debug", Default = false, HelpText = "Also print solution and other information for debugging purposes.")]
     public bool Debug
     {
       get;
@@ -29,7 +29,7 @@ namespace WordSearchGenerator.Console
       set;
     }
 
-    [Option('h', Default = false, HelpText = "Output the puzzle in a nicely formatted HTML document. " +
+    [Option('h', "html", Default = false, HelpText = "Output the puzzle in a nicely formatted HTML document. " +
                                              "Use redirection to save to some file.")]
 
     public bool HtmlOutput
@@ -49,14 +49,14 @@ namespace WordSearchGenerator.Console
       set;
     }
 
-    [Option('m', HelpText = "Target message to be found when puzzle is completed.")]
+    [Option('m', "message", HelpText = "Target message to be found when puzzle is completed.")]
     public string Message
     {
       get;
       set;
     }
 
-    [Option('r', Default = 20, HelpText = "Specify number of rows for the puzzle.")]
+    [Option('r', "rows", Default = 20, HelpText = "Specify number of rows for the puzzle.")]
     public int Rows
     {
       get;

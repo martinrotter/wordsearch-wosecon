@@ -98,19 +98,6 @@
 
       List<DirectedLocation> wordLocations = GetAllLetterLocations();
 
-      // TODO: dodělat aby se zabránilo kompletnímu překrývání slov.
-      // Možná řešení
-      // - kontrola prefixovosti seznamu slov: porovná každé dvě dvojice
-      // slov a kontroluje zda 1. slovo netvoří prefix 2. slova
-      // - ještě lepší možná ne prefixovost seznam ale obsahujici seznam: kontrolovat
-      // zda je slovo obsaženo v kterémkoliv jiném slově
-      //
-      // - u těchto slov které jsou obsažený v jiném slově dovolit maximálně 1 průsečík
-      // s ostatními slovy.
-      //
-      // NEBO by stačilo upravit podmínku na nesměrovost dole kde by se kontrolovalo
-      // taky jestli ty směry neleží v jedné lince, tak by se nemohly
-      // 2 slova protínat pokud leží v jedné lajně
       foreach (DirectedLocation wordLetterLoc in wordLocations)
       {
         foreach (DirectedLocation otherWordLetterLoc in otherWordLocations)
@@ -245,13 +232,21 @@
       }
     }
 
-    public string ToString(int longestWord, bool showSolution)
+    public string ToString(int longestWord, bool htmlOutput, bool showSolution)
     {
-      string str = PrintableText.PadRight(longestWord + 2);
+      string str = longestWord > 0 ? PrintableText.PadRight(longestWord + 1) : PrintableText;
 
       if (showSolution)
       {
-        str += $"{Placement.Row}:{Placement.Column} {Placement.Direction}" + Environment.NewLine;
+        if (htmlOutput)
+        {
+          str += $" ({Placement.Row}:{Placement.Column} {Placement.Direction})";
+
+        }
+        else
+        {
+          str += $" {Placement.Row}:{Placement.Column} {Placement.Direction}" + Environment.NewLine;
+        }
       }
 
       return str;

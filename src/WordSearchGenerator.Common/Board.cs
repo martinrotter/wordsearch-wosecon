@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Xml;
 using WordSearchGenerator.Common.WoSeCon.Api;
 
 namespace WordSearchGenerator.Common
@@ -95,16 +96,95 @@ namespace WordSearchGenerator.Common
       Message = message;
       BlindRate = blindRate;
 
-      GenerateBoard();
+      FillBoard();
     }
 
     #endregion
 
     #region Other Stuff
 
-    public string Print(bool showSolution)
+    public string Print(bool htmlOutput, bool showSolution)
     {
-      return PrintBoard() + PrintWords(showSolution);
+      if (htmlOutput)
+      {
+        string html = GetHtmlTemplate(ColumnCount);
+        string board = PrintBoardHtml();
+        string words = PrintWordsHtml(showSolution);
+
+        html = html
+          .Replace("{1}", board)
+          .Replace("{2}", words);
+
+#if DEBUG
+        File.WriteAllText("html.html", html, Encoding.UTF8);
+#endif
+
+        return html;
+      }
+      else
+      {
+        return PrintBoard() + PrintWords(showSolution);
+      }
+    }
+
+    private string PrintWordsHtml(bool showSolution)
+    { 
+      XmlDocument xml = new XmlDocument();
+      XmlElement root = xml.CreateElement("div").AppendClass("wordsearch-words");
+      xml.AppendChild(root);
+
+      foreach (WordInfo word in Words.OrderBy(wrd => wrd.PrintableText.ToLower()))
+      {
+        root.AppendElem("div").AppendClass("wordsearch-word").InnerText = word.ToString(0, true, showSolution);
+      }
+
+      return xml.OuterXml;
+    }
+
+    private string PrintBoardHtml()
+    {
+      XmlDocument xml = new XmlDocument();
+      XmlElement root = xml.CreateElement("div").AppendClass("wordsearch");
+      xml.AppendChild(root);
+
+      /*
+      bldr.Append("   ❘ ");
+
+      for (int j = 0; j < ColumnCount; j++)
+      {
+        bldr.Append(j.ToString("00"));
+      }
+
+      bldr.AppendLine();
+      bldr.Append(new string('-', bldr.Length - 1));
+      bldr.AppendLine();
+      */
+
+      for (int i = 0; i < RowCount; i++)
+      {
+        for (int j = 0; j < ColumnCount; j++)
+        {
+          Cell cell = Matrix[i, j];
+          XmlElement xmlCell = root.AppendElem("div").AppendClass("wordsearch-cell");
+
+          if (cell.Type == Cell.CellType.Empty)
+          {
+            xmlCell.InnerText = "·";
+            xmlCell.AppendClass("wordsearch-cell-empty");
+          }
+          else
+          {
+            xmlCell.InnerText = cell.Char.ToString();
+          }
+        }
+      }
+
+      return xml.OuterXml;
+    }
+
+    private string GetHtmlTemplate(int columnCount)
+    {
+      return Properties.Resources.wordsearch_html.Replace("{0}", columnCount.ToString());
     }
 
     public string PrintBoard()
@@ -167,7 +247,7 @@ namespace WordSearchGenerator.Common
 
       foreach (WordInfo word in Words.OrderBy(wrd => wrd.PrintableText.ToLower()))
       {
-        bldr.Append(word.ToString(longestWord, showSolution));
+        bldr.Append(word.ToString(longestWord, false, showSolution));
       }
 
       bldr.AppendLine();
@@ -175,7 +255,7 @@ namespace WordSearchGenerator.Common
       return bldr.ToString();
     }
 
-    private void GenerateBoard()
+    private void FillBoard()
     {
       List<char> messageChars = Message == null ? [] : Message.ToCharArray().ToList();
       Matrix = new Cell[RowCount, ColumnCount];

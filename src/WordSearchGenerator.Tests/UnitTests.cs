@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using WordSearchGenerator.Common;
 using WordSearchGenerator.Common.WoSeCon;
@@ -79,7 +80,25 @@ namespace WordSearchGenerator.Tests
       RunGridWithWords(1, -1, 3, 3, "words-small.txt");
     }
 
-    private void RunGridWithWords(int numberOfRepetitions, int numberOfWords, int rows, int columns, string fileName = null)
+    [TestMethod]
+    public void Svesedlice1()
+    {
+      RunGridWithWords(
+        NumberOfRepetitions * 10,
+        -1,
+        13,
+        19,
+        "c:\\Users\\rotter\\Documents\\Syncthing\\Obec\\Kvízy\\svesedlice.txt",
+        2000);
+    }
+
+    private void RunGridWithWords(
+      int numberOfRepetitions,
+      int numberOfWords,
+      int rows,
+      int columns,
+      string fileName = null,
+      int limitWaitingMs = -1)
     {
       int iter = numberOfRepetitions;
       Stats stats = new Stats();
@@ -90,41 +109,58 @@ namespace WordSearchGenerator.Tests
       int charCount = words.Select(wrd => wrd.Text.Length).Sum();
       List<WordInfo> hardestWords = null;
       int hardestBacktrackings = 0;
+      long hardestTestedPositions = 0L;
+      int hardestIntersections = 0;
+      Board hardestBoard = null;
 
       while (--iter >= 0)
       {
         WoSeCon wo = new WoSeCon(words.CloneList(), rows, columns);
 
         st.Restart();
-        int backtrackings = wo.Construct();
+        CancellationTokenSource ts = new CancellationTokenSource();
+        CancellationToken ct = ts.Token;
 
+        bool finished = Task
+          .Run(() => wo.Construct(ct), ct)
+          .Wait(limitWaitingMs);
+          
+        if (!finished)
+        {
+          ts.Cancel(false);
+          continue;
+        }
+
+        Board board = new Board(wo.Words, rows, columns, false);
         long elapsed = st.ElapsedMilliseconds;
 
         stats.SetResult(elapsed);
 
-        if (elapsed == stats.MaxMs)
+        if (board.IntersectionCount >= hardestIntersections)
         {
           hardestWords = wo.Words;
-          hardestBacktrackings = backtrackings;
+          hardestBoard = board;
+          hardestBacktrackings = wo.Backtrackings;
+          hardestTestedPositions = wo.TestesPositions;
+          hardestIntersections = board.IntersectionCount;
         }
 
         Debug.WriteLine($"Left: {iter + 1}");
       }
 
-      Board board = new Board(hardestWords, rows, columns, false);
-
       Console.WriteLine($"Total cell count: {rows * columns}");
       Console.WriteLine($"Words char count: {charCount}");
-      Console.WriteLine($"Char cell count: {board.CharCellCount}");
-      Console.WriteLine($"Intersection count: {board.IntersectionCount}");
+      Console.WriteLine($"Char cell count: {hardestBoard.CharCellCount}");
+      Console.WriteLine($"Intersection count: {hardestBoard.IntersectionCount}");
+      Console.WriteLine($"Positions tested: {hardestTestedPositions}");
       Console.WriteLine($"Backtracked: {hardestBacktrackings}");
-      Console.WriteLine($"% occupied: {board.PercentageOccupied}");
+      Console.WriteLine($"% occupied: {hardestBoard.PercentageOccupied}");
       Console.WriteLine($"Max miliseconds: {stats.MaxMs}");
       Console.WriteLine($"Min miliseconds: {stats.MinMs}");
       Console.WriteLine($"Average miliseconds: {stats.AverageMs}");
       Console.WriteLine();
-      Console.Write(board.Print(true));
-      Console.Write(board.PrintIntersections());
+      Console.Write(hardestBoard.Print(false, true));
+      Console.Write(hardestBoard.PrintIntersections());
     }
 
     #endregion

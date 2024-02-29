@@ -84,13 +84,19 @@ namespace WordSearchGenerator.Console
         var words = new WordsLoader(loadedWords, Options.ProcessWords);
         WoSeCon wo = new WoSeCon(words.Words, Options.Rows, Options.Columns);
 
-        wo.Construct();
+        wo.Construct(null);
 
-        Board board = new Board(wo.Words, wo.RowCount, wo.ColumnCount, Options.HtmlOutput, Options.BlindRate, Options.Message);
+        Board board = new Board(
+          wo.Words,
+          wo.RowCount,
+          wo.ColumnCount,
+          Options.HtmlOutput,
+          Options.BlindRate,
+          Options.Message);
 
-        System.Console.Write(board.Print(Options.Debug));
+        System.Console.Write(board.Print(Options.HtmlOutput, Options.Debug));
 
-        if (Options.Debug)
+        if (Options.Debug && !Options.HtmlOutput)
         {
           System.Console.Write(board.PrintIntersections());
         }

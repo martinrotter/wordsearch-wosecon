@@ -2,7 +2,7 @@
   "profiles": {
     "WordSearchGenerator.Console": {
       "commandName": "Project",
-      "commandLineArgs": "-r 22 -c 30 -w \"words.txt\""
+      "commandLineArgs": "-h -d -r 25 -c 30 -w \"..\\\\..\\\\..\\\\..\\\\..\\\\test-data\\\\words-big.txt\""
     },
     "WordSearchGenerator.ConsoleEmpty": {
       "commandName": "Project"
