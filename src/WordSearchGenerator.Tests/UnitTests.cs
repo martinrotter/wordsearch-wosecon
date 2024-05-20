@@ -84,12 +84,12 @@ namespace WordSearchGenerator.Tests
     public void JanUlrich1()
     {
       RunGridWithWords(
-        1, //NumberOfRepetitions * 10,
+        100, //NumberOfRepetitions * 10,
         -1,
-        15,
-        16,
+        14,
+        18,
         "e:\\Martin\\Syncthing\\Obec\\Kvízy\\memorial.txt",
-        2000000);
+        600);
     }
 
     [TestMethod]
