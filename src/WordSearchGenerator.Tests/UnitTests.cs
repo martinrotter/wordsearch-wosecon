@@ -81,6 +81,18 @@ namespace WordSearchGenerator.Tests
     }
 
     [TestMethod]
+    public void JanUlrich1()
+    {
+      RunGridWithWords(
+        1, //NumberOfRepetitions * 10,
+        -1,
+        15,
+        16,
+        "e:\\Martin\\Syncthing\\Obec\\Kvízy\\memorial.txt",
+        2000000);
+    }
+
+    [TestMethod]
     public void Svesedlice1()
     {
       RunGridWithWords(
@@ -88,7 +100,7 @@ namespace WordSearchGenerator.Tests
         -1,
         13,
         19,
-        "c:\\Users\\rotter\\Documents\\Syncthing\\Obec\\Kvízy\\svesedlice.txt",
+        "e:\\Martin\\Syncthing\\Obec\\Kvízy\\svesedlice.txt",
         2000);
     }
 
