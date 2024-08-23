@@ -81,8 +81,12 @@ namespace WordSearchGenerator.Console
           loadedWords = File.ReadAllText(Options.WordsFile, Encoding.UTF8);
         }
 
-        var words = new WordsLoader(loadedWords, Options.ProcessWords);
-        WoSeCon wo = new WoSeCon(words.Words, Options.Rows, Options.Columns);
+        WordsLoader words = new WordsLoader(loadedWords, Options.ProcessWords);
+        WoSeCon wo = new WoSeCon(
+          words.Words,
+          Options.Rows,
+          Options.Columns,
+          Options.QuizMode);
 
         wo.Construct(null);
 
@@ -91,6 +95,7 @@ namespace WordSearchGenerator.Console
           wo.RowCount,
           wo.ColumnCount,
           Options.HtmlOutput,
+          Options.QuizMode,
           Options.BlindRate,
           Options.Message);
 

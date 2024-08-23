@@ -35,13 +35,13 @@ namespace WordSearchGenerator.Tests
     [TestMethod]
     public void FullListBigGrid()
     {
-      RunGridWithWords(NumberOfRepetitions, 130, 22, 30);
+      RunGridWithWords(1, 130, 24, 30);
     }
 
     [TestMethod]
     public void VerySmallListSmallGrid()
     {
-      RunGridWithWords(NumberOfRepetitions, 10, 6, 8);
+      RunGridWithWords(NumberOfRepetitions, 10, 6, 11);
     }
 
     [TestMethod]
@@ -53,7 +53,7 @@ namespace WordSearchGenerator.Tests
     [TestMethod]
     public void BigListBigGrid()
     {
-      RunGridWithWords(NumberOfRepetitions, 25, 12, 18);
+      RunGridWithWords(10, 25, 12, 13, default, 200, true);
     }
 
     [TestMethod]
@@ -110,7 +110,8 @@ namespace WordSearchGenerator.Tests
       int rows,
       int columns,
       string fileName = null,
-      int limitWaitingMs = -1)
+      int limitWaitingMs = -1,
+      bool quizMode = false)
     {
       int iter = numberOfRepetitions;
       Stats stats = new Stats();
@@ -127,7 +128,11 @@ namespace WordSearchGenerator.Tests
 
       while (--iter >= 0)
       {
-        WoSeCon wo = new WoSeCon(words.CloneList(), rows, columns);
+        WoSeCon wo = new WoSeCon(
+          words.CloneList(),
+          rows,
+          columns,
+          quizMode);
 
         st.Restart();
         CancellationTokenSource ts = new CancellationTokenSource();
@@ -143,7 +148,7 @@ namespace WordSearchGenerator.Tests
           continue;
         }
 
-        Board board = new Board(wo.Words, rows, columns, false);
+        Board board = new Board(wo.Words, rows, columns, false, quizMode);
         long elapsed = st.ElapsedMilliseconds;
 
         stats.SetResult(elapsed);
@@ -171,7 +176,7 @@ namespace WordSearchGenerator.Tests
       Console.WriteLine($"Min miliseconds: {stats.MinMs}");
       Console.WriteLine($"Average miliseconds: {stats.AverageMs}");
       Console.WriteLine();
-      Console.Write(hardestBoard.Print(false, true));
+      Console.Write(hardestBoard.Print(true, true));
       Console.Write(hardestBoard.PrintIntersections());
     }
 

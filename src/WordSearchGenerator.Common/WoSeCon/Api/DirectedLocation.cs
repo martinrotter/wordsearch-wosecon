@@ -43,6 +43,44 @@
       return d1 == d2 || (int)d1 + (int)d2 == 11;
     }
 
+    public static bool IsSameCell(DirectedLocation d1, DirectedLocation d2)
+    {
+      return d1.Row == d2.Row && d1.Column == d2.Column;
+    }
+
+    public static char GetArrowForDirection(DirectedLocation.LocationDirection dir)
+    {
+      switch (dir)
+      {
+        case LocationDirection.LeftToRight:
+          return '\u2192';
+
+        case LocationDirection.RightToLeft:
+          return '\u2190';
+
+        case LocationDirection.TopBottom:
+          return '\u2193';
+
+        case LocationDirection.BottomTop:
+          return '\u2191';
+
+        case LocationDirection.LeftTopRightBottom:
+          return '\u2198';
+
+        case LocationDirection.RightBottomLeftTop:
+          return '\u2196';
+
+        case LocationDirection.LeftBottomRightTop:
+          return '\u2197';
+
+        case LocationDirection.RightTopLeftBottom:
+          return '\u2199';
+
+        default:
+          throw new ArgumentOutOfRangeException(nameof(dir), dir, null);
+      }
+    }
+
     public int Column
     {
       get;

@@ -22,6 +22,18 @@
       set;
     }
 
+    public string QuizQuestion
+    {
+      get;
+      set;
+    }
+
+    public int WordNumber
+    {
+      get;
+      set;
+    }
+
     public string PrintableText
     {
       get;
@@ -37,6 +49,8 @@
       WordInfo wrd = new WordInfo();
 
       wrd.Text = (string)Text.Clone();
+      wrd.WordNumber = WordNumber;
+      wrd.QuizQuestion = QuizQuestion?.Clone() as string;
       wrd.PrintableText = (string)PrintableText.Clone();
 
       if (Placement != null)
@@ -87,7 +101,7 @@
       Placement = null;
     }
 
-    public bool ConflictsWithWord(WordInfo otherWord)
+    public bool ConflictsWithWord(WordInfo otherWord, bool quizMode)
     {
       List<DirectedLocation> otherWordLocations = otherWord.GetAllLetterLocations();
 
@@ -98,10 +112,21 @@
 
       List<DirectedLocation> wordLocations = GetAllLetterLocations();
 
+      bool firstMyWord = true;
+
       foreach (DirectedLocation wordLetterLoc in wordLocations)
       {
+        bool firstOtherWord = true;
+
         foreach (DirectedLocation otherWordLetterLoc in otherWordLocations)
         {
+          if ((quizMode && (firstMyWord || firstOtherWord)) &&
+              wordLetterLoc.Row == otherWordLetterLoc.Row &&
+              wordLetterLoc.Column == otherWordLetterLoc.Column)
+          {
+            return true;
+          }
+
           if (wordLetterLoc.Row == otherWordLetterLoc.Row &&
               wordLetterLoc.Column == otherWordLetterLoc.Column &&
               DirectedLocation.IsSameLine(wordLetterLoc.Direction, otherWordLetterLoc.Direction))
@@ -122,7 +147,11 @@
               return true;
             }
           }
+
+          firstOtherWord = false;
         }
+
+        firstMyWord = false;
       }
 
       return false;
@@ -234,7 +263,7 @@
 
     public string ToString(int longestWord, bool htmlOutput, bool showSolution)
     {
-      string str = longestWord > 0 ? PrintableText.PadRight(longestWord + 1) : PrintableText;
+      string str = $"{WordNumber,2}. " + (longestWord > 0 ? PrintableText.PadRight(longestWord + 1) : PrintableText);
 
       if (showSolution)
       {

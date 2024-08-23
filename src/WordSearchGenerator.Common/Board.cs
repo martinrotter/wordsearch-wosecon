@@ -18,6 +18,11 @@ namespace WordSearchGenerator.Common
       get;
     }
 
+    public bool QuizMode
+    {
+      get;
+    }
+
     public Cell[,] Matrix
     {
       get;
@@ -86,6 +91,7 @@ namespace WordSearchGenerator.Common
       int rowCount,
       int columnCount,
       bool htmlOutput,
+      bool quizMode,
       double blindRate = default,
       string message = null)
     {
@@ -93,6 +99,7 @@ namespace WordSearchGenerator.Common
       RowCount = rowCount;
       ColumnCount = columnCount;
       HtmlOutput = htmlOutput;
+      QuizMode = quizMode;
       Message = message;
       BlindRate = blindRate;
 
@@ -123,7 +130,7 @@ namespace WordSearchGenerator.Common
       }
       else
       {
-        return PrintBoard() + PrintWords(showSolution);
+        return PrintBoardSimple() + PrintWords(showSolution);
       }
     }
 
@@ -167,14 +174,21 @@ namespace WordSearchGenerator.Common
           Cell cell = Matrix[i, j];
           XmlElement xmlCell = root.AppendElem("div").AppendClass("wordsearch-cell");
 
-          if (cell.Type == Cell.CellType.Empty)
+          switch (cell.Type)
           {
-            xmlCell.InnerText = "·";
-            xmlCell.AppendClass("wordsearch-cell-empty");
-          }
-          else
-          {
-            xmlCell.InnerText = cell.Char.ToString();
+            case Cell.CellType.Empty:
+              xmlCell.InnerText = "·";
+              xmlCell.AppendClass("wordsearch-cell-empty");
+              break;
+
+            case Cell.CellType.QuizWordPlaceholder:
+              xmlCell.InnerText = $"{cell.QuizWordNumber} {DirectedLocation.GetArrowForDirection(cell.QuizWordDirection)}";
+              xmlCell.AppendClass("wordsearch-cell-quiz");
+              break;
+
+            default:
+              xmlCell.InnerText = cell.Char.ToString();
+              break;
           }
         }
       }
@@ -187,7 +201,7 @@ namespace WordSearchGenerator.Common
       return Properties.Resources.wordsearch_html.Replace("{0}", columnCount.ToString());
     }
 
-    public string PrintBoard()
+    public string PrintBoardSimple()
     {
       StringBuilder bldr = new StringBuilder();
 
@@ -210,7 +224,12 @@ namespace WordSearchGenerator.Common
         {
           Cell cell = Matrix[i, j];
 
-          bldr.Append(cell.Type == Cell.CellType.Empty ? " -" : $" {cell.Char}");
+          bldr.Append(cell.Type switch
+          {
+            Cell.CellType.Empty => " -",
+            Cell.CellType.QuizWordPlaceholder => $" {DirectedLocation.GetArrowForDirection(cell.QuizWordDirection)}",
+            _ => $" {cell.Char}"
+          });
         }
 
         bldr.AppendLine();
@@ -288,7 +307,13 @@ namespace WordSearchGenerator.Common
           cell.Type = Cell.CellType.CharFromText;
           cell.Words.Add(word);
 
-          if (cell.Char == default)
+          if (j == 0 && QuizMode)
+          {
+            cell.Type = Cell.CellType.QuizWordPlaceholder;
+            cell.QuizWordNumber = word.WordNumber;
+            cell.QuizWordDirection = word.Placement.Direction;
+          }
+          else if (cell.Char == default)
           {
             cell.Char = ShouldBeBlind() ? ' ' : wordText[j];
           }
@@ -298,14 +323,14 @@ namespace WordSearchGenerator.Common
       for (int i = 0; i < RowCount; i++)
       for (int j = 0; j < ColumnCount; j++)
       {
-        if (Matrix[i, j].Type != Cell.CellType.Empty)
-        {
-          continue;
-        }
-
         if (messageChars.Count == 0)
         {
           break;
+        }
+
+        if (Matrix[i, j].Type != Cell.CellType.Empty)
+        {
+          continue;
         }
 
         Matrix[i, j].Type = Cell.CellType.CharFromMessage;
@@ -340,7 +365,11 @@ namespace WordSearchGenerator.Common
         CharFromText,
 
         // Char from message.
-        CharFromMessage
+        CharFromMessage,
+
+        // Special placeholder placed in front of the word.
+        // The cell will hold number and direction of the guessed word.
+        QuizWordPlaceholder
       }
 
       #endregion
@@ -363,11 +392,23 @@ namespace WordSearchGenerator.Common
         get;
       } = new List<WordInfo>();
 
+      public DirectedLocation.LocationDirection QuizWordDirection
+      {
+        get;
+        set;
+      }
+
       public CellType Type
       {
         get;
         set;
       } = CellType.Empty;
+
+      public int QuizWordNumber
+      {
+        get;
+        set;
+      }
 
       #endregion
     }

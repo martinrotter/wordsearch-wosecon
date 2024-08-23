@@ -29,10 +29,34 @@ namespace WordSearchGenerator.Common
 
     private List<WordInfo> ProcessString(string lines, bool processCharacters)
     {
-      return lines.Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.RemoveEmptyEntries).Select(txt => new WordInfo
+      int wordNumber = 1;
+
+      return lines.Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.RemoveEmptyEntries).Select(txt =>
       {
-        Text = processCharacters ? ProcessCharacters(txt) : txt,
-        PrintableText = txt
+        var wi = new WordInfo
+        {
+          PrintableText = txt,
+          WordNumber = wordNumber++
+        };
+
+        if (txt.Contains(Constants.Misc.QuizModeQuestionSeparator))
+        {
+          var parts = txt.Split(Constants.Misc.QuizModeQuestionSeparator);
+
+          wi.Text = parts[0];
+          wi.QuizQuestion = parts[1];
+        }
+        else
+        {
+          wi.Text = txt;
+        }
+
+        if (processCharacters)
+        {
+          wi.Text = ProcessCharacters(wi.Text);
+        }
+
+        return wi;
       }).ToList();
     }
 

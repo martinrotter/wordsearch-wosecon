@@ -20,6 +20,13 @@ namespace WordSearchGenerator.Console
       set;
     }
 
+    [Option('q', "quiz", Default = false, HelpText = "Turns on 'quiz' mode.")]
+    public bool QuizMode
+    {
+      get;
+      set;
+    }
+
     [Option('b', Default = 0.0, HelpText = "Number from 0.0 to 1.0. Defines % of cells to be marked as " +
                                            "'hidden' so that puzzle solving person has to determine " +
                                            "what character belongs to those hidden spots.")]
@@ -31,7 +38,6 @@ namespace WordSearchGenerator.Console
 
     [Option('h', "html", Default = false, HelpText = "Output the puzzle in a nicely formatted HTML document. " +
                                              "Use redirection to save to some file.")]
-
     public bool HtmlOutput
     {
       get;

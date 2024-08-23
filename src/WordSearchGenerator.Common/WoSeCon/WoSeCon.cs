@@ -42,12 +42,36 @@ namespace WordSearchGenerator.Common.WoSeCon
       get;
     }
 
+    /// <summary>
+    /// In quiz mode, special initial character
+    /// is prepended to each word and will server
+    /// as "question" cell with direction of the word
+    /// and number of question. 
+    /// </summary>
+    public bool QuizMode
+    {
+      get;
+    }
+
+    public int Backtrackings
+    {
+      get;
+      private set;
+    }
+
+    public long TestesPositions
+    {
+      get;
+      private set;
+    }
+
     #endregion
 
     #region Constructors
 
-    public WoSeCon(List<WordInfo> words, int rowCount, int columnCount)
+    public WoSeCon(List<WordInfo> words, int rowCount, int columnCount, bool quizMode)
     {
+      QuizMode = quizMode;
       RowCount = rowCount;
       ColumnCount = columnCount;
       Words = Sort(words);
@@ -61,7 +85,18 @@ namespace WordSearchGenerator.Common.WoSeCon
 
     private List<WordInfo> Sort(List<WordInfo> words)
     {
-      return words.OrderByDescending(wrd => wrd.Text.Length).ToList();
+      return words
+        .OrderByDescending(wrd => wrd.Text.Length)
+        .Select(wrd =>
+        {
+          if (QuizMode)
+          {
+            wrd.Text = $"{Constants.Misc.QuizModePlaceholder}{wrd.Text}";
+          }
+
+          return wrd;
+        })
+        .ToList();
     }
 
     public void Construct(CancellationToken? ct)
@@ -109,18 +144,6 @@ namespace WordSearchGenerator.Common.WoSeCon
       }
     }
 
-    public int Backtrackings
-    {
-      get;
-      private set;
-    }
-
-    public long TestesPositions
-    {
-      get;
-      private set;
-    }
-
     public bool IsValidPlacement(WordInfo word, DirectedLocation location)
     {
       word.Placement = location;
@@ -135,8 +158,11 @@ namespace WordSearchGenerator.Common.WoSeCon
       {
         if (word != wordToCheck)
         {
-          if (word.ConflictsWithWord(wordToCheck))
+          if (word.ConflictsWithWord(wordToCheck, QuizMode))
           {
+            // Either these words conflict
+            // or we are in quiz mode where placeholder
+            // cells cannot intersect.
             word.Placement = null;
             return false;
           }
