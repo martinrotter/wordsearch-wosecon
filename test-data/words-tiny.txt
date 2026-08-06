@@ -1,4 +1,0 @@
-ab
-cx
-ac
-bx

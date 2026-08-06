@@ -1,9 +1,10 @@
-﻿using WordSearchGenerator.Common.WoSeCon.Api;
+﻿using System.Diagnostics;
+using WordSearchGenerator.Common.WoSeCon.Api;
 using static WordSearchGenerator.Common.WoSeCon.Api.RandomLocator;
 
 namespace WordSearchGenerator.Common.WoSeCon
 {
-  public class WoSeCon
+  public partial class WoSeCon
   {
     #region Enums
 
@@ -12,6 +13,21 @@ namespace WordSearchGenerator.Common.WoSeCon
       Forward,
       Backward
     }
+
+    #endregion
+
+    #region Static Fields
+
+    private const int ProgressPositionCheckMask = 127;
+
+    private static readonly long ProgressReportIntervalTicks =
+      Stopwatch.Frequency / 10;
+
+    #endregion
+
+    #region Fields
+
+    private int _isConstructing;
 
     #endregion
 
@@ -80,7 +96,11 @@ namespace WordSearchGenerator.Common.WoSeCon
 
     #region Constructors
 
-    public WoSeCon(List<WordInfo> words, int rowCount, int columnCount, bool quizMode,
+    public WoSeCon(
+      List<WordInfo> words,
+      int rowCount,
+      int columnCount,
+      bool quizMode,
       LocationOrderer orderer = null)
     {
       QuizMode = quizMode;
@@ -118,54 +138,138 @@ namespace WordSearchGenerator.Common.WoSeCon
         .ToList();
     }
 
-    public void Construct(CancellationToken? ct)
+    /// <summary>
+    ///   Constructs the word-search placement synchronously.
+    /// </summary>
+    /// <remarks>
+    ///   Progress reports are throttled to avoid overwhelming a captured UI
+    ///   synchronization context. Concurrent calls on the same instance are
+    ///   rejected; use one WoSeCon instance per parallel attempt.
+    /// </remarks>
+    /// <exception cref="OperationCanceledException">
+    ///   The cancellation token was cancelled. Partial construction state is
+    ///   cleared before the exception is rethrown.
+    /// </exception>
+    public void Construct(
+      IProgress<ConstructionProgress> progress = null,
+      CancellationToken cancellationToken = default)
     {
-      if (HasConstructed)
+      if (Interlocked.CompareExchange(ref _isConstructing, 1, 0) != 0)
       {
-        ResetState();
-      }
-      else
-      {
-        ResetWordsAndStatistics();
+        throw new InvalidOperationException(
+          "Construction is already running on this WoSeCon instance.");
       }
 
-      HasConstructed = true;
+      var stopwatch = Stopwatch.StartNew();
+      var nextProgressReportAt = 0L;
+      var furthestPlacedWordCount = 0;
+      WordInfo currentWord = null;
 
-      var wordIndex = 0;
-      var word = Words[wordIndex];
-
-      while (true)
+      void ReportProgress(bool force = false)
       {
-        if (ct?.IsCancellationRequested == true)
+        if (progress == null)
         {
-          throw new TaskCanceledException();
+          return;
         }
 
-        if (PlaceWord(word))
-        {
-          if (wordIndex == Words.Count - 1)
-          {
-            // Last word was placed, we are done.
-            break;
-          }
+        var now = Stopwatch.GetTimestamp();
 
-          ++wordIndex;
-          word = Words[wordIndex];
-          Mode = OperationMode.Forward;
+        if (!force && now < nextProgressReportAt)
+        {
+          return;
+        }
+
+        nextProgressReportAt = now + ProgressReportIntervalTicks;
+
+        progress.Report(new ConstructionProgress(
+          Words.Count(word => word.Placement != null),
+          furthestPlacedWordCount,
+          Words.Count,
+          currentWord?.WordNumber ?? 0,
+          TestedPositions,
+          Backtrackings,
+          stopwatch.Elapsed));
+      }
+
+      try
+      {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        if (HasConstructed)
+        {
+          ResetState();
         }
         else
         {
-          if (wordIndex == 0)
+          ResetWordsAndStatistics();
+        }
+
+        HasConstructed = true;
+
+        var wordIndex = 0;
+        var word = Words[wordIndex];
+        currentWord = word;
+        Action reportCandidateProgress = progress == null ? null : () => ReportProgress();
+
+        ReportProgress(true);
+
+        while (true)
+        {
+          cancellationToken.ThrowIfCancellationRequested();
+
+          var placed = PlaceWord(
+            word,
+            cancellationToken,
+            reportCandidateProgress);
+
+          cancellationToken.ThrowIfCancellationRequested();
+
+          if (placed)
           {
-            throw new Exception("given words cannot fit into the grid");
+            var placedWordCount = wordIndex + 1;
+            furthestPlacedWordCount = Math.Max(
+              furthestPlacedWordCount,
+              placedWordCount);
+
+            if (wordIndex == Words.Count - 1)
+            {
+              // Last word was placed, we are done.
+              ReportProgress(true);
+              break;
+            }
+
+            ++wordIndex;
+            word = Words[wordIndex];
+            currentWord = word;
+            Mode = OperationMode.Forward;
+          }
+          else
+          {
+            if (wordIndex == 0)
+            {
+              throw new Exception("given words cannot fit into the grid");
+            }
+
+            word.ClearTestedLocations();
+            --wordIndex;
+            Backtrackings++;
+            word = Words[wordIndex];
+            currentWord = word;
+            Mode = OperationMode.Backward;
           }
 
-          word.ClearTestedLocations();
-          --wordIndex;
-          Backtrackings++;
-          word = Words[wordIndex];
-          Mode = OperationMode.Backward;
+          ReportProgress();
         }
+      }
+      catch (OperationCanceledException)
+      {
+        ResetState();
+        HasConstructed = false;
+        throw;
+      }
+      finally
+      {
+        Volatile.Write(ref _isConstructing, 0);
       }
     }
 
@@ -222,6 +326,14 @@ namespace WordSearchGenerator.Common.WoSeCon
 
     public bool PlaceWord(WordInfo word)
     {
+      return PlaceWord(word, CancellationToken.None, null);
+    }
+
+    private bool PlaceWord(
+      WordInfo word,
+      CancellationToken cancellationToken,
+      Action reportProgress)
+    {
       RandomLocator localLocator = null;
 
       if (Mode == OperationMode.Backward)
@@ -240,6 +352,7 @@ namespace WordSearchGenerator.Common.WoSeCon
 
       while (locationIndex < localLocator.Size)
       {
+        cancellationToken.ThrowIfCancellationRequested();
         TestedPositions++;
 
         var suitableLocation = localLocator[locationIndex];
@@ -248,6 +361,11 @@ namespace WordSearchGenerator.Common.WoSeCon
         {
           GlobalLocator.RemoveAvailableLocation(suitableLocation);
           return true;
+        }
+
+        if ((TestedPositions & ProgressPositionCheckMask) == 0)
+        {
+          reportProgress?.Invoke();
         }
 
         locationIndex++;

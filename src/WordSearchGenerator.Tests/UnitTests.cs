@@ -7,6 +7,12 @@ namespace WordSearchGenerator.Tests
   [TestClass]
   public class UnitTests
   {
+    #region Static Fields
+
+    private const int MemorialMonteCarloThreadCount = 16;
+
+    #endregion
+
     #region Properties
 
     public TestContext TestContext
@@ -31,7 +37,7 @@ namespace WordSearchGenerator.Tests
         wordTexts,
         CreatePriorityOrderer(expectedPlacements));
 
-      generator.Construct(null);
+      generator.Construct();
 
       WriteDiagnostics(generator, size, "Construction succeeded.");
 
@@ -59,7 +65,7 @@ namespace WordSearchGenerator.Tests
         },
         locations => locations);
 
-      var exception = Assert.ThrowsExactly<Exception>(() => generator.Construct(null));
+      var exception = Assert.ThrowsExactly<Exception>(() => generator.Construct());
 
       WriteDiagnostics(generator, size, $"Expected failure: {exception.Message}");
     }
@@ -82,6 +88,84 @@ namespace WordSearchGenerator.Tests
     }
 
     [TestMethod]
+    public void EstimateDifficultyRecognizesEasyInput()
+    {
+      var estimate = WoSeCon.EstimateDifficulty(
+        CreateWords(new[]
+        {
+          "ABC", "DEF", "GHI"
+        }),
+        10,
+        10,
+        false);
+
+      Assert.AreEqual(WoSeCon.EstimatedConstructionTime.FastInSeconds, estimate);
+    }
+
+    [TestMethod]
+    public void EstimateDifficultyRecognizesStructuralImpossibility()
+    {
+      var wordTooLong = WoSeCon.EstimateDifficulty(
+        CreateWords(new[]
+        {
+          "ABCDEF"
+        }),
+        5,
+        5,
+        false);
+      var insufficientCompatibleCrossings = WoSeCon.EstimateDifficulty(
+        CreateWords(new[]
+        {
+          "ABC", "DEF", "GHI", "JKL"
+        }),
+        3,
+        3,
+        false);
+
+      Assert.AreEqual(
+        WoSeCon.EstimatedConstructionTime.LikelyImpossible,
+        wordTooLong);
+      Assert.AreEqual(
+        WoSeCon.EstimatedConstructionTime.LikelyImpossible,
+        insufficientCompatibleCrossings);
+    }
+
+    [TestMethod]
+    public void EstimateDifficultyAccountsForParallelAttempts()
+    {
+      var words = CreateWords(Enumerable
+        .Range(0, 12)
+        .Select(_ => "ABCDEFGH"));
+
+      var sequential = WoSeCon.EstimateDifficulty(
+        words,
+        10,
+        10,
+        false);
+      var parallel = WoSeCon.EstimateDifficulty(
+        words,
+        10,
+        10,
+        false,
+        16);
+
+      Assert.IsTrue(parallel <= sequential);
+    }
+
+    [TestMethod]
+    public void EstimateDifficultyAccountsForQuizQuestionCells()
+    {
+      var words = CreateWords(Enumerable
+        .Range(0, 8)
+        .Select(_ => "ABCDE"));
+
+      var normal = WoSeCon.EstimateDifficulty(words, 7, 7, false);
+      var quiz = WoSeCon.EstimateDifficulty(words, 7, 7, true);
+
+      Assert.IsTrue(quiz >= normal);
+    }
+
+    [TestMethod]
     public void ConstructsExpectedCrossing()
     {
       DirectedLocation[] expectedPlacements =
@@ -98,7 +182,7 @@ namespace WordSearchGenerator.Tests
         },
         CreatePriorityOrderer(expectedPlacements));
 
-      generator.Construct(null);
+      generator.Construct();
 
       var board = WriteDiagnostics(generator, 3, "Construction succeeded with a crossing.");
 
@@ -135,7 +219,7 @@ namespace WordSearchGenerator.Tests
         },
         CreatePriorityOrderer(locationPriorities));
 
-      generator.Construct(null);
+      generator.Construct();
 
       WriteDiagnostics(generator, 3, "Construction succeeded after forced backtracking.");
 
@@ -164,10 +248,7 @@ namespace WordSearchGenerator.Tests
 
       var priorityOrderer = CreatePriorityOrderer(new[]
       {
-        blockedPlacement,
-        expectedPlacements[0],
-        expectedPlacements[1],
-        expectedPlacements[2]
+        blockedPlacement, expectedPlacements[0], expectedPlacements[1], expectedPlacements[2]
       });
       var ordererCalls = 0;
       RandomLocator.LocationOrderer countingOrderer = locations =>
@@ -186,13 +267,13 @@ namespace WordSearchGenerator.Tests
 
       Assert.AreEqual(1, ordererCalls);
 
-      generator.Construct(null);
+      generator.Construct();
 
       var firstTestedPositions = generator.TestedPositions;
       Assert.AreEqual(1, generator.Backtrackings);
       Assert.AreEqual(1, ordererCalls);
 
-      generator.Construct(null);
+      generator.Construct();
 
       WriteDiagnostics(
         generator,
@@ -209,6 +290,114 @@ namespace WordSearchGenerator.Tests
       }
 
       AssertFillsGrid(generator, 3);
+    }
+
+    [TestMethod]
+    public void ConstructReportsInitialAndCompletedProgress()
+    {
+      DirectedLocation[] expectedPlacements =
+      {
+        Location(0, 0, DirectedLocation.LocationDirection.LeftToRight),
+        Location(1, 0, DirectedLocation.LocationDirection.LeftToRight),
+        Location(2, 0, DirectedLocation.LocationDirection.LeftToRight)
+      };
+      var generator = CreateGenerator(
+        3,
+        new[]
+        {
+          "ABC", "DEF", "GHI"
+        },
+        CreatePriorityOrderer(expectedPlacements));
+      List<ConstructionProgress> updates = [];
+
+      generator.Construct(new InlineProgress<ConstructionProgress>(updates.Add));
+
+      Assert.IsTrue(updates.Count >= 2);
+
+      var initial = updates[0];
+      var completed = updates[^1];
+
+      Assert.AreEqual(0, initial.PlacedWordCount);
+      Assert.AreEqual(0, initial.FurthestPlacedWordCount);
+      Assert.AreEqual(3, initial.TotalWordCount);
+      Assert.AreEqual(3, completed.PlacedWordCount);
+      Assert.AreEqual(3, completed.FurthestPlacedWordCount);
+      Assert.AreEqual(3, completed.TotalWordCount);
+      Assert.AreEqual(generator.TestedPositions, completed.TestedPositions);
+      Assert.AreEqual(generator.Backtrackings, completed.Backtrackings);
+      Assert.IsTrue(completed.Elapsed >= initial.Elapsed);
+    }
+
+    [TestMethod]
+    public void ConstructCancellationResetsStateAndAllowsRetry()
+    {
+      DirectedLocation[] expectedPlacements =
+      {
+        Location(0, 0, DirectedLocation.LocationDirection.LeftToRight),
+        Location(1, 0, DirectedLocation.LocationDirection.LeftToRight),
+        Location(2, 0, DirectedLocation.LocationDirection.LeftToRight)
+      };
+      var generator = CreateGenerator(
+        3,
+        new[]
+        {
+          "ABC", "DEF", "GHI"
+        },
+        CreatePriorityOrderer(expectedPlacements));
+      using var cancellation = new CancellationTokenSource();
+      var progress = new InlineProgress<ConstructionProgress>(_ => cancellation.Cancel());
+
+      Assert.ThrowsExactly<OperationCanceledException>(() => generator.Construct(
+        progress,
+        cancellation.Token));
+
+      Assert.IsTrue(generator.Words.All(word => word.Placement == null));
+      Assert.AreEqual(0L, generator.TestedPositions);
+      Assert.AreEqual(0, generator.Backtrackings);
+      Assert.AreEqual(WoSeCon.OperationMode.Forward, generator.Mode);
+
+      generator.Construct();
+
+      Assert.IsTrue(generator.Words.All(word => word.Placement != null));
+      AssertFillsGrid(generator, 3);
+    }
+
+    [TestMethod]
+    public async Task ConstructRejectsConcurrentCallsOnSameInstance()
+    {
+      var generator = CreateGenerator(
+        3,
+        new[]
+        {
+          "ABC", "DEF", "GHI"
+        },
+        locations => locations);
+      using var progressEntered = new ManualResetEventSlim();
+      using var releaseProgress = new ManualResetEventSlim();
+      var progressReportCount = 0;
+      var progress = new InlineProgress<ConstructionProgress>(_ =>
+      {
+        if (Interlocked.Increment(ref progressReportCount) == 1)
+        {
+          progressEntered.Set();
+          releaseProgress.Wait();
+        }
+      });
+      var firstConstruction = Task.Run(() => generator.Construct(progress));
+
+      try
+      {
+        Assert.IsTrue(progressEntered.Wait(TimeSpan.FromSeconds(5)));
+
+        var exception = Assert.ThrowsExactly<InvalidOperationException>(() => generator.Construct());
+
+        StringAssert.Contains(exception.Message, "already running");
+      }
+      finally
+      {
+        releaseProgress.Set();
+        await firstConstruction;
+      }
     }
 
     [TestMethod]
@@ -241,7 +430,7 @@ namespace WordSearchGenerator.Tests
       var orderer = CreatePriorityOrderer(expectedPlacements);
       var firstGenerator = new WoSeCon(sourceWords, 3, 3, false, orderer);
 
-      firstGenerator.Construct(null);
+      firstGenerator.Construct();
 
       var firstPlacements = firstGenerator.Words
         .Select(word => (DirectedLocation)word.Placement.Clone())
@@ -256,7 +445,7 @@ namespace WordSearchGenerator.Tests
         Assert.AreEqual(firstPlacements[i], firstGenerator.Words[i].Placement);
       }
 
-      secondGenerator.Construct(null);
+      secondGenerator.Construct();
 
       for (var i = 0; i < sourceWords.Count; i++)
       {
@@ -328,7 +517,7 @@ namespace WordSearchGenerator.Tests
         wordTexts,
         CreatePriorityOrderer(locationPriorities));
 
-      generator.Construct(null);
+      generator.Construct();
 
       var board = WriteDiagnostics(
         generator,
@@ -345,6 +534,92 @@ namespace WordSearchGenerator.Tests
       {
         Assert.AreEqual(expectedPlacements[i], generator.Words[i].Placement);
       }
+    }
+
+    [TestMethod]
+    public async Task ConstructsMemorialWords()
+    {
+      var wordTexts = File
+        .ReadAllLines(Path.Combine(
+          AppContext.BaseDirectory,
+          "test-data",
+          "memorial.txt"))
+        .Where(line => !string.IsNullOrWhiteSpace(line))
+        .ToArray();
+      var estimate = WoSeCon.EstimateDifficulty(
+        CreateWords(wordTexts),
+        15,
+        17,
+        false,
+        MemorialMonteCarloThreadCount);
+      using var cancellation = new CancellationTokenSource();
+      var seeds = Enumerable
+        .Range(0, MemorialMonteCarloThreadCount)
+        .Select(_ => Random.Shared.Next())
+        .ToArray();
+      var pendingAttempts = seeds
+        .Select(seed => Task.Factory.StartNew(
+          () => TryConstructMemorialWords(wordTexts, seed, cancellation.Token),
+          CancellationToken.None,
+          TaskCreationOptions.LongRunning,
+          TaskScheduler.Default))
+        .ToList();
+      MemorialConstructionAttempt? winner = null;
+      List<Exception> errors = [];
+
+      TestContext.WriteLine(
+        $"Starting {MemorialMonteCarloThreadCount} Monte Carlo construction threads.");
+      TestContext.WriteLine($"Estimated construction time: {estimate}");
+      TestContext.WriteLine($"Seeds: {string.Join(", ", seeds)}");
+
+      try
+      {
+        while (pendingAttempts.Count > 0 && winner == null)
+        {
+          var completedTask = await Task.WhenAny(pendingAttempts);
+          pendingAttempts.Remove(completedTask);
+
+          var result = await completedTask;
+
+          if (result.Generator != null)
+          {
+            winner = result;
+          }
+          else if (result.Error != null)
+          {
+            errors.Add(result.Error);
+          }
+        }
+      }
+      finally
+      {
+        cancellation.Cancel();
+        await Task.WhenAll(pendingAttempts);
+      }
+
+      if (winner?.Generator == null)
+      {
+        Assert.Fail(
+          $"None of the {MemorialMonteCarloThreadCount} construction attempts succeeded. " +
+          $"Errors: {string.Join(" | ", errors.Select(error => error.Message))}");
+      }
+
+      var generator = winner.Generator;
+
+      var board = WriteDiagnostics(
+        generator,
+        15,
+        17,
+        $"Memorial word construction succeeded with seed {winner.Seed}.");
+
+      Assert.AreEqual(40, generator.Words.Count);
+      Assert.AreNotEqual(WoSeCon.EstimatedConstructionTime.LikelyImpossible, estimate);
+      Assert.IsTrue(generator.Words.All(word => word.Placement != null));
+      Assert.AreEqual(15, board.RowCount);
+      Assert.AreEqual(17, board.ColumnCount);
+      CollectionAssert.AreEquivalent(
+        wordTexts,
+        generator.Words.Select(word => word.Text).ToArray());
     }
 
     [TestMethod]
@@ -368,7 +643,7 @@ namespace WordSearchGenerator.Tests
         CreatePriorityOrderer(expectedPlacements),
         true);
 
-      generator.Construct(null);
+      generator.Construct();
 
       var board = WriteDiagnostics(
         generator,
@@ -431,7 +706,7 @@ namespace WordSearchGenerator.Tests
           }),
           true);
 
-        generator.Construct(null);
+        generator.Construct();
 
         var board = WriteDiagnostics(
           generator,
@@ -469,7 +744,7 @@ namespace WordSearchGenerator.Tests
         CreatePriorityOrderer(expectedPlacements),
         true);
 
-      generator.Construct(null);
+      generator.Construct();
 
       var board = WriteDiagnostics(
         generator,
@@ -573,15 +848,33 @@ namespace WordSearchGenerator.Tests
       RandomLocator.LocationOrderer orderer,
       bool quizMode = false)
     {
-      var words = wordTexts
+      return CreateGenerator(size, size, wordTexts, orderer, quizMode);
+    }
+
+    private static WoSeCon CreateGenerator(
+      int rowCount,
+      int columnCount,
+      IEnumerable<string> wordTexts,
+      RandomLocator.LocationOrderer orderer,
+      bool quizMode = false)
+    {
+      return new WoSeCon(
+        CreateWords(wordTexts),
+        rowCount,
+        columnCount,
+        quizMode,
+        orderer);
+    }
+
+    private static List<WordInfo> CreateWords(IEnumerable<string> wordTexts)
+    {
+      return wordTexts
         .Select((text, index) => new WordInfo
         {
           Text = text,
           WordNumber = index + 1
         })
         .ToList();
-
-      return new WoSeCon(words, size, size, quizMode, orderer);
     }
 
     private static RandomLocator.LocationOrderer CreatePriorityOrderer(
@@ -607,6 +900,52 @@ namespace WordSearchGenerator.Tests
         .ThenBy(item => item.index)
         .Select(item => item.location)
         .ToList();
+    }
+
+    private static RandomLocator.LocationOrderer CreateShuffledOrderer(int seed)
+    {
+      return locations =>
+      {
+        var shuffledLocations = locations.ToList();
+        var random = new Random(seed);
+
+        for (var i = shuffledLocations.Count - 1; i > 0; i--)
+        {
+          var otherIndex = random.Next(i + 1);
+
+          (shuffledLocations[i], shuffledLocations[otherIndex]) =
+            (shuffledLocations[otherIndex], shuffledLocations[i]);
+        }
+
+        return shuffledLocations;
+      };
+    }
+
+    private static MemorialConstructionAttempt TryConstructMemorialWords(
+      IEnumerable<string> wordTexts,
+      int seed,
+      CancellationToken cancellationToken)
+    {
+      try
+      {
+        var generator = CreateGenerator(
+          15,
+          17,
+          wordTexts,
+          CreateShuffledOrderer(seed));
+
+        generator.Construct(cancellationToken: cancellationToken);
+
+        return new MemorialConstructionAttempt(seed, generator, null);
+      }
+      catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+      {
+        return new MemorialConstructionAttempt(seed, null, null);
+      }
+      catch (Exception exception)
+      {
+        return new MemorialConstructionAttempt(seed, null, exception);
+      }
     }
 
     private static DirectedLocation Location(
@@ -643,10 +982,20 @@ namespace WordSearchGenerator.Tests
       string outcome,
       bool quizMode = false)
     {
+      return WriteDiagnostics(generator, size, size, outcome, quizMode);
+    }
+
+    private Board WriteDiagnostics(
+      WoSeCon generator,
+      int rowCount,
+      int columnCount,
+      string outcome,
+      bool quizMode = false)
+    {
       var board = new Board(
         generator.Words,
-        size,
-        size,
+        rowCount,
+        columnCount,
         quizMode);
 
       TestContext.WriteLine(outcome);
@@ -704,6 +1053,27 @@ namespace WordSearchGenerator.Tests
         DirectedLocation.LocationDirection.RightTopLeftBottom => (1, -1),
         _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
       };
+    }
+
+    #endregion
+
+    #region Nested Types
+
+    private sealed record MemorialConstructionAttempt(
+      int Seed,
+      WoSeCon? Generator,
+      Exception? Error);
+
+    private sealed class InlineProgress<T>(Action<T> report) : IProgress<T>
+    {
+      #region Interface Implementations
+
+      public void Report(T value)
+      {
+        report(value);
+      }
+
+      #endregion
     }
 
     #endregion
