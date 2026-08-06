@@ -35,8 +35,60 @@
 
     #region Properties
 
+    public int Column
+    {
+      get;
+      set;
+    }
+
+    public LocationDirection Direction
+    {
+      get;
+      set;
+    } = LocationDirection.LeftToRight;
+
+    public int Row
+    {
+      get;
+      set;
+    }
+
+    #endregion
+
+    #region Interface Implementations
+
+    public object Clone()
+    {
+      var loc = new DirectedLocation();
+
+      loc.Column = Column;
+      loc.Row = Row;
+      loc.Direction = Direction;
+
+      return loc;
+    }
+
+    public bool Equals(DirectedLocation other)
+    {
+      if (ReferenceEquals(null, other))
+      {
+        return false;
+      }
+
+      if (ReferenceEquals(this, other))
+      {
+        return true;
+      }
+
+      return Column == other.Column && Direction == other.Direction && Row == other.Row;
+    }
+
+    #endregion
+
+    #region Other Stuff
+
     /// <summary>
-    /// If both directions lie in one "line", then returns true.
+    ///   If both directions lie in one "line", then returns true.
     /// </summary>
     public static bool IsSameLine(LocationDirection d1, LocationDirection d2)
     {
@@ -48,7 +100,7 @@
       return d1.Row == d2.Row && d1.Column == d2.Column;
     }
 
-    public static char GetArrowForDirection(DirectedLocation.LocationDirection dir)
+    public static char GetArrowForDirection(LocationDirection dir)
     {
       switch (dir)
       {
@@ -80,58 +132,6 @@
           throw new ArgumentOutOfRangeException(nameof(dir), dir, null);
       }
     }
-
-    public int Column
-    {
-      get;
-      set;
-    }
-
-    public LocationDirection Direction
-    {
-      get;
-      set;
-    } = LocationDirection.LeftToRight;
-
-    public int Row
-    {
-      get;
-      set;
-    }
-
-    #endregion
-
-    #region Interface Implementations
-
-    public object Clone()
-    {
-      DirectedLocation loc = new DirectedLocation();
-
-      loc.Column = Column;
-      loc.Row = Row;
-      loc.Direction = Direction;
-
-      return loc;
-    }
-
-    public bool Equals(DirectedLocation other)
-    {
-      if (ReferenceEquals(null, other))
-      {
-        return false;
-      }
-
-      if (ReferenceEquals(this, other))
-      {
-        return true;
-      }
-
-      return Column == other.Column && Direction == other.Direction && Row == other.Row;
-    }
-
-    #endregion
-
-    #region Other Stuff
 
     public static bool operator ==(DirectedLocation left, DirectedLocation right)
     {

@@ -25,12 +25,13 @@ namespace WordSearchGenerator.Common.WoSeCon
     public RandomLocator GlobalLocator
     {
       get;
+      private set;
     }
 
     public OperationMode Mode
     {
       get;
-      set;
+      private set;
     }
 
     public int RowCount
@@ -44,10 +45,10 @@ namespace WordSearchGenerator.Common.WoSeCon
     }
 
     /// <summary>
-    /// In quiz mode, special initial character
-    /// is prepended to each word and will serve
-    /// as "question" cell with direction of the word
-    /// and number of question. 
+    ///   In quiz mode, special initial character
+    ///   is prepended to each word and will serve
+    ///   as "question" cell with direction of the word
+    ///   and number of question.
     /// </summary>
     public bool QuizMode
     {
@@ -60,24 +61,31 @@ namespace WordSearchGenerator.Common.WoSeCon
       private set;
     }
 
-    public long TestesPositions
+    public long TestedPositions
     {
       get;
       private set;
+    }
+
+    private LocationOrderer Orderer
+    {
+      get;
     }
 
     #endregion
 
     #region Constructors
 
-    public WoSeCon(List<WordInfo> words, int rowCount, int columnCount, bool quizMode, LocationOrderer orderer = null)
+    public WoSeCon(List<WordInfo> words, int rowCount, int columnCount, bool quizMode,
+      LocationOrderer orderer = null)
     {
       QuizMode = quizMode;
       RowCount = rowCount;
       ColumnCount = columnCount;
       Words = Sort(words);
+      Orderer = orderer;
 
-      GlobalLocator = new RandomLocator(RowCount, ColumnCount, orderer);
+      ResetState();
     }
 
     #endregion
@@ -102,13 +110,10 @@ namespace WordSearchGenerator.Common.WoSeCon
 
     public void Construct(CancellationToken? ct)
     {
-      Backtrackings = 0;
-      TestesPositions = 0L;
+      ResetState();
 
-      int wordIndex = 0;
-      WordInfo word = Words[wordIndex];
-
-      Mode = OperationMode.Forward;
+      var wordIndex = 0;
+      var word = Words[wordIndex];
 
       while (true)
       {
@@ -145,6 +150,20 @@ namespace WordSearchGenerator.Common.WoSeCon
       }
     }
 
+    private void ResetState()
+    {
+      foreach (var word in Words)
+      {
+        word.Placement = null;
+        word.ClearTestedLocations();
+      }
+
+      GlobalLocator = new RandomLocator(RowCount, ColumnCount, Orderer);
+      Mode = OperationMode.Forward;
+      Backtrackings = 0;
+      TestedPositions = 0L;
+    }
+
     public bool IsValidPlacement(WordInfo word, DirectedLocation location)
     {
       word.Placement = location;
@@ -155,7 +174,7 @@ namespace WordSearchGenerator.Common.WoSeCon
         return false;
       }
 
-      foreach (WordInfo wordToCheck in Words)
+      foreach (var wordToCheck in Words)
       {
         if (ReferenceEquals(word, wordToCheck))
         {
@@ -181,7 +200,7 @@ namespace WordSearchGenerator.Common.WoSeCon
 
       if (Mode == OperationMode.Backward)
       {
-        DirectedLocation wordLocation = word.Placement;
+        var wordLocation = word.Placement;
         GlobalLocator.AddAvailableLocation(wordLocation);
         word.MarkAsTestedOnPlacement();
         localLocator = GlobalLocator.Minus(word.TestedLocations);
@@ -191,13 +210,13 @@ namespace WordSearchGenerator.Common.WoSeCon
         localLocator = GlobalLocator;
       }
 
-      int locationIndex = 0;
+      var locationIndex = 0;
 
       while (locationIndex < localLocator.Size)
       {
-        TestesPositions++;
+        TestedPositions++;
 
-        DirectedLocation suitableLocation = localLocator[locationIndex];
+        var suitableLocation = localLocator[locationIndex];
 
         if (IsValidPlacement(word, suitableLocation))
         {

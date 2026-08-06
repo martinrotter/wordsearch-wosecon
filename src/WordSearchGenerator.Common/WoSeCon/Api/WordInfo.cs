@@ -29,7 +29,7 @@
     }
 
     /// <summary>
-    /// Should start from 1 for a collection of words.
+    ///   Should start from 1 for a collection of words.
     /// </summary>
     public int WordNumber
     {
@@ -49,7 +49,7 @@
 
     public object Clone()
     {
-      WordInfo wrd = new WordInfo();
+      var wrd = new WordInfo();
 
       wrd.Text = (string)Text.Clone();
       wrd.WordNumber = WordNumber;
@@ -106,24 +106,25 @@
 
     public bool ConflictsWithWord(WordInfo otherWord, bool quizMode)
     {
-      List<DirectedLocation> otherWordLocations = otherWord.GetAllLetterLocations();
+      var otherWordLocations = otherWord.GetAllLetterLocations();
 
       if (otherWordLocations == null || otherWordLocations.Count == 0)
       {
         return false;
       }
 
-      List<DirectedLocation> wordLocations = GetAllLetterLocations();
+      var wordLocations = GetAllLetterLocations();
 
-      bool firstMyWord = true;
+      var firstMyWord = true;
 
-      foreach (DirectedLocation wordLetterLoc in wordLocations)
+      foreach (var wordLetterLoc in wordLocations)
       {
-        bool firstOtherWord = true;
+        var firstOtherWord = true;
 
-        foreach (DirectedLocation otherWordLetterLoc in otherWordLocations)
+        foreach (var otherWordLetterLoc in otherWordLocations)
         {
-          if ((quizMode && (firstMyWord || firstOtherWord)) &&
+          if (quizMode &&
+              (firstMyWord || firstOtherWord) &&
               wordLetterLoc.Row == otherWordLetterLoc.Row &&
               wordLetterLoc.Column == otherWordLetterLoc.Column)
           {
@@ -199,7 +200,7 @@
         return new List<DirectedLocation>(0);
       }
 
-      List<DirectedLocation> letterLocations = new List<DirectedLocation>(Text.Length);
+      var letterLocations = new List<DirectedLocation>(Text.Length);
 
       /*
       var tpl = new Tuple<DirectedLocation, int>(Placement, Text.Length);
@@ -210,26 +211,26 @@
       }
       */
 
-      int row = Placement.Row;
-      int column = Placement.Column;
+      var row = Placement.Row;
+      var column = Placement.Column;
 
-      bool tweakRow = Placement.Direction != DirectedLocation.LocationDirection.LeftToRight &&
-                      Placement.Direction != DirectedLocation.LocationDirection.RightToLeft;
+      var tweakRow = Placement.Direction != DirectedLocation.LocationDirection.LeftToRight &&
+                     Placement.Direction != DirectedLocation.LocationDirection.RightToLeft;
 
-      bool tweakColumn = Placement.Direction != DirectedLocation.LocationDirection.TopBottom &&
-                         Placement.Direction != DirectedLocation.LocationDirection.BottomTop;
+      var tweakColumn = Placement.Direction != DirectedLocation.LocationDirection.TopBottom &&
+                        Placement.Direction != DirectedLocation.LocationDirection.BottomTop;
 
-      bool addRow = Placement.Direction == DirectedLocation.LocationDirection.TopBottom ||
-                    Placement.Direction == DirectedLocation.LocationDirection.LeftTopRightBottom ||
-                    Placement.Direction == DirectedLocation.LocationDirection.RightTopLeftBottom;
+      var addRow = Placement.Direction == DirectedLocation.LocationDirection.TopBottom ||
+                   Placement.Direction == DirectedLocation.LocationDirection.LeftTopRightBottom ||
+                   Placement.Direction == DirectedLocation.LocationDirection.RightTopLeftBottom;
 
-      bool addColumn = Placement.Direction == DirectedLocation.LocationDirection.LeftToRight ||
-                       Placement.Direction == DirectedLocation.LocationDirection.LeftTopRightBottom ||
-                       Placement.Direction == DirectedLocation.LocationDirection.LeftBottomRightTop;
+      var addColumn = Placement.Direction == DirectedLocation.LocationDirection.LeftToRight ||
+                      Placement.Direction == DirectedLocation.LocationDirection.LeftTopRightBottom ||
+                      Placement.Direction == DirectedLocation.LocationDirection.LeftBottomRightTop;
 
-      for (int i = 0; i < Text.Length; i++)
+      for (var i = 0; i < Text.Length; i++)
       {
-        DirectedLocation d = new DirectedLocation
+        var d = new DirectedLocation
         {
           Row = tweakRow ? addRow ? row + i : row - i : row,
           Column = tweakColumn ? addColumn ? column + i : column - i : column,
@@ -254,34 +255,14 @@
       if (Placement.Direction == DirectedLocation.LocationDirection.LeftToRight ||
           Placement.Direction == DirectedLocation.LocationDirection.RightToLeft)
       {
-        int idx = location.Column - Placement.Column;
+        var idx = location.Column - Placement.Column;
         return Text[idx < 0 ? -idx : idx];
       }
       else
       {
-        int idx = location.Row - Placement.Row;
+        var idx = location.Row - Placement.Row;
         return Text[idx < 0 ? -idx : idx];
       }
-    }
-
-    public string ToString(int longestWord, bool htmlOutput, bool showSolution)
-    {
-      string str = $"{WordNumber,2}. " + (longestWord > 0 ? PrintableText.PadRight(longestWord + 1) : PrintableText);
-
-      if (showSolution)
-      {
-        if (htmlOutput)
-        {
-          str += $" ({Placement.Row}:{Placement.Column} {Placement.Direction})";
-
-        }
-        else
-        {
-          str += $" {Placement.Row}:{Placement.Column} {Placement.Direction}" + Environment.NewLine;
-        }
-      }
-
-      return str;
     }
 
     public bool WillFit(DirectedLocation location, int rowCount, int columnCount)

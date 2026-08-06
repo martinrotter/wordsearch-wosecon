@@ -2,6 +2,13 @@
 {
   public class RandomLocator
   {
+    #region Delegates
+
+    public delegate IReadOnlyList<DirectedLocation>
+      LocationOrderer(IReadOnlyList<DirectedLocation> locations);
+
+    #endregion
+
     #region Properties
 
     public int ColumnCount
@@ -20,31 +27,26 @@
       get;
     }
 
-    public int Size
-    {
-      get => (AvailableLocations?.Count).GetValueOrDefault(0);
-    }
+    public int Size => (AvailableLocations?.Count).GetValueOrDefault(0);
 
     private List<DirectedLocation> AvailableLocations
     {
       get;
-    } = new List<DirectedLocation>();
+    } = new();
 
     #endregion
 
     #region Constructors
-
-    public delegate IReadOnlyList<DirectedLocation> LocationOrderer(IReadOnlyList<DirectedLocation> locations);
 
     public RandomLocator(int rowCount, int columnCount, LocationOrderer orderer = null)
     {
       RowCount = rowCount;
       ColumnCount = columnCount;
 
-      foreach (DirectedLocation.LocationDirection d in Enum.GetValues<DirectedLocation.LocationDirection>())
+      foreach (var d in Enum.GetValues<DirectedLocation.LocationDirection>())
       {
-        for (int column = 0; column < ColumnCount; column++)
-        for (int row = 0; row < RowCount; row++)
+        for (var column = 0; column < ColumnCount; column++)
+        for (var row = 0; row < RowCount; row++)
         {
           if (!(
                 (d == DirectedLocation.LocationDirection.LeftToRight &&
@@ -64,7 +66,7 @@
                 (d == DirectedLocation.LocationDirection.RightBottomLeftTop &&
                  (row == 0 || column == 0))))
           {
-            DirectedLocation dl = new DirectedLocation
+            var dl = new DirectedLocation
             {
               Column = column,
               Row = row,
@@ -104,9 +106,9 @@
 
     public RandomLocator Minus(List<DirectedLocation> locations)
     {
-      HashSet<DirectedLocation> locationsToRemove = locations.ToHashSet();
+      var locationsToRemove = locations.ToHashSet();
 
-      List<DirectedLocation> remainingLocations = AvailableLocations
+      var remainingLocations = AvailableLocations
         .Where(location => !locationsToRemove.Contains(location))
         .ToList();
 

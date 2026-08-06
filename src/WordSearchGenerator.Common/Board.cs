@@ -23,22 +23,14 @@ namespace WordSearchGenerator.Common
       private set;
     }
 
-    public int CharCellCount
-    {
-      get => Matrix.OfType<Cell>().Count(cell => cell.Words.Count > 0);
-    }
+    public int CharCellCount => Matrix.OfType<Cell>().Count(cell => cell.Words.Count > 0);
 
-    public double PercentageOccupied
-    {
-      get => RowCount == 0 || ColumnCount == 0
+    public double PercentageOccupied =>
+      RowCount == 0 || ColumnCount == 0
         ? 0
         : 100 * (double)CharCellCount / (RowCount * ColumnCount);
-    }
 
-    public int IntersectionCount
-    {
-      get => Matrix.OfType<Cell>().Count(cl => cl.Intersections >= 2);
-    }
+    public int IntersectionCount => Matrix.OfType<Cell>().Count(cl => cl.Intersections >= 2);
 
     public string Message
     {
@@ -81,33 +73,33 @@ namespace WordSearchGenerator.Common
 
     public string PrintBoard()
     {
-      StringBuilder bldr = new StringBuilder();
+      var bldr = new StringBuilder();
 
       bldr.Append("    ");
 
-      for (int column = 0; column < ColumnCount; column++)
+      for (var column = 0; column < ColumnCount; column++)
       {
-        bldr.Append($"{column,2}");
+        bldr.Append($"{column,3}");
       }
 
       bldr.AppendLine();
       bldr.Append("   +");
-      bldr.AppendLine(new string('-', ColumnCount * 2));
+      bldr.AppendLine(new string('-', ColumnCount * 3));
 
-      for (int row = 0; row < RowCount; row++)
+      for (var row = 0; row < RowCount; row++)
       {
         bldr.Append($"{row,2} | ");
 
-        for (int column = 0; column < ColumnCount; column++)
+        for (var column = 0; column < ColumnCount; column++)
         {
-          Cell cell = Matrix[row, column];
+          var cell = Matrix[row, column];
 
           bldr.Append(cell.Type switch
           {
-            Cell.CellType.Empty => ". ",
+            Cell.CellType.Empty => " . ",
             Cell.CellType.QuizWordPlaceholder =>
-              $"{DirectedLocation.GetArrowForDirection(cell.QuizWordDirection)} ",
-            _ => $"{cell.Char} "
+              $" {DirectedLocation.GetArrowForDirection(cell.QuizWordDirection)} ",
+            _ => $" {cell.Char} "
           });
         }
 
@@ -119,7 +111,7 @@ namespace WordSearchGenerator.Common
 
     public string PrintDiagnostics()
     {
-      StringBuilder bldr = new StringBuilder();
+      var bldr = new StringBuilder();
 
       bldr.AppendLine($"Board: {RowCount}x{ColumnCount}");
       bldr.Append(PrintBoard());
@@ -135,16 +127,16 @@ namespace WordSearchGenerator.Common
 
     public string PrintIntersections()
     {
-      StringBuilder bldr = new StringBuilder();
+      var bldr = new StringBuilder();
 
-      for (int i = 0; i < RowCount; i++)
+      for (var i = 0; i < RowCount; i++)
       {
-        for (int j = 0; j < ColumnCount; j++)
+        for (var j = 0; j < ColumnCount; j++)
         {
           if (Matrix[i, j].Intersections >= 2)
           {
-            Cell cell = Matrix[i, j];
-            string words = string.Join(", ", cell.Words.Select(word => word.Text));
+            var cell = Matrix[i, j];
+            var words = string.Join(", ", cell.Words.Select(word => word.Text));
 
             bldr.AppendLine(
               $"  ({i},{j}) '{cell.Char}': {cell.Intersections} words [{words}]");
@@ -162,13 +154,13 @@ namespace WordSearchGenerator.Common
 
     public string PrintWords(bool showSolution)
     {
-      StringBuilder bldr = new StringBuilder();
-      int fallbackNumber = 1;
+      var bldr = new StringBuilder();
+      var fallbackNumber = 1;
 
-      foreach (WordInfo word in Words)
+      foreach (var word in Words)
       {
-        int wordNumber = word.WordNumber > 0 ? word.WordNumber : fallbackNumber;
-        string printableText = string.IsNullOrWhiteSpace(word.PrintableText)
+        var wordNumber = word.WordNumber > 0 ? word.WordNumber : fallbackNumber;
+        var printableText = string.IsNullOrWhiteSpace(word.PrintableText)
           ? word.Text
           : word.PrintableText;
 
@@ -198,32 +190,32 @@ namespace WordSearchGenerator.Common
 
     private void FillBoard()
     {
-      List<char> messageChars = Message == null ? [] : Message.ToCharArray().ToList();
+      var messageChars = Message == null ? [] : Message.ToCharArray().ToList();
       Matrix = new Cell[RowCount, ColumnCount];
 
-      for (int i = 0; i < RowCount; i++)
-      for (int j = 0; j < ColumnCount; j++)
+      for (var i = 0; i < RowCount; i++)
+      for (var j = 0; j < ColumnCount; j++)
       {
         Matrix[i, j] = new Cell();
       }
 
-      foreach (WordInfo word in Words)
+      foreach (var word in Words)
       {
         if (word.Placement == null)
         {
           continue;
         }
 
-        List<DirectedLocation> locations = word.GetAllLetterLocations();
-        string wordText = word.Text;
+        var locations = word.GetAllLetterLocations();
+        var wordText = word.Text;
 
-        for (int j = 0; j < wordText.Length; j++)
+        for (var j = 0; j < wordText.Length; j++)
         {
-          DirectedLocation letterLocation = locations[j];
-          int r = letterLocation.Row;
-          int c = letterLocation.Column;
+          var letterLocation = locations[j];
+          var r = letterLocation.Row;
+          var c = letterLocation.Column;
 
-          Cell cell = Matrix[r, c];
+          var cell = Matrix[r, c];
 
           cell.Type = Cell.CellType.CharFromText;
           cell.Words.Add(word);
@@ -241,8 +233,8 @@ namespace WordSearchGenerator.Common
         }
       }
 
-      for (int i = 0; i < RowCount; i++)
-      for (int j = 0; j < ColumnCount; j++)
+      for (var i = 0; i < RowCount; i++)
+      for (var j = 0; j < ColumnCount; j++)
       {
         if (messageChars.Count == 0)
         {
@@ -298,10 +290,7 @@ namespace WordSearchGenerator.Common
         set;
       }
 
-      public int Intersections
-      {
-        get => Words.Count;
-      }
+      public int Intersections => Words.Count;
 
       public List<WordInfo> Words
       {
