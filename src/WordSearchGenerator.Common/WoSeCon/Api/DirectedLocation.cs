@@ -88,7 +88,7 @@
     #region Other Stuff
 
     /// <summary>
-    ///   If both directions lie in one "line", then returns true.
+    /// If both directions lie in one "line", then returns true.
     /// </summary>
     public static bool IsSameLine(LocationDirection d1, LocationDirection d2)
     {

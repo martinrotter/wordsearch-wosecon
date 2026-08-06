@@ -45,10 +45,8 @@ namespace WordSearchGenerator.Common.WoSeCon
     }
 
     /// <summary>
-    ///   In quiz mode, special initial character
-    ///   is prepended to each word and will serve
-    ///   as "question" cell with direction of the word
-    ///   and number of question.
+    ///   In quiz mode, one cell before the word serves as the
+    ///   question cell and contains its number and direction.
     /// </summary>
     public bool QuizMode
     {
@@ -72,6 +70,12 @@ namespace WordSearchGenerator.Common.WoSeCon
       get;
     }
 
+    private bool HasConstructed
+    {
+      get;
+      set;
+    }
+
     #endregion
 
     #region Constructors
@@ -82,8 +86,10 @@ namespace WordSearchGenerator.Common.WoSeCon
       QuizMode = quizMode;
       RowCount = rowCount;
       ColumnCount = columnCount;
-      Words = Sort(words);
       Orderer = orderer;
+
+      ValidateWords(words);
+      Words = CloneAndSort(words);
 
       ResetState();
     }
@@ -92,25 +98,38 @@ namespace WordSearchGenerator.Common.WoSeCon
 
     #region Other Stuff
 
-    private List<WordInfo> Sort(List<WordInfo> words)
+    private static void ValidateWords(IEnumerable<WordInfo> words)
+    {
+      ArgumentNullException.ThrowIfNull(words);
+
+      if (words.Any(word => word?.Text == null || word.Text.Length < 2))
+      {
+        throw new ArgumentException(
+          "Every word must contain at least two characters.",
+          nameof(words));
+      }
+    }
+
+    private static List<WordInfo> CloneAndSort(IEnumerable<WordInfo> words)
     {
       return words
+        .Select(word => (WordInfo)word.Clone())
         .OrderByDescending(wrd => wrd.Text.Length)
-        .Select(wrd =>
-        {
-          if (QuizMode)
-          {
-            wrd.Text = $"{Constants.Misc.QuizModePlaceholder}{wrd.Text}";
-          }
-
-          return wrd;
-        })
         .ToList();
     }
 
     public void Construct(CancellationToken? ct)
     {
-      ResetState();
+      if (HasConstructed)
+      {
+        ResetState();
+      }
+      else
+      {
+        ResetWordsAndStatistics();
+      }
+
+      HasConstructed = true;
 
       var wordIndex = 0;
       var word = Words[wordIndex];
@@ -152,13 +171,18 @@ namespace WordSearchGenerator.Common.WoSeCon
 
     private void ResetState()
     {
+      ResetWordsAndStatistics();
+      GlobalLocator = new RandomLocator(RowCount, ColumnCount, Orderer);
+    }
+
+    private void ResetWordsAndStatistics()
+    {
       foreach (var word in Words)
       {
         word.Placement = null;
         word.ClearTestedLocations();
       }
 
-      GlobalLocator = new RandomLocator(RowCount, ColumnCount, Orderer);
       Mode = OperationMode.Forward;
       Backtrackings = 0;
       TestedPositions = 0L;
@@ -168,7 +192,7 @@ namespace WordSearchGenerator.Common.WoSeCon
     {
       word.Placement = location;
 
-      if (!word.WillFit(location, RowCount, ColumnCount))
+      if (!word.WillFit(location, RowCount, ColumnCount, QuizMode))
       {
         word.Placement = null;
         return false;
@@ -184,7 +208,7 @@ namespace WordSearchGenerator.Common.WoSeCon
         if (word.ConflictsWithWord(wordToCheck, QuizMode))
         {
           // Either these words conflict
-          // or we are in quiz mode where placeholder
+          // or we are in quiz mode where question
           // cells cannot intersect.
           word.Placement = null;
           return false;

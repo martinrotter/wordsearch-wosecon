@@ -65,6 +65,23 @@ namespace WordSearchGenerator.Tests
     }
 
     [TestMethod]
+    [DataRow(false)]
+    [DataRow(true)]
+    public void RejectsOneLetterWords(bool quizMode)
+    {
+      var exception = Assert.ThrowsExactly<ArgumentException>(() => CreateGenerator(
+        1,
+        new[]
+        {
+          "A"
+        },
+        locations => locations,
+        quizMode));
+
+      StringAssert.Contains(exception.Message, "at least two characters");
+    }
+
+    [TestMethod]
     public void ConstructsExpectedCrossing()
     {
       DirectedLocation[] expectedPlacements =
@@ -145,24 +162,35 @@ namespace WordSearchGenerator.Tests
         Location(2, 0, DirectedLocation.LocationDirection.LeftToRight)
       };
 
+      var priorityOrderer = CreatePriorityOrderer(new[]
+      {
+        blockedPlacement,
+        expectedPlacements[0],
+        expectedPlacements[1],
+        expectedPlacements[2]
+      });
+      var ordererCalls = 0;
+      RandomLocator.LocationOrderer countingOrderer = locations =>
+      {
+        ordererCalls++;
+        return priorityOrderer(locations);
+      };
+
       var generator = CreateGenerator(
         3,
         new[]
         {
           "ABC", "DEF", "GHI"
         },
-        CreatePriorityOrderer(new[]
-        {
-          blockedPlacement,
-          expectedPlacements[0],
-          expectedPlacements[1],
-          expectedPlacements[2]
-        }));
+        countingOrderer);
+
+      Assert.AreEqual(1, ordererCalls);
 
       generator.Construct(null);
 
       var firstTestedPositions = generator.TestedPositions;
       Assert.AreEqual(1, generator.Backtrackings);
+      Assert.AreEqual(1, ordererCalls);
 
       generator.Construct(null);
 
@@ -173,6 +201,7 @@ namespace WordSearchGenerator.Tests
 
       Assert.AreEqual(1, generator.Backtrackings);
       Assert.AreEqual(firstTestedPositions, generator.TestedPositions);
+      Assert.AreEqual(2, ordererCalls);
 
       for (var i = 0; i < expectedPlacements.Length; i++)
       {
@@ -180,6 +209,60 @@ namespace WordSearchGenerator.Tests
       }
 
       AssertFillsGrid(generator, 3);
+    }
+
+    [TestMethod]
+    public void GeneratorsOwnIndependentWordCopies()
+    {
+      var sourceWords = new List<WordInfo>
+      {
+        new()
+        {
+          Text = "ABC",
+          WordNumber = 1
+        },
+        new()
+        {
+          Text = "DEF",
+          WordNumber = 2
+        },
+        new()
+        {
+          Text = "GHI",
+          WordNumber = 3
+        }
+      };
+      DirectedLocation[] expectedPlacements =
+      {
+        Location(0, 0, DirectedLocation.LocationDirection.LeftToRight),
+        Location(1, 0, DirectedLocation.LocationDirection.LeftToRight),
+        Location(2, 0, DirectedLocation.LocationDirection.LeftToRight)
+      };
+      var orderer = CreatePriorityOrderer(expectedPlacements);
+      var firstGenerator = new WoSeCon(sourceWords, 3, 3, false, orderer);
+
+      firstGenerator.Construct(null);
+
+      var firstPlacements = firstGenerator.Words
+        .Select(word => (DirectedLocation)word.Placement.Clone())
+        .ToArray();
+      var secondGenerator = new WoSeCon(sourceWords, 3, 3, false, orderer);
+
+      for (var i = 0; i < sourceWords.Count; i++)
+      {
+        Assert.AreNotSame(sourceWords[i], firstGenerator.Words[i]);
+        Assert.AreNotSame(sourceWords[i], secondGenerator.Words[i]);
+        Assert.IsNull(sourceWords[i].Placement);
+        Assert.AreEqual(firstPlacements[i], firstGenerator.Words[i].Placement);
+      }
+
+      secondGenerator.Construct(null);
+
+      for (var i = 0; i < sourceWords.Count; i++)
+      {
+        Assert.AreEqual(firstPlacements[i], firstGenerator.Words[i].Placement);
+        Assert.AreEqual(expectedPlacements[i], secondGenerator.Words[i].Placement);
+      }
     }
 
     [TestMethod]
@@ -299,11 +382,9 @@ namespace WordSearchGenerator.Tests
       for (var row = 0; row < wordTexts.Length; row++)
       {
         Assert.AreEqual(expectedPlacements[row], generator.Words[row].Placement);
+        Assert.AreEqual(wordTexts[row], generator.Words[row].Text);
         Assert.AreEqual(
-          $"{Constants.Misc.QuizModePlaceholder}{wordTexts[row]}",
-          generator.Words[row].Text);
-        Assert.AreEqual(
-          Board.Cell.CellType.QuizWordPlaceholder,
+          Board.Cell.CellType.QuizQuestion,
           board.Matrix[row, 0].Type);
         Assert.AreEqual(row + 1, board.Matrix[row, 0].QuizWordNumber);
         Assert.AreEqual(
@@ -318,7 +399,95 @@ namespace WordSearchGenerator.Tests
     }
 
     [TestMethod]
-    public void RejectsQuizPlaceholderIntersection()
+    public void QuizQuestionCellOffsetsAnswerInEveryDirection()
+    {
+      (DirectedLocation.LocationDirection Direction, int Row, int Column)[] cases =
+      {
+        (DirectedLocation.LocationDirection.LeftToRight, 1, 0),
+        (DirectedLocation.LocationDirection.RightToLeft, 1, 2),
+        (DirectedLocation.LocationDirection.TopBottom, 0, 1),
+        (DirectedLocation.LocationDirection.BottomTop, 2, 1),
+        (DirectedLocation.LocationDirection.LeftTopRightBottom, 0, 0),
+        (DirectedLocation.LocationDirection.RightBottomLeftTop, 2, 2),
+        (DirectedLocation.LocationDirection.LeftBottomRightTop, 2, 0),
+        (DirectedLocation.LocationDirection.RightTopLeftBottom, 0, 2)
+      };
+
+      foreach (var testCase in cases)
+      {
+        var expectedPlacement = Location(
+          testCase.Row,
+          testCase.Column,
+          testCase.Direction);
+        var generator = CreateGenerator(
+          3,
+          new[]
+          {
+            "AB"
+          },
+          CreatePriorityOrderer(new[]
+          {
+            expectedPlacement
+          }),
+          true);
+
+        generator.Construct(null);
+
+        var board = WriteDiagnostics(
+          generator,
+          3,
+          $"Quiz question cell correctly offsets {testCase.Direction}.",
+          true);
+        var word = generator.Words[0];
+        var locations = word.GetAllPlacementLocations(true);
+
+        Assert.AreEqual("AB", word.Text);
+        Assert.AreEqual(expectedPlacement, word.Placement);
+        Assert.AreEqual(3, locations.Count);
+        Assert.AreEqual(
+          Board.Cell.CellType.QuizQuestion,
+          board.Matrix[locations[0].Row, locations[0].Column].Type);
+        Assert.AreEqual('A', board.Matrix[locations[1].Row, locations[1].Column].Char);
+        Assert.AreEqual('B', board.Matrix[locations[2].Row, locations[2].Column].Char);
+      }
+    }
+
+    [TestMethod]
+    public void QuizAnswersCanCrossAfterTheirQuestionCells()
+    {
+      DirectedLocation[] expectedPlacements =
+      {
+        Location(1, 0, DirectedLocation.LocationDirection.LeftToRight),
+        Location(0, 1, DirectedLocation.LocationDirection.TopBottom)
+      };
+      var generator = CreateGenerator(
+        3,
+        new[]
+        {
+          "AB", "AB"
+        },
+        CreatePriorityOrderer(expectedPlacements),
+        true);
+
+      generator.Construct(null);
+
+      var board = WriteDiagnostics(
+        generator,
+        3,
+        "Quiz answers crossed after their exclusive question cells.",
+        true);
+
+      Assert.AreEqual(expectedPlacements[0], generator.Words[0].Placement);
+      Assert.AreEqual(expectedPlacements[1], generator.Words[1].Placement);
+      Assert.AreEqual(Board.Cell.CellType.QuizQuestion, board.Matrix[1, 0].Type);
+      Assert.AreEqual(Board.Cell.CellType.QuizQuestion, board.Matrix[0, 1].Type);
+      Assert.AreEqual('A', board.Matrix[1, 1].Char);
+      Assert.AreEqual(2, board.Matrix[1, 1].Intersections);
+      Assert.AreEqual(1, board.IntersectionCount);
+    }
+
+    [TestMethod]
+    public void RejectsQuizQuestionCellIntersection()
     {
       var generator = CreateGenerator(
         3,
@@ -340,7 +509,7 @@ namespace WordSearchGenerator.Tests
       var board = WriteDiagnostics(
         generator,
         3,
-        "Quiz placeholder intersection correctly rejected.",
+        "Quiz question-cell intersection correctly rejected.",
         true);
 
       Assert.IsNull(generator.Words[1].Placement);
@@ -367,7 +536,7 @@ namespace WordSearchGenerator.Tests
       {
         3, new[]
         {
-          "ABC", "DE", "FG", "H", "I"
+          "ABC", "DE", "FG", "HD", "IG"
         },
         new[]
         {
@@ -383,7 +552,7 @@ namespace WordSearchGenerator.Tests
       {
         4, new[]
         {
-          "ABCD", "EFG", "HIJ", "KL", "MN", "O", "P"
+          "ABCD", "EFG", "HIJ", "KL", "MN", "OK", "PN"
         },
         new[]
         {
@@ -408,7 +577,6 @@ namespace WordSearchGenerator.Tests
         .Select((text, index) => new WordInfo
         {
           Text = text,
-          PrintableText = text,
           WordNumber = index + 1
         })
         .ToList();

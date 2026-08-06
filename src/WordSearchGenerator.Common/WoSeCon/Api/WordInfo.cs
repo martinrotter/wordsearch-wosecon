@@ -37,12 +37,6 @@
       set;
     }
 
-    public string PrintableText
-    {
-      get;
-      set;
-    }
-
     #endregion
 
     #region Interface Implementations
@@ -54,7 +48,6 @@
       wrd.Text = (string)Text.Clone();
       wrd.WordNumber = WordNumber;
       wrd.QuizQuestion = QuizQuestion?.Clone() as string;
-      wrd.PrintableText = (string)PrintableText.Clone();
 
       if (Placement != null)
       {
@@ -106,14 +99,14 @@
 
     public bool ConflictsWithWord(WordInfo otherWord, bool quizMode)
     {
-      var otherWordLocations = otherWord.GetAllLetterLocations();
+      var otherWordLocations = otherWord.GetAllPlacementLocations(quizMode);
 
       if (otherWordLocations == null || otherWordLocations.Count == 0)
       {
         return false;
       }
 
-      var wordLocations = GetAllLetterLocations();
+      var wordLocations = GetAllPlacementLocations(quizMode);
 
       var firstMyWord = true;
 
@@ -146,7 +139,8 @@
               wordLetterLoc.Direction != otherWordLetterLoc.Direction)
           {
             // Two words intersect.
-            if (CharAt(otherWordLetterLoc) != otherWord.CharAt(otherWordLetterLoc))
+            if (CharAt(otherWordLetterLoc, quizMode) !=
+                otherWord.CharAt(otherWordLetterLoc, quizMode))
             {
               return true;
             }
@@ -186,30 +180,15 @@
       return Equals((WordInfo)obj);
     }
 
-    /*
-    public Dictionary<Tuple<DirectedLocation, int>, List<DirectedLocation>> KnownLocations
-    {
-      get;
-    } = new Dictionary<Tuple<DirectedLocation, int>, List<DirectedLocation>>();
-    */
-
-    public List<DirectedLocation> GetAllLetterLocations()
+    public List<DirectedLocation> GetAllPlacementLocations(bool quizMode)
     {
       if (Placement == null)
       {
         return new List<DirectedLocation>(0);
       }
 
-      var letterLocations = new List<DirectedLocation>(Text.Length);
-
-      /*
-      var tpl = new Tuple<DirectedLocation, int>(Placement, Text.Length);
-
-      if (KnownLocations.TryGetValue(tpl, out List<DirectedLocation> locations))
-      {
-        return locations;
-      }
-      */
+      var placementLength = Text.Length + (quizMode ? 1 : 0);
+      var placementLocations = new List<DirectedLocation>(placementLength);
 
       var row = Placement.Row;
       var column = Placement.Column;
@@ -228,7 +207,7 @@
                       Placement.Direction == DirectedLocation.LocationDirection.LeftTopRightBottom ||
                       Placement.Direction == DirectedLocation.LocationDirection.LeftBottomRightTop;
 
-      for (var i = 0; i < Text.Length; i++)
+      for (var i = 0; i < placementLength; i++)
       {
         var d = new DirectedLocation
         {
@@ -237,12 +216,10 @@
           Direction = Placement.Direction
         };
 
-        letterLocations.Add(d);
+        placementLocations.Add(d);
       }
 
-      //KnownLocations[tpl] = rVal;
-
-      return letterLocations;
+      return placementLocations;
     }
 
     public override int GetHashCode()
@@ -250,53 +227,70 @@
       return Text != null ? Text.GetHashCode() : 0;
     }
 
-    public char CharAt(DirectedLocation location)
+    public char CharAt(DirectedLocation location, bool quizMode)
     {
+      int placementIndex;
+
       if (Placement.Direction == DirectedLocation.LocationDirection.LeftToRight ||
           Placement.Direction == DirectedLocation.LocationDirection.RightToLeft)
       {
         var idx = location.Column - Placement.Column;
-        return Text[idx < 0 ? -idx : idx];
+        placementIndex = idx < 0 ? -idx : idx;
       }
       else
       {
         var idx = location.Row - Placement.Row;
-        return Text[idx < 0 ? -idx : idx];
+        placementIndex = idx < 0 ? -idx : idx;
       }
+
+      var textIndex = placementIndex - (quizMode ? 1 : 0);
+
+      if (textIndex < 0)
+      {
+        throw new InvalidOperationException("A quiz question cell does not contain a letter.");
+      }
+
+      return Text[textIndex];
     }
 
-    public bool WillFit(DirectedLocation location, int rowCount, int columnCount)
+    public bool WillFit(
+      DirectedLocation location,
+      int rowCount,
+      int columnCount,
+      bool quizMode)
     {
+      var placementLength = Text.Length + (quizMode ? 1 : 0);
+
       switch (location.Direction)
       {
         case DirectedLocation.LocationDirection.RightTopLeftBottom:
-          return location.Column - Text.Length >= -1 &&
-                 location.Row + Text.Length <= rowCount;
+          return location.Column - placementLength >= -1 &&
+                 location.Row + placementLength <= rowCount;
 
         case DirectedLocation.LocationDirection.RightBottomLeftTop:
-          return location.Column - Text.Length >= -1 &&
-                 location.Row - Text.Length >= -1;
+          return location.Column - placementLength >= -1 &&
+                 location.Row - placementLength >= -1;
 
         case DirectedLocation.LocationDirection.LeftTopRightBottom:
-          return location.Row + Text.Length <= rowCount &&
-                 location.Column + Text.Length <= columnCount;
+          return location.Row + placementLength <= rowCount &&
+                 location.Column + placementLength <= columnCount;
 
         case DirectedLocation.LocationDirection.LeftBottomRightTop:
-          return location.Row - Text.Length >= -1 &&
-                 location.Column + Text.Length <= columnCount;
+          return location.Row - placementLength >= -1 &&
+                 location.Column + placementLength <= columnCount;
 
         case DirectedLocation.LocationDirection.LeftToRight:
-          return location.Column + Text.Length <= columnCount;
+          return location.Column + placementLength <= columnCount;
 
         case DirectedLocation.LocationDirection.RightToLeft:
-          return location.Column - Text.Length >= -1;
+          return location.Column - placementLength >= -1;
 
         case DirectedLocation.LocationDirection.TopBottom:
-          return location.Row + Text.Length <= rowCount;
+          return location.Row + placementLength <= rowCount;
 
         case DirectedLocation.LocationDirection.BottomTop:
         default:
-          return location.Row - Text.Length >= -1;
+          return location.Row - placementLength >= -1;
       }
     }
 

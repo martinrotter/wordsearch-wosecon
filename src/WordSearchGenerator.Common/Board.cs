@@ -97,7 +97,7 @@ namespace WordSearchGenerator.Common
           bldr.Append(cell.Type switch
           {
             Cell.CellType.Empty => " . ",
-            Cell.CellType.QuizWordPlaceholder =>
+            Cell.CellType.QuizQuestion =>
               $" {DirectedLocation.GetArrowForDirection(cell.QuizWordDirection)} ",
             _ => $" {cell.Char} "
           });
@@ -160,9 +160,7 @@ namespace WordSearchGenerator.Common
       foreach (var word in Words)
       {
         var wordNumber = word.WordNumber > 0 ? word.WordNumber : fallbackNumber;
-        var printableText = string.IsNullOrWhiteSpace(word.PrintableText)
-          ? word.Text
-          : word.PrintableText;
+        var printableText = word.Text;
 
         bldr.Append($"  {wordNumber,2}. {printableText}");
 
@@ -206,10 +204,10 @@ namespace WordSearchGenerator.Common
           continue;
         }
 
-        var locations = word.GetAllLetterLocations();
+        var locations = word.GetAllPlacementLocations(QuizMode);
         var wordText = word.Text;
 
-        for (var j = 0; j < wordText.Length; j++)
+        for (var j = 0; j < locations.Count; j++)
         {
           var letterLocation = locations[j];
           var r = letterLocation.Row;
@@ -222,13 +220,14 @@ namespace WordSearchGenerator.Common
 
           if (j == 0 && QuizMode)
           {
-            cell.Type = Cell.CellType.QuizWordPlaceholder;
+            cell.Type = Cell.CellType.QuizQuestion;
             cell.QuizWordNumber = word.WordNumber;
             cell.QuizWordDirection = word.Placement.Direction;
           }
           else if (cell.Char == default)
           {
-            cell.Char = wordText[j];
+            var textIndex = j - (QuizMode ? 1 : 0);
+            cell.Char = wordText[textIndex];
           }
         }
       }
@@ -275,9 +274,9 @@ namespace WordSearchGenerator.Common
         // Char from message.
         CharFromMessage,
 
-        // Special placeholder placed in front of the word.
+        // Question cell placed in front of the word.
         // The cell will hold number and direction of the guessed word.
-        QuizWordPlaceholder
+        QuizQuestion
       }
 
       #endregion
