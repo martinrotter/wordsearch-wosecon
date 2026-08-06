@@ -97,7 +97,10 @@
       Placement = null;
     }
 
-    public bool ConflictsWithWord(WordInfo otherWord, bool quizMode)
+    public bool ConflictsWithWord(
+      IReadOnlyList<DirectedLocation> wordLocations,
+      WordInfo otherWord,
+      bool quizMode)
     {
       var otherWordLocations = otherWord.GetAllPlacementLocations(quizMode);
 
@@ -105,8 +108,6 @@
       {
         return false;
       }
-
-      var wordLocations = GetAllPlacementLocations(quizMode);
 
       var firstMyWord = true;
 

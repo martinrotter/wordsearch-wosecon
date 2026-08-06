@@ -198,6 +198,8 @@ namespace WordSearchGenerator.Common.WoSeCon
         return false;
       }
 
+      var wordLocations = word.GetAllPlacementLocations(QuizMode);
+
       foreach (var wordToCheck in Words)
       {
         if (ReferenceEquals(word, wordToCheck))
@@ -205,7 +207,7 @@ namespace WordSearchGenerator.Common.WoSeCon
           continue;
         }
 
-        if (word.ConflictsWithWord(wordToCheck, QuizMode))
+        if (word.ConflictsWithWord(wordLocations, wordToCheck, QuizMode))
         {
           // Either these words conflict
           // or we are in quiz mode where question
