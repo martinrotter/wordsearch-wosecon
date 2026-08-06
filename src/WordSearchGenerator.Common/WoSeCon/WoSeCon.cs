@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using WordSearchGenerator.Common.WoSeCon.Api;
-using static WordSearchGenerator.Common.WoSeCon.Api.RandomLocator;
+using static WordSearchGenerator.Common.WoSeCon.Api.Locator;
 
 namespace WordSearchGenerator.Common.WoSeCon
 {
@@ -38,7 +38,7 @@ namespace WordSearchGenerator.Common.WoSeCon
       get;
     }
 
-    public RandomLocator GlobalLocator
+    public Locator GlobalLocator
     {
       get;
       private set;
@@ -276,7 +276,7 @@ namespace WordSearchGenerator.Common.WoSeCon
     private void ResetState()
     {
       ResetWordsAndStatistics();
-      GlobalLocator = new RandomLocator(RowCount, ColumnCount, Orderer);
+      GlobalLocator = new Locator(RowCount, ColumnCount, Orderer);
     }
 
     private void ResetWordsAndStatistics()
@@ -334,7 +334,7 @@ namespace WordSearchGenerator.Common.WoSeCon
       CancellationToken cancellationToken,
       Action reportProgress)
     {
-      RandomLocator localLocator = null;
+      Locator localLocator = null;
 
       if (Mode == OperationMode.Backward)
       {

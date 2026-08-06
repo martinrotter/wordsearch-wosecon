@@ -251,7 +251,7 @@ namespace WordSearchGenerator.Tests
         blockedPlacement, expectedPlacements[0], expectedPlacements[1], expectedPlacements[2]
       });
       var ordererCalls = 0;
-      RandomLocator.LocationOrderer countingOrderer = locations =>
+      Locator.LocationOrderer countingOrderer = locations =>
       {
         ordererCalls++;
         return priorityOrderer(locations);
@@ -845,7 +845,7 @@ namespace WordSearchGenerator.Tests
     private static WoSeCon CreateGenerator(
       int size,
       IEnumerable<string> wordTexts,
-      RandomLocator.LocationOrderer orderer,
+      Locator.LocationOrderer orderer,
       bool quizMode = false)
     {
       return CreateGenerator(size, size, wordTexts, orderer, quizMode);
@@ -855,7 +855,7 @@ namespace WordSearchGenerator.Tests
       int rowCount,
       int columnCount,
       IEnumerable<string> wordTexts,
-      RandomLocator.LocationOrderer orderer,
+      Locator.LocationOrderer orderer,
       bool quizMode = false)
     {
       return new WoSeCon(
@@ -877,7 +877,7 @@ namespace WordSearchGenerator.Tests
         .ToList();
     }
 
-    private static RandomLocator.LocationOrderer CreatePriorityOrderer(
+    private static Locator.LocationOrderer CreatePriorityOrderer(
       IReadOnlyList<DirectedLocation> priorityLocations)
     {
       var priorities = priorityLocations
@@ -902,7 +902,7 @@ namespace WordSearchGenerator.Tests
         .ToList();
     }
 
-    private static RandomLocator.LocationOrderer CreateShuffledOrderer(int seed)
+    private static Locator.LocationOrderer CreateShuffledOrderer(int seed)
     {
       return locations =>
       {
