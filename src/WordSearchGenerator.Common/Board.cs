@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using System.Xml;
 using WordSearchGenerator.Common.WoSeCon.Api;
 
 namespace WordSearchGenerator.Common
@@ -9,11 +8,6 @@ namespace WordSearchGenerator.Common
     #region Properties
 
     public int ColumnCount
-    {
-      get;
-    }
-
-    public bool HtmlOutput
     {
       get;
     }
@@ -31,25 +25,14 @@ namespace WordSearchGenerator.Common
 
     public int CharCellCount
     {
-      get
-      {
-        int taken = 0;
-
-        foreach (Cell cell in Matrix)
-        {
-          if (cell.Type == Cell.CellType.CharFromText)
-          {
-            taken++;
-          }
-        }
-
-        return taken;
-      }
+      get => Matrix.OfType<Cell>().Count(cell => cell.Words.Count > 0);
     }
 
     public double PercentageOccupied
     {
-      get => 100 * (double)CharCellCount / (RowCount * ColumnCount);
+      get => RowCount == 0 || ColumnCount == 0
+        ? 0
+        : 100 * (double)CharCellCount / (RowCount * ColumnCount);
     }
 
     public int IntersectionCount
@@ -72,16 +55,6 @@ namespace WordSearchGenerator.Common
       get;
     }
 
-    private Random Rng
-    {
-      get;
-    } = new Random((int)(DateTime.Now - DateTime.Today).TotalMilliseconds);
-
-    public double BlindRate
-    {
-      get;
-    }
-
     #endregion
 
     #region Constructors
@@ -90,18 +63,14 @@ namespace WordSearchGenerator.Common
       List<WordInfo> words,
       int rowCount,
       int columnCount,
-      bool htmlOutput,
       bool quizMode,
-      double blindRate = default,
       string message = null)
     {
       Words = words;
       RowCount = rowCount;
       ColumnCount = columnCount;
-      HtmlOutput = htmlOutput;
       QuizMode = quizMode;
       Message = message;
-      BlindRate = blindRate;
 
       FillBoard();
     }
@@ -110,132 +79,57 @@ namespace WordSearchGenerator.Common
 
     #region Other Stuff
 
-    public string Print(bool htmlOutput, bool showSolution)
-    {
-      if (htmlOutput)
-      {
-        string html = GetHtmlTemplate(ColumnCount);
-        string board = PrintBoardHtml();
-        string words = PrintWordsHtml(showSolution);
-
-        html = html
-          .Replace("{1}", board)
-          .Replace("{2}", words);
-
-#if DEBUG
-        File.WriteAllText("html.html", html, Encoding.UTF8);
-#endif
-
-        return html;
-      }
-      else
-      {
-        return PrintBoardSimple() + PrintWords(showSolution);
-      }
-    }
-
-    private string PrintWordsHtml(bool showSolution)
-    { 
-      XmlDocument xml = new XmlDocument();
-      XmlElement root = xml.CreateElement("div").AppendClass("wordsearch-words");
-      xml.AppendChild(root);
-
-      foreach (WordInfo word in Words.OrderBy(wrd => wrd.PrintableText.ToLower()))
-      {
-        root.AppendElem("div").AppendClass("wordsearch-word").InnerText = word.ToString(0, true, showSolution);
-      }
-
-      return xml.OuterXml;
-    }
-
-    private string PrintBoardHtml()
-    {
-      XmlDocument xml = new XmlDocument();
-      XmlElement root = xml.CreateElement("div").AppendClass("wordsearch");
-      xml.AppendChild(root);
-
-      /*
-      bldr.Append("   ❘ ");
-
-      for (int j = 0; j < ColumnCount; j++)
-      {
-        bldr.Append(j.ToString("00"));
-      }
-
-      bldr.AppendLine();
-      bldr.Append(new string('-', bldr.Length - 1));
-      bldr.AppendLine();
-      */
-
-      for (int i = 0; i < RowCount; i++)
-      {
-        for (int j = 0; j < ColumnCount; j++)
-        {
-          Cell cell = Matrix[i, j];
-          XmlElement xmlCell = root.AppendElem("div").AppendClass("wordsearch-cell");
-
-          switch (cell.Type)
-          {
-            case Cell.CellType.Empty:
-              xmlCell.InnerText = "·";
-              xmlCell.AppendClass("wordsearch-cell-empty");
-              break;
-
-            case Cell.CellType.QuizWordPlaceholder:
-              xmlCell.InnerText = $"{cell.QuizWordNumber} {DirectedLocation.GetArrowForDirection(cell.QuizWordDirection)}";
-              xmlCell.AppendClass("wordsearch-cell-quiz");
-              break;
-
-            default:
-              xmlCell.InnerText = cell.Char.ToString();
-              break;
-          }
-        }
-      }
-
-      return xml.OuterXml;
-    }
-
-    private string GetHtmlTemplate(int columnCount)
-    {
-      return Properties.Resources.wordsearch_html.Replace("{0}", columnCount.ToString());
-    }
-
-    public string PrintBoardSimple()
+    public string PrintBoard()
     {
       StringBuilder bldr = new StringBuilder();
 
-      bldr.Append("   ❘ ");
+      bldr.Append("    ");
 
-      for (int j = 0; j < ColumnCount; j++)
+      for (int column = 0; column < ColumnCount; column++)
       {
-        bldr.Append(j.ToString("00"));
+        bldr.Append($"{column,2}");
       }
 
       bldr.AppendLine();
-      bldr.Append(new string('-', bldr.Length - 1));
-      bldr.AppendLine();
+      bldr.Append("   +");
+      bldr.AppendLine(new string('-', ColumnCount * 2));
 
-      for (int i = 0; i < RowCount; i++)
+      for (int row = 0; row < RowCount; row++)
       {
-        bldr.Append($"{i:00} ❘ ");
+        bldr.Append($"{row,2} | ");
 
-        for (int j = 0; j < ColumnCount; j++)
+        for (int column = 0; column < ColumnCount; column++)
         {
-          Cell cell = Matrix[i, j];
+          Cell cell = Matrix[row, column];
 
           bldr.Append(cell.Type switch
           {
-            Cell.CellType.Empty => " -",
-            Cell.CellType.QuizWordPlaceholder => $" {DirectedLocation.GetArrowForDirection(cell.QuizWordDirection)}",
-            _ => $" {cell.Char}"
+            Cell.CellType.Empty => ". ",
+            Cell.CellType.QuizWordPlaceholder =>
+              $"{DirectedLocation.GetArrowForDirection(cell.QuizWordDirection)} ",
+            _ => $"{cell.Char} "
           });
         }
 
         bldr.AppendLine();
       }
 
-      bldr.AppendLine();
+      return bldr.ToString();
+    }
+
+    public string PrintDiagnostics()
+    {
+      StringBuilder bldr = new StringBuilder();
+
+      bldr.AppendLine($"Board: {RowCount}x{ColumnCount}");
+      bldr.Append(PrintBoard());
+      bldr.AppendLine($"Words ({Words.Count}):");
+      bldr.Append(PrintWords(true));
+      bldr.AppendLine($"Intersections: {IntersectionCount}");
+      bldr.Append(PrintIntersections());
+      bldr.AppendLine(
+        $"Occupied: {CharCellCount}/{RowCount * ColumnCount} ({PercentageOccupied:F2}%)");
+
       return bldr.ToString();
     }
 
@@ -249,12 +143,19 @@ namespace WordSearchGenerator.Common
         {
           if (Matrix[i, j].Intersections >= 2)
           {
-            bldr.AppendLine($"Crossing: {i}x{j} -> {Matrix[i, j].Intersections}");
+            Cell cell = Matrix[i, j];
+            string words = string.Join(", ", cell.Words.Select(word => word.Text));
+
+            bldr.AppendLine(
+              $"  ({i},{j}) '{cell.Char}': {cell.Intersections} words [{words}]");
           }
         }
       }
 
-      bldr.AppendLine();
+      if (bldr.Length == 0)
+      {
+        bldr.AppendLine("  none");
+      }
 
       return bldr.ToString();
     }
@@ -262,14 +163,35 @@ namespace WordSearchGenerator.Common
     public string PrintWords(bool showSolution)
     {
       StringBuilder bldr = new StringBuilder();
-      int longestWord = Words.Max(wrd => wrd.PrintableText.Length);
+      int fallbackNumber = 1;
 
-      foreach (WordInfo word in Words.OrderBy(wrd => wrd.PrintableText.ToLower()))
+      foreach (WordInfo word in Words)
       {
-        bldr.Append(word.ToString(longestWord, false, showSolution));
-      }
+        int wordNumber = word.WordNumber > 0 ? word.WordNumber : fallbackNumber;
+        string printableText = string.IsNullOrWhiteSpace(word.PrintableText)
+          ? word.Text
+          : word.PrintableText;
 
-      bldr.AppendLine();
+        bldr.Append($"  {wordNumber,2}. {printableText}");
+
+        if (showSolution)
+        {
+          if (word.Placement == null)
+          {
+            bldr.Append(" [unplaced]");
+          }
+          else
+          {
+            bldr.Append(
+              $" @ ({word.Placement.Row},{word.Placement.Column}) " +
+              $"{DirectedLocation.GetArrowForDirection(word.Placement.Direction)} " +
+              word.Placement.Direction);
+          }
+        }
+
+        bldr.AppendLine();
+        fallbackNumber++;
+      }
 
       return bldr.ToString();
     }
@@ -287,13 +209,12 @@ namespace WordSearchGenerator.Common
 
       foreach (WordInfo word in Words)
       {
-        List<DirectedLocation> locations = word.GetAllLetterLocations();
-
-        if (!locations.Any())
+        if (word.Placement == null)
         {
-          throw new Exception("no locations");
+          continue;
         }
 
+        List<DirectedLocation> locations = word.GetAllLetterLocations();
         string wordText = word.Text;
 
         for (int j = 0; j < wordText.Length; j++)
@@ -315,7 +236,7 @@ namespace WordSearchGenerator.Common
           }
           else if (cell.Char == default)
           {
-            cell.Char = ShouldBeBlind() ? ' ' : wordText[j];
+            cell.Char = wordText[j];
           }
         }
       }
@@ -341,11 +262,6 @@ namespace WordSearchGenerator.Common
       {
         throw new Exception($"message is too long, {messageChars.Count} characters remain to be placed");
       }
-    }
-
-    private bool ShouldBeBlind()
-    {
-      return BlindRate > 0.0 && Rng.NextDouble() <= BlindRate;
     }
 
     #endregion
@@ -390,7 +306,7 @@ namespace WordSearchGenerator.Common
       public List<WordInfo> Words
       {
         get;
-      } = new List<WordInfo>();
+      } = [];
 
       public DirectedLocation.LocationDirection QuizWordDirection
       {

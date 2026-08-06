@@ -34,7 +34,9 @@
 
     #region Constructors
 
-    public RandomLocator(int rowCount, int columnCount)
+    public delegate IReadOnlyList<DirectedLocation> LocationOrderer(IReadOnlyList<DirectedLocation> locations);
+
+    public RandomLocator(int rowCount, int columnCount, LocationOrderer orderer = null)
     {
       RowCount = rowCount;
       ColumnCount = columnCount;
@@ -74,9 +76,21 @@
         }
       }
 
-      // Shuffle the list.
-      Random rng = new Random((int)(DateTime.Now - DateTime.Today).TotalMilliseconds);
-      AvailableLocations = AvailableLocations.OrderBy(_ => rng.Next()).ToList();
+      if (orderer != null)
+      {
+        // Shuffle the list.
+        AvailableLocations = orderer(AvailableLocations).ToList();
+      }
+    }
+
+    private RandomLocator(
+      int rowCount,
+      int columnCount,
+      List<DirectedLocation> availableLocations)
+    {
+      RowCount = rowCount;
+      ColumnCount = columnCount;
+      AvailableLocations = availableLocations;
     }
 
     #endregion
@@ -88,19 +102,15 @@
       AvailableLocations.Add(location);
     }
 
-    public static RandomLocator GetWithoutLocations(
-      int rowCount,
-      int columnCount,
-      List<DirectedLocation> visitedLocations)
+    public RandomLocator Minus(List<DirectedLocation> locations)
     {
-      RandomLocator loc = new RandomLocator(rowCount, columnCount);
+      HashSet<DirectedLocation> locationsToRemove = locations.ToHashSet();
 
-      foreach (DirectedLocation visitedLocation in visitedLocations)
-      {
-        loc.RemoveAvailableLocation(visitedLocation);
-      }
+      List<DirectedLocation> remainingLocations = AvailableLocations
+        .Where(location => !locationsToRemove.Contains(location))
+        .ToList();
 
-      return loc;
+      return new RandomLocator(RowCount, ColumnCount, remainingLocations);
     }
 
     public void RemoveAvailableLocation(DirectedLocation location)

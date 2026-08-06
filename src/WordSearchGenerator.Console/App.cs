@@ -86,7 +86,8 @@ namespace WordSearchGenerator.Console
           words.Words,
           Options.Rows,
           Options.Columns,
-          Options.QuizMode);
+          Options.QuizMode,
+          null);
 
         wo.Construct(null);
 

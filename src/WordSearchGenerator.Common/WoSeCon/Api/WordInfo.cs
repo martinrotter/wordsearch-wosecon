@@ -14,7 +14,7 @@
     {
       get;
       set;
-    } = new List<DirectedLocation>();
+    } = [];
 
     public string Text
     {
@@ -28,6 +28,9 @@
       set;
     }
 
+    /// <summary>
+    /// Should start from 1 for a collection of words.
+    /// </summary>
     public int WordNumber
     {
       get;

@@ -1,6 +1,3 @@
-using System.Diagnostics;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
 using WordSearchGenerator.Common;
 using WordSearchGenerator.Common.WoSeCon;
 using WordSearchGenerator.Common.WoSeCon.Api;
@@ -10,216 +7,233 @@ namespace WordSearchGenerator.Tests
   [TestClass]
   public class UnitTests
   {
-    #region Properties
-
-    private string TestDataFolder
+    public TestContext TestContext
     {
       get;
-    } = @"..\..\..\..\..\test-data";
-
-    private int NumberOfRepetitions
-    {
-      get;
-    } = 20;
-
-    #endregion
-
-    #region Other Stuff
+      set;
+    } = null!;
 
     [TestMethod]
-    public void OnceFullListBigGrid()
+    [DynamicData(nameof(FullGridCases))]
+    public void ConstructsExpectedFullGrid(
+      int size,
+      string[] wordTexts,
+      DirectedLocation[] expectedPlacements)
     {
-      RunGridWithWords(1, 130, 19, 30);
-    }
+      WoSeCon generator = CreateGenerator(
+        size,
+        wordTexts,
+        CreatePriorityOrderer(expectedPlacements));
 
-    [TestMethod]
-    public void FullListBigGrid()
-    {
-      RunGridWithWords(1, 130, 24, 30);
-    }
+      generator.Construct(null);
 
-    [TestMethod]
-    public void VerySmallListSmallGrid()
-    {
-      RunGridWithWords(NumberOfRepetitions, 10, 6, 11);
-    }
+      WriteDiagnostics(generator, size, "Construction succeeded.");
 
-    [TestMethod]
-    public void SmallListBigGrid()
-    {
-      RunGridWithWords(NumberOfRepetitions, 14, 7, 12);
-    }
+      Assert.AreEqual(expectedPlacements.Length, generator.Words.Count);
 
-    [TestMethod]
-    public void BigListBigGrid()
-    {
-      RunGridWithWords(10, 25, 12, 13, default, 200, true);
-    }
-
-    [TestMethod]
-    public void FillAllGridDiagonal2()
-    {
-      RunGridWithWords(1, -1, 3, 3, "words-small-diagonal.txt");
-    }
-
-    [TestMethod]
-    public void FillAllGridDiagonal()
-    {
-      RunGridWithWords(1, -1, 2, 2, "words-tiny-diagonal.txt");
-    }
-
-    [TestMethod]
-    public void FillAllGrid()
-    {
-      RunGridWithWords(1, -1, 2, 2, "words-tiny.txt");
-    }
-
-    [TestMethod]
-    public void FillAllGrid2()
-    {
-      RunGridWithWords(1, -1, 3, 3, "words-small.txt");
-    }
-
-    [TestMethod]
-    public void JanUlrich1()
-    {
-      RunGridWithWords(
-        100, //NumberOfRepetitions * 10,
-        -1,
-        14,
-        18,
-        "e:\\Martin\\Syncthing\\Obec\\Kvízy\\memorial.txt",
-        600);
-    }
-
-    [TestMethod]
-    public void Svesedlice1()
-    {
-      RunGridWithWords(
-        NumberOfRepetitions * 10,
-        -1,
-        13,
-        19,
-        "e:\\Martin\\Syncthing\\Obec\\Kvízy\\svesedlice.txt",
-        2000);
-    }
-
-    private void RunGridWithWords(
-      int numberOfRepetitions,
-      int numberOfWords,
-      int rows,
-      int columns,
-      string fileName = null,
-      int limitWaitingMs = -1,
-      bool quizMode = false)
-    {
-      int iter = numberOfRepetitions;
-      Stats stats = new Stats();
-      Stopwatch st = new Stopwatch();
-      string fullFilePath = Path.Combine(TestDataFolder, fileName ?? "words-big.txt");
-      WordsLoader loader = new WordsLoader(File.ReadAllText(fullFilePath, Encoding.UTF8));
-      List<WordInfo>? words = numberOfWords > 0 ? loader.Words.Take(numberOfWords).ToList() : loader.Words;
-      int charCount = words.Select(wrd => wrd.Text.Length).Sum();
-      List<WordInfo> hardestWords = null;
-      int hardestBacktrackings = 0;
-      long hardestTestedPositions = 0L;
-      int hardestIntersections = 0;
-      Board hardestBoard = null;
-
-      while (--iter >= 0)
+      for (int i = 0; i < expectedPlacements.Length; i++)
       {
-        WoSeCon wo = new WoSeCon(
-          words.CloneList(),
-          rows,
-          columns,
-          quizMode);
+        Assert.AreEqual(expectedPlacements[i], generator.Words[i].Placement);
+      }
 
-        st.Restart();
-        CancellationTokenSource ts = new CancellationTokenSource();
-        CancellationToken ct = ts.Token;
+      AssertFillsGrid(generator, size);
+    }
 
-        bool finished = Task
-          .Run(() => wo.Construct(ct), ct)
-          .Wait(limitWaitingMs);
-          
-        if (!finished)
+    [TestMethod]
+    [DataRow(2, "ABC")]
+    [DataRow(3, "ABCD")]
+    [DataRow(4, "ABCDE")]
+    public void RejectsWordLongerThanMatrix(int size, string wordText)
+    {
+      WoSeCon generator = CreateGenerator(
+        size,
+        new[] {wordText},
+        locations => locations);
+
+      Exception exception = Assert.ThrowsExactly<Exception>(() => generator.Construct(null));
+
+      WriteDiagnostics(generator, size, $"Expected failure: {exception.Message}");
+    }
+
+    [TestMethod]
+    public void ConstructsExpectedCrossing()
+    {
+      DirectedLocation[] expectedPlacements =
+      {
+        Location(1, 0, DirectedLocation.LocationDirection.LeftToRight),
+        Location(0, 1, DirectedLocation.LocationDirection.TopBottom)
+      };
+
+      WoSeCon generator = CreateGenerator(
+        3,
+        new[] {"ABC", "DBE"},
+        CreatePriorityOrderer(expectedPlacements));
+
+      generator.Construct(null);
+
+      Board board = WriteDiagnostics(generator, 3, "Construction succeeded with a crossing.");
+
+      Assert.AreEqual(expectedPlacements[0], generator.Words[0].Placement);
+      Assert.AreEqual(expectedPlacements[1], generator.Words[1].Placement);
+      Assert.AreEqual(1, board.IntersectionCount);
+      Assert.AreEqual(5, board.CharCellCount);
+      Assert.AreEqual(100.0 * 5 / 9, board.PercentageOccupied, 0.001);
+    }
+
+    public static IEnumerable<object[]> FullGridCases()
+    {
+      yield return new object[]
+      {
+        2,
+        new[] {"AB", "CD"},
+        new[]
         {
-          ts.Cancel(false);
-          continue;
+          Location(0, 0, DirectedLocation.LocationDirection.LeftTopRightBottom),
+          Location(0, 1, DirectedLocation.LocationDirection.RightTopLeftBottom)
         }
+      };
 
-        Board board = new Board(wo.Words, rows, columns, false, quizMode);
-        long elapsed = st.ElapsedMilliseconds;
-
-        stats.SetResult(elapsed);
-
-        if (board.IntersectionCount >= hardestIntersections)
+      yield return new object[]
+      {
+        3,
+        new[] {"ABC", "DE", "FG", "H", "I"},
+        new[]
         {
-          hardestWords = wo.Words;
-          hardestBoard = board;
-          hardestBacktrackings = wo.Backtrackings;
-          hardestTestedPositions = wo.TestesPositions;
-          hardestIntersections = board.IntersectionCount;
+          Location(0, 0, DirectedLocation.LocationDirection.LeftTopRightBottom),
+          Location(0, 1, DirectedLocation.LocationDirection.LeftTopRightBottom),
+          Location(1, 0, DirectedLocation.LocationDirection.LeftTopRightBottom),
+          Location(0, 2, DirectedLocation.LocationDirection.RightToLeft),
+          Location(2, 0, DirectedLocation.LocationDirection.LeftToRight)
         }
+      };
 
-        Debug.WriteLine($"Left: {iter + 1}");
-      }
-
-      Console.WriteLine($"Total cell count: {rows * columns}");
-      Console.WriteLine($"Words char count: {charCount}");
-      Console.WriteLine($"Char cell count: {hardestBoard.CharCellCount}");
-      Console.WriteLine($"Intersection count: {hardestBoard.IntersectionCount}");
-      Console.WriteLine($"Positions tested: {hardestTestedPositions}");
-      Console.WriteLine($"Backtracked: {hardestBacktrackings}");
-      Console.WriteLine($"% occupied: {hardestBoard.PercentageOccupied}");
-      Console.WriteLine($"Max miliseconds: {stats.MaxMs}");
-      Console.WriteLine($"Min miliseconds: {stats.MinMs}");
-      Console.WriteLine($"Average miliseconds: {stats.AverageMs}");
-      Console.WriteLine();
-      Console.Write(hardestBoard.Print(true, true));
-      Console.Write(hardestBoard.PrintIntersections());
+      yield return new object[]
+      {
+        4,
+        new[] {"ABCD", "EFG", "HIJ", "KL", "MN", "O", "P"},
+        new[]
+        {
+          Location(0, 0, DirectedLocation.LocationDirection.LeftTopRightBottom),
+          Location(0, 1, DirectedLocation.LocationDirection.LeftTopRightBottom),
+          Location(1, 0, DirectedLocation.LocationDirection.LeftTopRightBottom),
+          Location(0, 2, DirectedLocation.LocationDirection.LeftTopRightBottom),
+          Location(2, 0, DirectedLocation.LocationDirection.LeftTopRightBottom),
+          Location(0, 3, DirectedLocation.LocationDirection.RightToLeft),
+          Location(3, 0, DirectedLocation.LocationDirection.LeftToRight)
+        }
+      };
     }
 
-    #endregion
-
-    #region Nested Types
-
-    private class Stats
+    private static WoSeCon CreateGenerator(
+      int size,
+      IEnumerable<string> wordTexts,
+      RandomLocator.LocationOrderer orderer)
     {
-      #region Properties
+      List<WordInfo> words = wordTexts
+        .Select((text, index) => new WordInfo
+        {
+          Text = text,
+          PrintableText = text,
+          WordNumber = index + 1
+        })
+        .ToList();
 
-      public long MinMs
-      {
-        get => AllResults.Min();
-      }
-
-      public long MaxMs
-      {
-        get => AllResults.Max();
-      }
-
-      public long AverageMs
-      {
-        get => AllResults.Sum() / AllResults.Count;
-      }
-
-      public List<long> AllResults
-      {
-        get;
-      } = new List<long>();
-
-      #endregion
-
-      #region Other Stuff
-
-      public void SetResult(long ms)
-      {
-        AllResults.Add(ms);
-      }
-
-      #endregion
+      return new WoSeCon(words, size, size, false, orderer);
     }
 
-    #endregion
+    private static RandomLocator.LocationOrderer CreatePriorityOrderer(
+      IReadOnlyList<DirectedLocation> priorityLocations)
+    {
+      Dictionary<DirectedLocation, int> priorities = priorityLocations
+        .Select((location, index) => new {location, index})
+        .ToDictionary(item => item.location, item => item.index);
+
+      return locations => locations
+        .Select((location, index) => new {location, index})
+        .OrderBy(item => priorities.TryGetValue(item.location, out int priority)
+          ? priority
+          : int.MaxValue)
+        .ThenBy(item => item.index)
+        .Select(item => item.location)
+        .ToList();
+    }
+
+    private static DirectedLocation Location(
+      int row,
+      int column,
+      DirectedLocation.LocationDirection direction)
+    {
+      return new DirectedLocation
+      {
+        Row = row,
+        Column = column,
+        Direction = direction
+      };
+    }
+
+    private Board WriteDiagnostics(WoSeCon generator, int size, string outcome)
+    {
+      Board board = new Board(
+        generator.Words,
+        size,
+        size,
+        false);
+
+      TestContext.WriteLine(outcome);
+      TestContext.WriteLine(board.PrintDiagnostics());
+      TestContext.WriteLine($"Backtrackings: {generator.Backtrackings}");
+      TestContext.WriteLine($"Tested positions: {generator.TestesPositions}");
+
+      return board;
+    }
+
+    private static void AssertFillsGrid(WoSeCon generator, int size)
+    {
+      Dictionary<(int Row, int Column), char> occupiedCells = new();
+
+      foreach (WordInfo word in generator.Words)
+      {
+        Assert.IsNotNull(word.Placement);
+
+        (int rowStep, int columnStep) = GetSteps(word.Placement.Direction);
+
+        for (int index = 0; index < word.Text.Length; index++)
+        {
+          int row = word.Placement.Row + rowStep * index;
+          int column = word.Placement.Column + columnStep * index;
+
+          Assert.IsTrue(row >= 0 && row < size);
+          Assert.IsTrue(column >= 0 && column < size);
+
+          if (occupiedCells.TryGetValue((row, column), out char existingCharacter))
+          {
+            Assert.AreEqual(existingCharacter, word.Text[index]);
+          }
+          else
+          {
+            occupiedCells[(row, column)] = word.Text[index];
+          }
+        }
+      }
+
+      Assert.AreEqual(size * size, occupiedCells.Count);
+    }
+
+    private static (int Row, int Column) GetSteps(
+      DirectedLocation.LocationDirection direction)
+    {
+      return direction switch
+      {
+        DirectedLocation.LocationDirection.LeftToRight => (0, 1),
+        DirectedLocation.LocationDirection.RightToLeft => (0, -1),
+        DirectedLocation.LocationDirection.TopBottom => (1, 0),
+        DirectedLocation.LocationDirection.BottomTop => (-1, 0),
+        DirectedLocation.LocationDirection.LeftTopRightBottom => (1, 1),
+        DirectedLocation.LocationDirection.RightBottomLeftTop => (-1, -1),
+        DirectedLocation.LocationDirection.LeftBottomRightTop => (-1, 1),
+        DirectedLocation.LocationDirection.RightTopLeftBottom => (1, -1),
+        _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
+      };
+    }
   }
 }

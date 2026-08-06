@@ -1,4 +1,5 @@
 ﻿using WordSearchGenerator.Common.WoSeCon.Api;
+using static WordSearchGenerator.Common.WoSeCon.Api.RandomLocator;
 
 namespace WordSearchGenerator.Common.WoSeCon
 {
@@ -44,7 +45,7 @@ namespace WordSearchGenerator.Common.WoSeCon
 
     /// <summary>
     /// In quiz mode, special initial character
-    /// is prepended to each word and will server
+    /// is prepended to each word and will serve
     /// as "question" cell with direction of the word
     /// and number of question. 
     /// </summary>
@@ -69,14 +70,14 @@ namespace WordSearchGenerator.Common.WoSeCon
 
     #region Constructors
 
-    public WoSeCon(List<WordInfo> words, int rowCount, int columnCount, bool quizMode)
+    public WoSeCon(List<WordInfo> words, int rowCount, int columnCount, bool quizMode, LocationOrderer orderer = null)
     {
       QuizMode = quizMode;
       RowCount = rowCount;
       ColumnCount = columnCount;
       Words = Sort(words);
 
-      GlobalLocator = new RandomLocator(RowCount, ColumnCount);
+      GlobalLocator = new RandomLocator(RowCount, ColumnCount, orderer);
     }
 
     #endregion
@@ -156,16 +157,18 @@ namespace WordSearchGenerator.Common.WoSeCon
 
       foreach (WordInfo wordToCheck in Words)
       {
-        if (word != wordToCheck)
+        if (ReferenceEquals(word, wordToCheck))
         {
-          if (word.ConflictsWithWord(wordToCheck, QuizMode))
-          {
-            // Either these words conflict
-            // or we are in quiz mode where placeholder
-            // cells cannot intersect.
-            word.Placement = null;
-            return false;
-          }
+          continue;
+        }
+
+        if (word.ConflictsWithWord(wordToCheck, QuizMode))
+        {
+          // Either these words conflict
+          // or we are in quiz mode where placeholder
+          // cells cannot intersect.
+          word.Placement = null;
+          return false;
         }
       }
 
@@ -174,16 +177,14 @@ namespace WordSearchGenerator.Common.WoSeCon
 
     public bool PlaceWord(WordInfo word)
     {
-      List<DirectedLocation> testedLocations = word.TestedLocations;
       RandomLocator localLocator = null;
 
       if (Mode == OperationMode.Backward)
       {
-        RandomLocator l = RandomLocator.GetWithoutLocations(RowCount, ColumnCount, testedLocations);
         DirectedLocation wordLocation = word.Placement;
         GlobalLocator.AddAvailableLocation(wordLocation);
         word.MarkAsTestedOnPlacement();
-        localLocator = l;
+        localLocator = GlobalLocator.Minus(word.TestedLocations);
       }
       else
       {
