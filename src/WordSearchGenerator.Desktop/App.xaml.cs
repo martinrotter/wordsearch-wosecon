@@ -13,8 +13,8 @@ namespace WordSearchGenerator.Desktop
     {
       base.OnStartup(e);
 
-      var singlePuzzleGenerator = new SinglePuzzleGenerator();
-      var mainWindowViewModel = new MainWindowViewModel(singlePuzzleGenerator);
+      var puzzleGenerator = new MonteCarloPuzzleGenerator();
+      var mainWindowViewModel = new MainWindowViewModel(puzzleGenerator);
       var mainWindow = new MainWindow(mainWindowViewModel);
 
       MainWindow = mainWindow;

@@ -1,13 +1,12 @@
-using WordSearchGenerator.Common.WoSeCon.Api;
 using WordSearchGenerator.Desktop.Models;
 
 namespace WordSearchGenerator.Desktop.Services
 {
-  public interface ISinglePuzzleGenerator
+  public interface IPuzzleGenerator
   {
     Task<GenerationResult> GenerateAsync(
       PuzzleDefinition definition,
-      IProgress<ConstructionProgress>? progress,
+      IProgress<MonteCarloProgress>? progress,
       CancellationToken cancellationToken);
   }
 }

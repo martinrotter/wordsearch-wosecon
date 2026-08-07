@@ -6,6 +6,16 @@ namespace WordSearchGenerator.Desktop.Models
   {
     #region Properties
 
+    public int AttemptCount
+    {
+      get;
+    }
+
+    public long Backtrackings
+    {
+      get;
+    }
+
     public int BlackBoxCount
     {
       get;
@@ -16,9 +26,34 @@ namespace WordSearchGenerator.Desktop.Models
       get;
     }
 
+    public int CancelledAttemptCount
+    {
+      get;
+    }
+
+    public PuzzleDefinition Definition
+    {
+      get;
+    }
+
+    public TimeSpan Elapsed
+    {
+      get;
+    }
+
     public int IntersectionCount => Board.IntersectionCount;
 
     public int MessageCellCount
+    {
+      get;
+    }
+
+    public int MessageRejectedAttemptCount
+    {
+      get;
+    }
+
+    public int PlacementFailureCount
     {
       get;
     }
@@ -33,22 +68,32 @@ namespace WordSearchGenerator.Desktop.Models
         ? 0
         : 100.0 * PuzzleCellCount / (Board.RowCount * Board.ColumnCount);
 
-    public PuzzleDefinition Definition
-    {
-      get;
-    }
-
-    public TimeSpan Elapsed
-    {
-      get;
-    }
-
     public long TestedPositions
     {
       get;
     }
 
-    public int Backtrackings
+    public int WinningAttemptBacktrackings
+    {
+      get;
+    }
+
+    public TimeSpan WinningAttemptElapsed
+    {
+      get;
+    }
+
+    public int WinningAttemptNumber
+    {
+      get;
+    }
+
+    public long WinningAttemptTestedPositions
+    {
+      get;
+    }
+
+    public int WinningSeed
     {
       get;
     }
@@ -62,7 +107,16 @@ namespace WordSearchGenerator.Desktop.Models
       Board board,
       TimeSpan elapsed,
       long testedPositions,
-      int backtrackings)
+      long backtrackings,
+      int attemptCount,
+      int winningAttemptNumber,
+      int winningSeed,
+      TimeSpan winningAttemptElapsed,
+      long winningAttemptTestedPositions,
+      int winningAttemptBacktrackings,
+      int placementFailureCount,
+      int messageRejectedAttemptCount,
+      int cancelledAttemptCount)
     {
       ArgumentNullException.ThrowIfNull(definition);
       ArgumentNullException.ThrowIfNull(board);
@@ -72,6 +126,15 @@ namespace WordSearchGenerator.Desktop.Models
       Elapsed = elapsed;
       TestedPositions = testedPositions;
       Backtrackings = backtrackings;
+      AttemptCount = attemptCount;
+      WinningAttemptNumber = winningAttemptNumber;
+      WinningSeed = winningSeed;
+      WinningAttemptElapsed = winningAttemptElapsed;
+      WinningAttemptTestedPositions = winningAttemptTestedPositions;
+      WinningAttemptBacktrackings = winningAttemptBacktrackings;
+      PlacementFailureCount = placementFailureCount;
+      MessageRejectedAttemptCount = messageRejectedAttemptCount;
+      CancelledAttemptCount = cancelledAttemptCount;
 
       foreach (var cell in board.Matrix.OfType<Board.Cell>())
       {

@@ -2,7 +2,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using WordSearchGenerator.Common.WoSeCon;
-using WordSearchGenerator.Common.WoSeCon.Api;
 using WordSearchGenerator.Desktop.Commands;
 using WordSearchGenerator.Desktop.Models;
 using WordSearchGenerator.Desktop.Services;
@@ -13,8 +12,11 @@ namespace WordSearchGenerator.Desktop.ViewModels
   {
     #region Fields
 
+    private int _activeAttemptCount;
+    private int _attemptCount;
+    private long _backtrackings;
+    private int _cancelledAttemptCount;
     private string _columnsText = "11";
-    private int _backtrackings;
     private bool _canGenerate;
     private GenerationResult? _currentResult;
     private CancellationTokenSource? _difficultyCancellation;
@@ -25,8 +27,11 @@ namespace WordSearchGenerator.Desktop.ViewModels
     private EditorActionState _editorActionState = EditorActionState.Invalid;
     private string _editorStatusMessage = "Enter at least one word.";
     private string _editorStatusTitle = "Puzzle needs attention";
+    private int _finishedAttemptCount;
     private int _furthestPlacedWordCount;
+    private int _messageRejectedAttemptCount;
     private PuzzleMode _mode;
+    private int _placementFailureCount;
     private int _placedWordCount;
     private double _progressMaximum = 1;
     private double _progressValue;
@@ -40,7 +45,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
     private long _testedPositions;
     private int _totalWordCount;
     private string _wordsText = string.Empty;
-    private readonly ISinglePuzzleGenerator _singlePuzzleGenerator;
+    private readonly IPuzzleGenerator _puzzleGenerator;
 
     #endregion
 
@@ -59,7 +64,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
 
     public string BacktrackingsText => Backtrackings.ToString("N0");
 
-    public int Backtrackings
+    public long Backtrackings
     {
       get => _backtrackings;
       private set
@@ -197,6 +202,11 @@ namespace WordSearchGenerator.Desktop.ViewModels
 
     public string ProgressToolTip =>
       "The bar shows the furthest search depth, not elapsed-time completion.\n" +
+      $"Workers: {ActiveAttemptCount:N0} active; " +
+      $"{FinishedAttemptCount:N0} of {AttemptCount:N0} finished\n" +
+      $"Placement failures: {PlacementFailureCount:N0}\n" +
+      $"Message-capacity rejections: {MessageRejectedAttemptCount:N0}\n" +
+      $"Cancelled attempts: {CancelledAttemptCount:N0}\n" +
       $"Currently placed: {PlacedWordCount:N0} of {TotalWordCount:N0}\n" +
       $"Furthest placed: {FurthestPlacedWordCount:N0} of {TotalWordCount:N0}\n" +
       $"Tested positions: {TestedPositions:N0}\n" +
@@ -271,7 +281,59 @@ namespace WordSearchGenerator.Desktop.ViewModels
 
     public string TestedPositionsText => TestedPositions.ToString("N0");
 
-    public string WorkersText => IsGenerating ? "1" : "0";
+    public string WorkersText => AttemptCount == 0
+      ? "0"
+      : $"{ActiveAttemptCount:N0} / {AttemptCount:N0}";
+
+    private int ActiveAttemptCount
+    {
+      get => _activeAttemptCount;
+      set
+      {
+        if (SetProperty(ref _activeAttemptCount, value))
+        {
+          OnPropertyChanged(nameof(WorkersText));
+          OnPropertyChanged(nameof(ProgressToolTip));
+        }
+      }
+    }
+
+    private int AttemptCount
+    {
+      get => _attemptCount;
+      set
+      {
+        if (SetProperty(ref _attemptCount, value))
+        {
+          OnPropertyChanged(nameof(WorkersText));
+          OnPropertyChanged(nameof(ProgressToolTip));
+        }
+      }
+    }
+
+    private int CancelledAttemptCount
+    {
+      get => _cancelledAttemptCount;
+      set
+      {
+        if (SetProperty(ref _cancelledAttemptCount, value))
+        {
+          OnPropertyChanged(nameof(ProgressToolTip));
+        }
+      }
+    }
+
+    private int FinishedAttemptCount
+    {
+      get => _finishedAttemptCount;
+      set
+      {
+        if (SetProperty(ref _finishedAttemptCount, value))
+        {
+          OnPropertyChanged(nameof(ProgressToolTip));
+        }
+      }
+    }
 
     private int FurthestPlacedWordCount
     {
@@ -291,6 +353,30 @@ namespace WordSearchGenerator.Desktop.ViewModels
       set
       {
         if (SetProperty(ref _placedWordCount, value))
+        {
+          OnPropertyChanged(nameof(ProgressToolTip));
+        }
+      }
+    }
+
+    private int MessageRejectedAttemptCount
+    {
+      get => _messageRejectedAttemptCount;
+      set
+      {
+        if (SetProperty(ref _messageRejectedAttemptCount, value))
+        {
+          OnPropertyChanged(nameof(ProgressToolTip));
+        }
+      }
+    }
+
+    private int PlacementFailureCount
+    {
+      get => _placementFailureCount;
+      set
+      {
+        if (SetProperty(ref _placementFailureCount, value))
         {
           OnPropertyChanged(nameof(ProgressToolTip));
         }
@@ -337,11 +423,11 @@ namespace WordSearchGenerator.Desktop.ViewModels
 
     #region Constructors
 
-    public MainWindowViewModel(ISinglePuzzleGenerator singlePuzzleGenerator)
+    public MainWindowViewModel(IPuzzleGenerator puzzleGenerator)
     {
-      ArgumentNullException.ThrowIfNull(singlePuzzleGenerator);
+      ArgumentNullException.ThrowIfNull(puzzleGenerator);
 
-      _singlePuzzleGenerator = singlePuzzleGenerator;
+      _puzzleGenerator = puzzleGenerator;
       var automaticParallelism = Math.Max(1, Environment.ProcessorCount);
 
       ParallelismOptions =
@@ -466,21 +552,25 @@ namespace WordSearchGenerator.Desktop.ViewModels
         return;
       }
 
-      ResetGenerationProgress(definition!.Entries.Count);
+      ResetGenerationProgress(
+        definition!.Entries.Count,
+        definition.Generation.ParallelAttempts);
       CurrentResult = null;
       StatusText = "Starting";
       EditorActionState = EditorActionState.Generating;
       EditorStatusTitle = "Generating puzzle";
-      EditorStatusMessage = "Running one background construction attempt.";
+      EditorStatusMessage =
+        $"Running {definition.Generation.ParallelAttempts:N0} independent " +
+        "shuffled attempts.";
       PreviewTitle = "Generating board...";
       PreviewMessage =
         "Search progress and diagnostics are available below the preview.";
 
-      var progress = new Progress<ConstructionProgress>(UpdateProgress);
+      var progress = new Progress<MonteCarloProgress>(UpdateProgress);
 
       try
       {
-        var result = await _singlePuzzleGenerator.GenerateAsync(
+        var result = await _puzzleGenerator.GenerateAsync(
           definition,
           progress,
           cancellationToken);
@@ -489,6 +579,12 @@ namespace WordSearchGenerator.Desktop.ViewModels
         Elapsed = result.Elapsed;
         TestedPositions = result.TestedPositions;
         Backtrackings = result.Backtrackings;
+        AttemptCount = result.AttemptCount;
+        ActiveAttemptCount = 0;
+        FinishedAttemptCount = result.AttemptCount;
+        PlacementFailureCount = result.PlacementFailureCount;
+        MessageRejectedAttemptCount = result.MessageRejectedAttemptCount;
+        CancelledAttemptCount = result.CancelledAttemptCount;
         PlacedWordCount = definition.Entries.Count;
         FurthestPlacedWordCount = definition.Entries.Count;
         ProgressValue = definition.Entries.Count;
@@ -496,15 +592,17 @@ namespace WordSearchGenerator.Desktop.ViewModels
         EditorActionState = EditorActionState.Completed;
         EditorStatusTitle = "Puzzle generated";
         EditorStatusMessage =
-          $"Completed in {FormatElapsed(result.Elapsed)} after " +
-          $"{result.TestedPositions:N0} tested positions.";
+          $"Attempt {result.WinningAttemptNumber:N0} of " +
+          $"{result.AttemptCount:N0} won with seed {result.WinningSeed}. " +
+          $"Completed in {FormatElapsed(result.Elapsed)}.";
         PreviewTitle = "Board generated";
         PreviewMessage =
           $"{result.Board.RowCount} × {result.Board.ColumnCount}, " +
           $"{definition.Entries.Count} entries, " +
           $"{result.PuzzleOccupancyPercentage:F1}% puzzle occupancy, " +
           $"{result.MessageCellCount} message cells and " +
-          $"{result.BlackBoxCount} black boxes.";
+          $"{result.BlackBoxCount} black boxes. " +
+          $"Winning seed: {result.WinningSeed}.";
       }
       catch (OperationCanceledException)
       {
@@ -515,15 +613,35 @@ namespace WordSearchGenerator.Desktop.ViewModels
         PreviewTitle = "Generation cancelled";
         PreviewMessage = "Adjust the puzzle or start another attempt.";
       }
-      catch (InsufficientMessageCapacityException exception)
+      catch (MonteCarloGenerationException exception)
       {
-        StatusText = "Message did not fit";
-        EditorActionState = EditorActionState.MessageDidNotFit;
-        EditorStatusTitle = "Placement found, but the message did not fit";
-        EditorStatusMessage = exception.Message;
-        PreviewTitle = "Message needs more vacant cells";
-        PreviewMessage =
-          "Another location order may produce a placement with more vacant cells.";
+        ActiveAttemptCount = 0;
+        FinishedAttemptCount = exception.AttemptCount;
+        PlacementFailureCount = exception.PlacementFailureCount;
+        MessageRejectedAttemptCount = exception.MessageRejectedAttemptCount;
+
+        if (exception.MessageRejectedAttemptCount > 0 &&
+            exception.PlacementFailureCount == 0)
+        {
+          StatusText = "Message did not fit";
+          EditorActionState = EditorActionState.MessageDidNotFit;
+          EditorStatusTitle =
+            "The generated placements left too few message cells";
+          EditorStatusMessage = exception.Message;
+          PreviewTitle = "Message needs more vacant cells";
+          PreviewMessage =
+            "Try again for different placements, shorten the message, or enlarge the matrix.";
+        }
+        else
+        {
+          StatusText = "No acceptable board";
+          EditorActionState = EditorActionState.Failed;
+          EditorStatusTitle = "No attempt produced an acceptable board";
+          EditorStatusMessage = exception.Message;
+          PreviewTitle = "No board generated";
+          PreviewMessage =
+            "Some attempts may have failed placement while others left too few message cells.";
+        }
       }
       catch (Exception exception)
       {
@@ -553,8 +671,16 @@ namespace WordSearchGenerator.Desktop.ViewModels
       CancelCommand.NotifyCanExecuteChanged();
     }
 
-    private void ResetGenerationProgress(int totalWordCount)
+    private void ResetGenerationProgress(
+      int totalWordCount,
+      int attemptCount)
     {
+      AttemptCount = attemptCount;
+      ActiveAttemptCount = attemptCount;
+      FinishedAttemptCount = 0;
+      PlacementFailureCount = 0;
+      MessageRejectedAttemptCount = 0;
+      CancelledAttemptCount = 0;
       TotalWordCount = totalWordCount;
       PlacedWordCount = 0;
       FurthestPlacedWordCount = 0;
@@ -566,8 +692,14 @@ namespace WordSearchGenerator.Desktop.ViewModels
       OnPropertyChanged(nameof(ProgressToolTip));
     }
 
-    private void UpdateProgress(ConstructionProgress progress)
+    private void UpdateProgress(MonteCarloProgress progress)
     {
+      ActiveAttemptCount = progress.ActiveAttemptCount;
+      FinishedAttemptCount = progress.FinishedAttemptCount;
+      AttemptCount = progress.TotalAttemptCount;
+      PlacementFailureCount = progress.PlacementFailureCount;
+      MessageRejectedAttemptCount = progress.MessageRejectedAttemptCount;
+      CancelledAttemptCount = progress.CancelledAttemptCount;
       PlacedWordCount = progress.PlacedWordCount;
       FurthestPlacedWordCount = progress.FurthestPlacedWordCount;
       TotalWordCount = progress.TotalWordCount;
@@ -578,9 +710,10 @@ namespace WordSearchGenerator.Desktop.ViewModels
       ProgressValue = progress.FurthestPlacedWordCount;
       StatusText = "Searching";
       EditorStatusMessage =
-        $"Placed {progress.PlacedWordCount:N0} of " +
-        $"{progress.TotalWordCount:N0}; furthest depth " +
-        $"{progress.FurthestPlacedWordCount:N0}.";
+        $"{progress.ActiveAttemptCount:N0} active, " +
+        $"{progress.FinishedAttemptCount:N0} finished; best depth " +
+        $"{progress.FurthestPlacedWordCount:N0} of " +
+        $"{progress.TotalWordCount:N0}.";
     }
 
     private void QuizEntriesOnCollectionChanged(
