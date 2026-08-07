@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:icons="clr-namespace:FluentIcons.Wpf;assembly=FluentIcons.Wpf"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels="clr-namespace:WordSearchGenerator.Desktop.ViewModels"
         mc:Ignorable="d"
         Title="WoSeCon"
         Width="1280"
@@ -87,6 +88,7 @@
                     <ScrollViewer Grid.Row="1"
                                   Margin="18,8,12,8"
                                   HorizontalScrollBarVisibility="Disabled"
+                                  IsEnabled="{Binding IsEditorEnabled}"
                                   VerticalScrollBarVisibility="Auto">
                         <StackPanel Margin="0,0,6,0">
                             <GroupBox Header="Puzzle">
@@ -111,10 +113,8 @@
                                               Grid.Row="1"
                                               Grid.ColumnSpan="3"
                                               Margin="0,5,0,12"
-                                              SelectedIndex="0">
-                                        <ComboBoxItem Content="Normal" />
-                                        <ComboBoxItem Content="Quiz" />
-                                    </ComboBox>
+                                              ItemsSource="{Binding Modes}"
+                                              SelectedItem="{Binding Mode}" />
 
                                     <TextBlock Grid.Row="2"
                                                Grid.Column="0"
@@ -129,32 +129,88 @@
                                              Grid.Row="3"
                                              Grid.Column="0"
                                              Margin="0,5,0,0"
-                                             Text="11"
+                                             Text="{Binding RowsText,
+                                                            UpdateSourceTrigger=PropertyChanged,
+                                                            ValidatesOnNotifyDataErrors=True}"
                                              ToolTip="Number of rows in the generated matrix" />
                                     <TextBox x:Name="ColumnsTextBox"
                                              Grid.Row="3"
                                              Grid.Column="2"
                                              Margin="0,5,0,0"
-                                             Text="11"
+                                             Text="{Binding ColumnsText,
+                                                            UpdateSourceTrigger=PropertyChanged,
+                                                            ValidatesOnNotifyDataErrors=True}"
                                              ToolTip="Number of columns in the generated matrix" />
                                 </Grid>
                             </GroupBox>
 
                             <GroupBox Header="Words or questions">
-                                <StackPanel>
-                                    <TextBlock Style="{StaticResource SupportingTextStyle}"
-                                               Text="Enter one word per line. The editor will change to question-and-answer rows in quiz mode."
-                                               TextWrapping="Wrap" />
-                                    <TextBox x:Name="WordsTextBox"
-                                             Height="210"
-                                             Margin="0,9,0,0"
-                                             AcceptsReturn="True"
-                                             AcceptsTab="False"
-                                             HorizontalScrollBarVisibility="Auto"
-                                             VerticalScrollBarVisibility="Auto"
-                                             TextWrapping="NoWrap"
-                                             ToolTip="Words are case-sensitive; surrounding spaces will be trimmed" />
-                                </StackPanel>
+                                <Grid>
+                                    <StackPanel>
+                                        <StackPanel.Style>
+                                            <Style TargetType="StackPanel">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsNormalMode}" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Style>
+                                        <TextBlock Style="{StaticResource SupportingTextStyle}"
+                                                   Text="Enter one word per line. Words are case-sensitive; surrounding spaces are trimmed."
+                                                   TextWrapping="Wrap" />
+                                        <TextBox x:Name="WordsTextBox"
+                                                 Height="210"
+                                                 Margin="0,9,0,0"
+                                                 AcceptsReturn="True"
+                                                 AcceptsTab="False"
+                                                 HorizontalScrollBarVisibility="Auto"
+                                                 Text="{Binding WordsText,
+                                                                UpdateSourceTrigger=PropertyChanged,
+                                                                ValidatesOnNotifyDataErrors=True}"
+                                                 VerticalScrollBarVisibility="Auto"
+                                                 TextWrapping="NoWrap"
+                                                 ToolTip="Empty lines and case-sensitive duplicates are ignored" />
+                                    </StackPanel>
+
+                                    <StackPanel>
+                                        <StackPanel.Style>
+                                            <Style TargetType="StackPanel">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsQuizMode}" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Style>
+                                        <TextBlock Style="{StaticResource SupportingTextStyle}"
+                                                   Text="Enter each answer and its question. Use the blank row to add another item; select a row and press Delete to remove it."
+                                                   TextWrapping="Wrap" />
+                                        <DataGrid Height="240"
+                                                  Margin="0,9,0,0"
+                                                  AutoGenerateColumns="False"
+                                                  CanUserAddRows="True"
+                                                  CanUserDeleteRows="True"
+                                                  HeadersVisibility="Column"
+                                                  ItemsSource="{Binding QuizEntries}"
+                                                  SelectionMode="Single">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Width="2*"
+                                                                    Header="Answer"
+                                                                    Binding="{Binding Answer,
+                                                                                      UpdateSourceTrigger=PropertyChanged,
+                                                                                      ValidatesOnNotifyDataErrors=True}" />
+                                                <DataGridTextColumn Width="3*"
+                                                                    Header="Question"
+                                                                    Binding="{Binding Question,
+                                                                                      UpdateSourceTrigger=PropertyChanged,
+                                                                                      ValidatesOnNotifyDataErrors=True}" />
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </StackPanel>
+                                </Grid>
                             </GroupBox>
 
                             <GroupBox Header="Secret message">
@@ -164,94 +220,233 @@
                                                TextWrapping="Wrap" />
                                     <TextBox x:Name="SecretMessageTextBox"
                                              Margin="0,9,0,0"
+                                             Text="{Binding SecretMessage,
+                                                            UpdateSourceTrigger=PropertyChanged,
+                                                            ValidatesOnNotifyDataErrors=True}"
                                              ToolTip="Spaces are preserved as message characters" />
                                 </StackPanel>
                             </GroupBox>
 
                             <GroupBox Header="Generation">
                                 <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="14" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
 
                                     <TextBlock Grid.Row="0"
-                                               Grid.Column="0"
                                                Style="{StaticResource FieldLabelTextStyle}"
                                                Text="Parallel attempts" />
-                                    <TextBlock Grid.Row="0"
-                                               Grid.Column="2"
-                                               Style="{StaticResource FieldLabelTextStyle}"
-                                               Text="Difficulty" />
 
                                     <ComboBox Grid.Row="1"
-                                              Grid.Column="0"
                                               Margin="0,5,0,0"
-                                              SelectedIndex="0">
-                                        <ComboBoxItem Content="Automatic" />
-                                        <ComboBoxItem Content="1" />
-                                        <ComboBoxItem Content="2" />
-                                        <ComboBoxItem Content="4" />
-                                        <ComboBoxItem Content="8" />
-                                        <ComboBoxItem Content="16" />
-                                    </ComboBox>
-                                    <TextBlock Grid.Row="1"
-                                               Grid.Column="2"
-                                               Margin="0,10,0,0"
-                                               Text="Not estimated" />
+                                              DisplayMemberPath="Label"
+                                              ItemsSource="{Binding ParallelismOptions}"
+                                              SelectedItem="{Binding SelectedParallelismOption}" />
                                 </Grid>
                             </GroupBox>
                         </StackPanel>
                     </ScrollViewer>
 
                     <Border Grid.Row="2"
+                            MinHeight="148"
                             Padding="18,14"
                             BorderBrush="{DynamicResource {x:Static SystemColors.InactiveBorderBrushKey}}"
                             BorderThickness="0,1,0,0">
                         <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
 
-                            <StackPanel Grid.Column="0"
-                                        Margin="0,0,12,0"
-                                        VerticalAlignment="Center">
-                                <TextBlock FontWeight="SemiBold" Text="Ready to generate" />
-                                <TextBlock Style="{StaticResource SupportingTextStyle}"
-                                           Text="Complete the puzzle definition first." />
-                            </StackPanel>
-                            <Button Grid.Column="1"
-                                    MinWidth="82"
-                                    Margin="0,0,8,0"
-                                    IsEnabled="False"
-                                    Style="{StaticResource CancelButtonStyle}">
-                                <StackPanel Orientation="Horizontal">
-                                    <icons:FluentIcon Margin="0,0,7,0"
-                                                      Icon="DismissCircle"
+                            <Border Grid.Row="0"
+                                    Margin="0,0,0,12"
+                                    Padding="0,7"
+                                    BorderThickness="0"
+                                    ToolTip="This is a heuristic estimate, not a guaranteed completion time.">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <icons:FluentIcon Grid.Column="0"
+                                                      Margin="0,0,9,0"
+                                                      VerticalAlignment="Center"
                                                       IconSize="Size20"
-                                                      FontSize="16" />
-                                    <TextBlock VerticalAlignment="Center" Text="Cancel" />
+                                                      FontSize="18">
+                                        <icons:FluentIcon.Style>
+                                            <Style TargetType="{x:Type icons:FluentIcon}">
+                                                <Setter Property="Icon" Value="QuestionCircle" />
+                                                <Setter Property="Foreground"
+                                                        Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding DifficultyDisplayState}"
+                                                                 Value="{x:Static viewModels:DifficultyDisplayState.Estimating}">
+                                                        <Setter Property="Icon" Value="ArrowSync" />
+                                                        <Setter Property="Foreground"
+                                                                Value="{DynamicResource {x:Static SystemColors.AccentColorBrushKey}}" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding DifficultyDisplayState}"
+                                                                 Value="{x:Static viewModels:DifficultyDisplayState.FastInSeconds}">
+                                                        <Setter Property="Icon" Value="Flash" />
+                                                        <Setter Property="Foreground" Value="#107C10" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding DifficultyDisplayState}"
+                                                                 Value="{x:Static viewModels:DifficultyDisplayState.FastUnderMinute}">
+                                                        <Setter Property="Icon" Value="Timer" />
+                                                        <Setter Property="Foreground" Value="#038387" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding DifficultyDisplayState}"
+                                                                 Value="{x:Static viewModels:DifficultyDisplayState.SlowFewMinutes}">
+                                                        <Setter Property="Icon" Value="Clock" />
+                                                        <Setter Property="Foreground" Value="#9D5D00" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding DifficultyDisplayState}"
+                                                                 Value="{x:Static viewModels:DifficultyDisplayState.SlowerManyMinutes}">
+                                                        <Setter Property="Icon" Value="Warning" />
+                                                        <Setter Property="Foreground" Value="#CA5010" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding DifficultyDisplayState}"
+                                                                 Value="{x:Static viewModels:DifficultyDisplayState.CrazySlowHours}">
+                                                        <Setter Property="Icon" Value="Warning" />
+                                                        <Setter Property="Foreground" Value="#C42B1C" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding DifficultyDisplayState}"
+                                                                 Value="{x:Static viewModels:DifficultyDisplayState.LikelyImpossible}">
+                                                        <Setter Property="Icon" Value="ErrorCircle" />
+                                                        <Setter Property="Foreground" Value="#C42B1C" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </icons:FluentIcon.Style>
+                                    </icons:FluentIcon>
+
+                                    <TextBlock Grid.Column="1"
+                                               Margin="0,0,7,0"
+                                               VerticalAlignment="Center"
+                                               FontWeight="SemiBold"
+                                               Text="Difficulty:" />
+                                    <TextBlock Grid.Column="2"
+                                               VerticalAlignment="Center"
+                                               Text="{Binding DifficultyText}"
+                                               TextWrapping="Wrap" />
+                                </Grid>
+                            </Border>
+
+                            <Grid Grid.Row="1" Margin="0,0,0,12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <icons:FluentIcon Grid.Column="0"
+                                                  Margin="0,1,11,0"
+                                                  VerticalAlignment="Top"
+                                                  IconSize="Size20"
+                                                  FontSize="20">
+                                    <icons:FluentIcon.Style>
+                                        <Style TargetType="{x:Type icons:FluentIcon}">
+                                            <Setter Property="Icon" Value="Info" />
+                                            <Setter Property="Foreground"
+                                                    Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding EditorActionState}"
+                                                             Value="{x:Static viewModels:EditorActionState.Ready}">
+                                                    <Setter Property="Icon" Value="CheckmarkCircle" />
+                                                    <Setter Property="Foreground" Value="#107C10" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding EditorActionState}"
+                                                             Value="{x:Static viewModels:EditorActionState.Generating}">
+                                                    <Setter Property="Icon" Value="ArrowSync" />
+                                                    <Setter Property="Foreground"
+                                                            Value="{DynamicResource {x:Static SystemColors.AccentColorBrushKey}}" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding EditorActionState}"
+                                                             Value="{x:Static viewModels:EditorActionState.Completed}">
+                                                    <Setter Property="Icon" Value="CheckmarkCircle" />
+                                                    <Setter Property="Foreground" Value="#107C10" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding EditorActionState}"
+                                                             Value="{x:Static viewModels:EditorActionState.MessageDidNotFit}">
+                                                    <Setter Property="Icon" Value="Warning" />
+                                                    <Setter Property="Foreground" Value="#9D5D00" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding EditorActionState}"
+                                                             Value="{x:Static viewModels:EditorActionState.Failed}">
+                                                    <Setter Property="Icon" Value="ErrorCircle" />
+                                                    <Setter Property="Foreground" Value="#C42B1C" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding EditorActionState}"
+                                                             Value="{x:Static viewModels:EditorActionState.Cancelled}">
+                                                    <Setter Property="Icon" Value="DismissCircle" />
+                                                    <Setter Property="Foreground"
+                                                            Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </icons:FluentIcon.Style>
+                                </icons:FluentIcon>
+
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock FontWeight="SemiBold"
+                                               Text="{Binding EditorStatusTitle}"
+                                               TextWrapping="Wrap" />
+                                    <TextBlock Style="{StaticResource SupportingTextStyle}"
+                                               Text="{Binding EditorStatusMessage}"
+                                               TextWrapping="Wrap" />
                                 </StackPanel>
-                            </Button>
-                            <Button Grid.Column="2"
-                                    MinWidth="100"
-                                    IsDefault="True"
-                                    Style="{StaticResource AccentButtonStyle}">
-                                <StackPanel Orientation="Horizontal">
-                                    <icons:FluentIcon Margin="0,0,7,0"
-                                                      Icon="Play"
-                                                      IconSize="Size20"
-                                                      FontSize="16" />
-                                    <TextBlock VerticalAlignment="Center" Text="Generate" />
-                                </StackPanel>
-                            </Button>
+                            </Grid>
+
+                            <Grid Grid.Row="2" HorizontalAlignment="Right">
+                                <Button MinWidth="126"
+                                        Command="{Binding GenerateCommand}"
+                                        IsDefault="True">
+                                    <Button.Style>
+                                        <Style TargetType="Button"
+                                               BasedOn="{StaticResource AccentButtonStyle}">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsGenerating}" Value="True">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                    <StackPanel Orientation="Horizontal">
+                                        <icons:FluentIcon Margin="0,0,7,0"
+                                                          Icon="Play"
+                                                          IconSize="Size20"
+                                                          FontSize="16" />
+                                        <TextBlock VerticalAlignment="Center"
+                                                   Text="{Binding GenerateButtonText}" />
+                                    </StackPanel>
+                                </Button>
+
+                                <Button MinWidth="126"
+                                        Command="{Binding CancelCommand}">
+                                    <Button.Style>
+                                        <Style TargetType="Button"
+                                               BasedOn="{StaticResource CancelButtonStyle}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsGenerating}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                    <StackPanel Orientation="Horizontal">
+                                        <icons:FluentIcon Margin="0,0,7,0"
+                                                          Icon="DismissCircle"
+                                                          IconSize="Size20"
+                                                          FontSize="16" />
+                                        <TextBlock VerticalAlignment="Center" Text="Cancel" />
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
                         </Grid>
                     </Border>
                 </Grid>
@@ -289,12 +484,12 @@
                         <TextBlock HorizontalAlignment="Center"
                                    FontSize="22"
                                    FontWeight="SemiBold"
-                                   Text="No board generated" />
+                                   Text="{Binding PreviewTitle}" />
                         <TextBlock MaxWidth="380"
                                    Margin="0,8,0,0"
                                    HorizontalAlignment="Center"
                                    Style="{StaticResource SupportingTextStyle}"
-                                   Text="The generated puzzle will be rendered here. This area will later host the CefSharp preview."
+                                   Text="{Binding PreviewMessage}"
                                    TextAlignment="Center"
                                    TextWrapping="Wrap" />
                     </StackPanel>
@@ -323,36 +518,36 @@
 
                     <StackPanel Grid.Column="0" Orientation="Horizontal">
                         <TextBlock FontWeight="SemiBold" Text="Status:" />
-                        <TextBlock Margin="6,0,0,0" Text="Idle" />
+                        <TextBlock Margin="6,0,0,0" Text="{Binding StatusText}" />
                     </StackPanel>
                     <StackPanel Grid.Column="1" Orientation="Horizontal">
                         <TextBlock Style="{StaticResource MetricLabelTextStyle}" Text="Elapsed" />
-                        <TextBlock Margin="6,0,0,0" Text="—" />
+                        <TextBlock Margin="6,0,0,0" Text="{Binding ElapsedText}" />
                     </StackPanel>
                     <StackPanel Grid.Column="2" Orientation="Horizontal">
                         <TextBlock Style="{StaticResource MetricLabelTextStyle}" Text="Workers" />
-                        <TextBlock Margin="6,0,0,0" Text="—" />
+                        <TextBlock Margin="6,0,0,0" Text="{Binding WorkersText}" />
                     </StackPanel>
                     <StackPanel Grid.Column="3" Orientation="Horizontal">
                         <TextBlock Style="{StaticResource MetricLabelTextStyle}" Text="Tested" />
-                        <TextBlock Margin="6,0,0,0" Text="—" />
+                        <TextBlock Margin="6,0,0,0" Text="{Binding TestedPositionsText}" />
                     </StackPanel>
                     <StackPanel Grid.Column="4" Orientation="Horizontal">
                         <TextBlock Style="{StaticResource MetricLabelTextStyle}" Text="Backtracks" />
-                        <TextBlock Margin="6,0,0,0" Text="—" />
+                        <TextBlock Margin="6,0,0,0" Text="{Binding BacktrackingsText}" />
                     </StackPanel>
                 </Grid>
 
                 <ProgressBar Grid.Row="1"
                              Height="6"
                              Minimum="0"
-                             Maximum="100"
-                             Value="0">
+                             Maximum="{Binding ProgressMaximum, Mode=OneWay}"
+                             Value="{Binding ProgressValue, Mode=OneWay}">
                     <ProgressBar.ToolTip>
                         <StackPanel MaxWidth="330">
                             <TextBlock FontWeight="SemiBold" Text="Generation details" />
                             <TextBlock Margin="0,5,0,0"
-                                       Text="Detailed activity, worker and search statistics will appear here while a puzzle is being generated."
+                                       Text="{Binding ProgressToolTip}"
                                        TextWrapping="Wrap" />
                         </StackPanel>
                     </ProgressBar.ToolTip>
