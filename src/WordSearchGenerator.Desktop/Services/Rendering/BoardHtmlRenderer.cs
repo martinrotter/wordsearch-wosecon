@@ -85,6 +85,7 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
                            <style>
                              :root {
                                --columns: {{columnCount.ToString(CultureInfo.InvariantCulture)}};
+                               --cell-max-size: 58px;
                                --ink: #17202a;
                                --muted: #5f6b76;
                                --paper: #ffffff;
@@ -127,7 +128,7 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
                              .matrix {
                                display: grid;
                                grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
-                               width: min(100%, 900px);
+                               width: min(100%, 900px, calc(var(--columns) * var(--cell-max-size)));
                                margin: 0 auto;
                                overflow: hidden;
                                border: 2px solid #26313a;
