@@ -22,7 +22,17 @@ namespace WordSearchGenerator.Desktop.Models
       get;
     }
 
+    public string EntryListHeading
+    {
+      get;
+    }
+
     public PuzzleMode Mode
+    {
+      get;
+    }
+
+    public string PuzzleHeading
     {
       get;
     }
@@ -49,12 +59,16 @@ namespace WordSearchGenerator.Desktop.Models
       int columns,
       IEnumerable<PuzzleEntry> entries,
       string secretMessage,
+      string puzzleHeading,
+      string entryListHeading,
       GenerationOptions generation)
     {
       ArgumentOutOfRangeException.ThrowIfNegativeOrZero(rows);
       ArgumentOutOfRangeException.ThrowIfNegativeOrZero(columns);
       ArgumentNullException.ThrowIfNull(entries);
       ArgumentNullException.ThrowIfNull(secretMessage);
+      ArgumentNullException.ThrowIfNull(puzzleHeading);
+      ArgumentNullException.ThrowIfNull(entryListHeading);
       ArgumentNullException.ThrowIfNull(generation);
 
       var entryArray = entries.ToArray();
@@ -78,6 +92,8 @@ namespace WordSearchGenerator.Desktop.Models
       Columns = columns;
       Entries = new ReadOnlyCollection<PuzzleEntry>(entryArray);
       SecretMessage = secretMessage;
+      PuzzleHeading = puzzleHeading.Trim();
+      EntryListHeading = entryListHeading.Trim();
       Generation = generation;
     }
 

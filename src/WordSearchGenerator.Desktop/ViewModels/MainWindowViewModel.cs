@@ -4,7 +4,9 @@ using System.ComponentModel;
 using WordSearchGenerator.Common.WoSeCon;
 using WordSearchGenerator.Desktop.Commands;
 using WordSearchGenerator.Desktop.Models;
+using WordSearchGenerator.Desktop.Models.Rendering;
 using WordSearchGenerator.Desktop.Services;
+using WordSearchGenerator.Desktop.Services.Rendering;
 
 namespace WordSearchGenerator.Desktop.ViewModels
 {
@@ -15,6 +17,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
     private int _activeAttemptCount;
     private int _attemptCount;
     private long _backtrackings;
+    private BoardRenderModel? _boardRenderModel;
     private int _cancelledAttemptCount;
     private string _columnsText = "11";
     private bool _canGenerate;
@@ -27,17 +30,23 @@ namespace WordSearchGenerator.Desktop.ViewModels
     private EditorActionState _editorActionState = EditorActionState.Invalid;
     private string _editorStatusMessage = "Enter at least one word.";
     private string _editorStatusTitle = "Puzzle needs attention";
+    private string _entryListHeading = "Words to find";
     private int _finishedAttemptCount;
     private int _furthestPlacedWordCount;
+    private bool _isExporting;
+    private bool _isPreviewReady;
     private int _messageRejectedAttemptCount;
     private PuzzleMode _mode;
     private int _placementFailureCount;
     private int _placedWordCount;
     private double _progressMaximum = 1;
     private double _progressValue;
+    private string _previewHtml = string.Empty;
     private string _previewMessage =
-      "The generated puzzle will be rendered here. This area will later host the CefSharp preview.";
+      "Generate a puzzle to see its printable board here.";
+    private BoardPreviewMode _previewMode = BoardPreviewMode.Puzzle;
     private string _previewTitle = "No board generated";
+    private string _puzzleHeading = string.Empty;
     private ParallelismOption _selectedParallelismOption;
     private string _rowsText = "11";
     private string _secretMessage = string.Empty;
@@ -45,6 +54,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
     private long _testedPositions;
     private int _totalWordCount;
     private string _wordsText = string.Empty;
+    private readonly IBoardHtmlRenderer _boardHtmlRenderer;
     private readonly IPuzzleGenerator _puzzleGenerator;
 
     #endregion
@@ -56,6 +66,8 @@ namespace WordSearchGenerator.Desktop.ViewModels
       get => _canGenerate;
       private set => SetProperty(ref _canGenerate, value);
     }
+
+    public bool CanExport => IsPreviewReady && !IsExporting;
 
     public RelayCommand CancelCommand
     {
@@ -125,6 +137,18 @@ namespace WordSearchGenerator.Desktop.ViewModels
       private set => SetProperty(ref _editorStatusTitle, value);
     }
 
+    public string EntryListHeading
+    {
+      get => _entryListHeading;
+      set
+      {
+        if (SetProperty(ref _entryListHeading, value ?? string.Empty))
+        {
+          RefreshPreviewText();
+        }
+      }
+    }
+
     public GenerationResult? CurrentResult
     {
       get => _currentResult;
@@ -160,9 +184,45 @@ namespace WordSearchGenerator.Desktop.ViewModels
       _ => "Generate"
     };
 
-    public bool IsEditorEnabled => !IsGenerating;
+    public bool HasPreview => !string.IsNullOrEmpty(PreviewHtml);
+
+    public bool IsEditorEnabled => !IsGenerating && !IsExporting;
 
     public bool IsGenerating => GenerateCommand.IsRunning;
+
+    public bool IsExporting
+    {
+      get => _isExporting;
+      private set
+      {
+        if (SetProperty(ref _isExporting, value))
+        {
+          OnPropertyChanged(nameof(CanExport));
+          OnPropertyChanged(nameof(IsEditorEnabled));
+          GenerateCommand.NotifyCanExecuteChanged();
+          ShowPuzzlePreviewCommand.NotifyCanExecuteChanged();
+          ShowSolutionPreviewCommand.NotifyCanExecuteChanged();
+        }
+      }
+    }
+
+    public bool IsPuzzlePreviewSelected =>
+      PreviewMode == BoardPreviewMode.Puzzle;
+
+    public bool IsPreviewReady
+    {
+      get => _isPreviewReady;
+      private set
+      {
+        if (SetProperty(ref _isPreviewReady, value))
+        {
+          OnPropertyChanged(nameof(CanExport));
+        }
+      }
+    }
+
+    public bool IsSolutionPreviewSelected =>
+      PreviewMode == BoardPreviewMode.Solution;
 
     public IReadOnlyList<PuzzleMode> Modes
     {
@@ -174,6 +234,8 @@ namespace WordSearchGenerator.Desktop.ViewModels
       get => _mode;
       set
       {
+        var previousMode = Mode;
+
         if (!SetProperty(ref _mode, value))
         {
           return;
@@ -181,6 +243,12 @@ namespace WordSearchGenerator.Desktop.ViewModels
 
         OnPropertyChanged(nameof(IsNormalMode));
         OnPropertyChanged(nameof(IsQuizMode));
+
+        if (EntryListHeading == GetDefaultEntryListHeading(previousMode))
+        {
+          EntryListHeading = GetDefaultEntryListHeading(value);
+        }
+
         RefreshEditorState();
       }
     }
@@ -225,10 +293,50 @@ namespace WordSearchGenerator.Desktop.ViewModels
       private set => SetProperty(ref _previewMessage, value);
     }
 
+    public string PreviewHtml
+    {
+      get => _previewHtml;
+      private set
+      {
+        if (SetProperty(ref _previewHtml, value))
+        {
+          IsPreviewReady = false;
+          OnPropertyChanged(nameof(HasPreview));
+          ShowPuzzlePreviewCommand.NotifyCanExecuteChanged();
+          ShowSolutionPreviewCommand.NotifyCanExecuteChanged();
+        }
+      }
+    }
+
+    public BoardPreviewMode PreviewMode
+    {
+      get => _previewMode;
+      private set
+      {
+        if (SetProperty(ref _previewMode, value))
+        {
+          OnPropertyChanged(nameof(IsPuzzlePreviewSelected));
+          OnPropertyChanged(nameof(IsSolutionPreviewSelected));
+        }
+      }
+    }
+
     public string PreviewTitle
     {
       get => _previewTitle;
       private set => SetProperty(ref _previewTitle, value);
+    }
+
+    public string PuzzleHeading
+    {
+      get => _puzzleHeading;
+      set
+      {
+        if (SetProperty(ref _puzzleHeading, value ?? string.Empty))
+        {
+          RefreshPreviewText();
+        }
+      }
     }
 
     public ObservableCollection<QuizEntryViewModel> QuizEntries
@@ -246,6 +354,16 @@ namespace WordSearchGenerator.Desktop.ViewModels
           RefreshEditorState();
         }
       }
+    }
+
+    public RelayCommand ShowPuzzlePreviewCommand
+    {
+      get;
+    }
+
+    public RelayCommand ShowSolutionPreviewCommand
+    {
+      get;
     }
 
     public string SecretMessage
@@ -423,11 +541,15 @@ namespace WordSearchGenerator.Desktop.ViewModels
 
     #region Constructors
 
-    public MainWindowViewModel(IPuzzleGenerator puzzleGenerator)
+    public MainWindowViewModel(
+      IPuzzleGenerator puzzleGenerator,
+      IBoardHtmlRenderer boardHtmlRenderer)
     {
       ArgumentNullException.ThrowIfNull(puzzleGenerator);
+      ArgumentNullException.ThrowIfNull(boardHtmlRenderer);
 
       _puzzleGenerator = puzzleGenerator;
+      _boardHtmlRenderer = boardHtmlRenderer;
       var automaticParallelism = Math.Max(1, Environment.ProcessorCount);
 
       ParallelismOptions =
@@ -445,10 +567,16 @@ namespace WordSearchGenerator.Desktop.ViewModels
       _selectedParallelismOption = ParallelismOptions[0];
       GenerateCommand = new AsyncRelayCommand(
         GenerateAsync,
-        () => CanGenerate);
+        () => CanGenerate && !IsExporting);
       CancelCommand = new RelayCommand(
         GenerateCommand.Cancel,
         () => GenerateCommand.CanBeCanceled);
+      ShowPuzzlePreviewCommand = new RelayCommand(
+        () => SetPreviewMode(BoardPreviewMode.Puzzle),
+        () => HasPreview && !IsExporting);
+      ShowSolutionPreviewCommand = new RelayCommand(
+        () => SetPreviewMode(BoardPreviewMode.Solution),
+        () => HasPreview && !IsExporting);
       GenerateCommand.PropertyChanged += GenerateCommandOnPropertyChanged;
 
       QuizEntries.CollectionChanged += QuizEntriesOnCollectionChanged;
@@ -475,6 +603,34 @@ namespace WordSearchGenerator.Desktop.ViewModels
       return true;
     }
 
+    internal BoardRenderModel? GetCurrentBoardRenderModel()
+    {
+      return _boardRenderModel;
+    }
+
+    internal void ReportExportCompleted(string status)
+    {
+      IsExporting = false;
+      StatusText = status;
+    }
+
+    internal void ReportExportFailed()
+    {
+      IsExporting = false;
+      StatusText = "Export failed";
+    }
+
+    internal void ReportExportStarted(string status)
+    {
+      IsExporting = true;
+      StatusText = status;
+    }
+
+    internal void SetPreviewReady(bool isReady)
+    {
+      IsPreviewReady = isReady && HasPreview;
+    }
+
     private PuzzleDefinition CreateDefinition()
     {
       var entries = GetNormalizedEntries();
@@ -485,6 +641,8 @@ namespace WordSearchGenerator.Desktop.ViewModels
         int.Parse(ColumnsText),
         entries,
         SecretMessage,
+        PuzzleHeading,
+        EntryListHeading,
         new GenerationOptions(
           SelectedParallelismOption.ParallelAttempts));
     }
@@ -502,6 +660,11 @@ namespace WordSearchGenerator.Desktop.ViewModels
         WoSeCon.EstimatedConstructionTime.LikelyImpossible => "Likely impossible",
         _ => "Unknown"
       };
+    }
+
+    private static string GetDefaultEntryListHeading(PuzzleMode mode)
+    {
+      return mode == PuzzleMode.Quiz ? "Questions" : "Words to find";
     }
 
     private static DifficultyDisplayState GetDifficultyDisplayState(
@@ -556,6 +719,9 @@ namespace WordSearchGenerator.Desktop.ViewModels
         definition!.Entries.Count,
         definition.Generation.ParallelAttempts);
       CurrentResult = null;
+      _boardRenderModel = null;
+      PreviewHtml = string.Empty;
+      PreviewMode = BoardPreviewMode.Puzzle;
       StatusText = "Starting";
       EditorActionState = EditorActionState.Generating;
       EditorStatusTitle = "Generating puzzle";
@@ -576,6 +742,11 @@ namespace WordSearchGenerator.Desktop.ViewModels
           cancellationToken);
 
         CurrentResult = result;
+        _boardRenderModel = BoardRenderModel.Create(
+          result,
+          PuzzleHeading,
+          EntryListHeading);
+        SetPreviewMode(BoardPreviewMode.Puzzle, force: true);
         Elapsed = result.Elapsed;
         TestedPositions = result.TestedPositions;
         Backtrackings = result.Backtrackings;
@@ -690,6 +861,43 @@ namespace WordSearchGenerator.Desktop.ViewModels
       ProgressMaximum = Math.Max(1, totalWordCount);
       ProgressValue = 0;
       OnPropertyChanged(nameof(ProgressToolTip));
+    }
+
+    private void RefreshPreviewText()
+    {
+      if (CurrentResult == null)
+      {
+        return;
+      }
+
+      _boardRenderModel = BoardRenderModel.Create(
+        CurrentResult,
+        PuzzleHeading,
+        EntryListHeading);
+      SetPreviewMode(PreviewMode, force: true);
+    }
+
+    private void SetPreviewMode(
+      BoardPreviewMode previewMode,
+      bool force = false)
+    {
+      if (!force && PreviewMode == previewMode)
+      {
+        // ToggleButton changes IsChecked before executing its command. Reassert
+        // the unchanged preview mode so the selected button cannot be toggled off.
+        OnPropertyChanged(nameof(IsPuzzlePreviewSelected));
+        OnPropertyChanged(nameof(IsSolutionPreviewSelected));
+        return;
+      }
+
+      PreviewMode = previewMode;
+
+      if (_boardRenderModel != null)
+      {
+        PreviewHtml = _boardHtmlRenderer.Render(
+          _boardRenderModel,
+          previewMode);
+      }
     }
 
     private void UpdateProgress(MonteCarloProgress progress)
