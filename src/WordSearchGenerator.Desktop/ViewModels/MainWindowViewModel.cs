@@ -10,7 +10,7 @@ using WordSearchGenerator.Desktop.Services.Rendering;
 
 namespace WordSearchGenerator.Desktop.ViewModels
 {
-  public sealed class MainWindowViewModel : ValidatableViewModelBase
+  public sealed partial class MainWindowViewModel : ValidatableViewModelBase
   {
     #region Fields
 
@@ -19,7 +19,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
     private long _backtrackings;
     private BoardRenderModel? _boardRenderModel;
     private int _cancelledAttemptCount;
-    private string _columnsText = "11";
+    private string _columnsText = NewProjectColumnsText;
     private bool _canGenerate;
     private GenerationResult? _currentResult;
     private CancellationTokenSource? _difficultyCancellation;
@@ -48,12 +48,12 @@ namespace WordSearchGenerator.Desktop.ViewModels
     private string _previewTitle = "No board generated";
     private string _puzzleHeading = string.Empty;
     private ParallelismOption _selectedParallelismOption;
-    private string _rowsText = "11";
-    private string _secretMessage = string.Empty;
+    private string _rowsText = NewProjectRowsText;
+    private string _secretMessage = NewProjectSecretMessage;
     private string _statusText = "Idle";
     private long _testedPositions;
     private int _totalWordCount;
-    private string _wordsText = string.Empty;
+    private string _wordsText = NewProjectWordsText;
     private readonly IBoardHtmlRenderer _boardHtmlRenderer;
     private readonly IPuzzleGenerator _puzzleGenerator;
 
@@ -96,6 +96,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
       {
         if (SetProperty(ref _columnsText, value ?? string.Empty))
         {
+          MarkDocumentChanged(invalidateGeneratedBoard: true);
           RefreshEditorState();
         }
       }
@@ -144,6 +145,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
       {
         if (SetProperty(ref _entryListHeading, value ?? string.Empty))
         {
+          MarkDocumentChanged(invalidateGeneratedBoard: false);
           RefreshPreviewText();
         }
       }
@@ -249,6 +251,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
           EntryListHeading = GetDefaultEntryListHeading(value);
         }
 
+        MarkDocumentChanged(invalidateGeneratedBoard: true);
         RefreshEditorState();
       }
     }
@@ -257,7 +260,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
 
     public bool IsQuizMode => Mode == PuzzleMode.Quiz;
 
-    public IReadOnlyList<ParallelismOption> ParallelismOptions
+    public ObservableCollection<ParallelismOption> ParallelismOptions
     {
       get;
     }
@@ -334,6 +337,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
       {
         if (SetProperty(ref _puzzleHeading, value ?? string.Empty))
         {
+          MarkDocumentChanged(invalidateGeneratedBoard: false);
           RefreshPreviewText();
         }
       }
@@ -351,6 +355,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
       {
         if (SetProperty(ref _rowsText, value ?? string.Empty))
         {
+          MarkDocumentChanged(invalidateGeneratedBoard: true);
           RefreshEditorState();
         }
       }
@@ -373,6 +378,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
       {
         if (SetProperty(ref _secretMessage, value ?? string.Empty))
         {
+          MarkDocumentChanged(invalidateGeneratedBoard: true);
           RefreshEditorState();
         }
       }
@@ -520,6 +526,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
       {
         if (SetProperty(ref _selectedParallelismOption, value))
         {
+          MarkDocumentChanged(invalidateGeneratedBoard: false);
           RefreshEditorState();
         }
       }
@@ -532,6 +539,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
       {
         if (SetProperty(ref _wordsText, value ?? string.Empty))
         {
+          MarkDocumentChanged(invalidateGeneratedBoard: true);
           RefreshEditorState();
         }
       }
@@ -583,6 +591,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
       QuizEntries.Add(new QuizEntryViewModel());
 
       RefreshEditorState();
+      IsDirty = false;
     }
 
     #endregion
@@ -614,10 +623,10 @@ namespace WordSearchGenerator.Desktop.ViewModels
       StatusText = status;
     }
 
-    internal void ReportExportFailed()
+    internal void ReportExportFailed(string status = "Export failed")
     {
       IsExporting = false;
-      StatusText = "Export failed";
+      StatusText = status;
     }
 
     internal void ReportExportStarted(string status)
@@ -718,10 +727,8 @@ namespace WordSearchGenerator.Desktop.ViewModels
       ResetGenerationProgress(
         definition!.Entries.Count,
         definition.Generation.ParallelAttempts);
-      CurrentResult = null;
-      _boardRenderModel = null;
-      PreviewHtml = string.Empty;
-      PreviewMode = BoardPreviewMode.Puzzle;
+      ClearGeneratedBoard();
+      MarkDocumentChanged(invalidateGeneratedBoard: false);
       StatusText = "Starting";
       EditorActionState = EditorActionState.Generating;
       EditorStatusTitle = "Generating puzzle";
@@ -946,6 +953,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
         }
       }
 
+      MarkDocumentChanged(invalidateGeneratedBoard: true);
       RefreshEditorState();
     }
 
@@ -960,6 +968,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
       object? sender,
       PropertyChangedEventArgs e)
     {
+      MarkDocumentChanged(invalidateGeneratedBoard: true);
       RefreshEditorState();
     }
 

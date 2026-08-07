@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Threading;
 using CefSharp;
+using WordSearchGenerator.Desktop.Services.Persistence;
 using WordSearchGenerator.Desktop.ViewModels;
 
 namespace WordSearchGenerator.Desktop.Views
@@ -11,18 +12,23 @@ namespace WordSearchGenerator.Desktop.Views
     #region Fields
 
     private string? _loadedPreviewHtml;
+    private readonly IPuzzleProjectSerializer _projectSerializer;
     private readonly MainWindowViewModel _viewModel;
 
     #endregion
 
     #region Constructors
 
-    public MainWindow(MainWindowViewModel viewModel)
+    public MainWindow(
+      MainWindowViewModel viewModel,
+      IPuzzleProjectSerializer projectSerializer)
     {
       ArgumentNullException.ThrowIfNull(viewModel);
+      ArgumentNullException.ThrowIfNull(projectSerializer);
 
       InitializeComponent();
       _viewModel = viewModel;
+      _projectSerializer = projectSerializer;
       DataContext = viewModel;
 
       _viewModel.PropertyChanged += ViewModelOnPropertyChanged;
@@ -30,6 +36,7 @@ namespace WordSearchGenerator.Desktop.Views
         PreviewBrowserOnIsBrowserInitializedChanged;
       PreviewBrowser.LoadingStateChanged +=
         PreviewBrowserOnLoadingStateChanged;
+      Closing += MainWindowOnClosing;
       Closed += MainWindowOnClosed;
     }
 
@@ -44,6 +51,7 @@ namespace WordSearchGenerator.Desktop.Views
         PreviewBrowserOnIsBrowserInitializedChanged;
       PreviewBrowser.LoadingStateChanged -=
         PreviewBrowserOnLoadingStateChanged;
+      Closing -= MainWindowOnClosing;
       Closed -= MainWindowOnClosed;
     }
 

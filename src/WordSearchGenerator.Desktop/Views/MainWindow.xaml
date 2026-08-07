@@ -7,12 +7,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:WordSearchGenerator.Desktop.ViewModels"
         mc:Ignorable="d"
-        Title="WoSeCon"
+        Title="{Binding WindowTitle}"
         Icon="/WordSearchGenerator.Desktop;component/WordSearchGenerator.Desktop.ico"
         Width="1280"
         Height="800"
         MinWidth="1000"
         MinHeight="650"
+        PreviewKeyDown="MainWindowOnPreviewKeyDown"
         WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.RowDefinitions>
@@ -23,29 +24,44 @@
 
         <Menu Grid.Row="0">
             <MenuItem Header="_File">
-                <MenuItem Header="_New" InputGestureText="Ctrl+N">
+                <MenuItem Header="_New"
+                          Click="NewProjectOnClick"
+                          InputGestureText="Ctrl+N"
+                          IsEnabled="{Binding IsEditorEnabled}">
                     <MenuItem.Icon>
                         <icons:FluentIcon Icon="DocumentAdd" IconSize="Size20" FontSize="16" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="_Open..." InputGestureText="Ctrl+O">
+                <MenuItem Header="_Open..."
+                          Click="OpenProjectOnClick"
+                          InputGestureText="Ctrl+O"
+                          IsEnabled="{Binding IsEditorEnabled}">
                     <MenuItem.Icon>
                         <icons:FluentIcon Icon="FolderOpen" IconSize="Size20" FontSize="16" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="_Save" InputGestureText="Ctrl+S">
+                <MenuItem Header="_Save"
+                          Click="SaveProjectOnClick"
+                          InputGestureText="Ctrl+S"
+                          IsEnabled="{Binding IsEditorEnabled}">
                     <MenuItem.Icon>
                         <icons:FluentIcon Icon="Save" IconSize="Size20" FontSize="16" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Save _As..." InputGestureText="Ctrl+Shift+S">
+                <MenuItem Header="Save _As..."
+                          Click="SaveProjectAsOnClick"
+                          InputGestureText="Ctrl+Shift+S"
+                          IsEnabled="{Binding IsEditorEnabled}">
                     <MenuItem.Icon>
                         <icons:FluentIcon Icon="SaveEdit" IconSize="Size20" FontSize="16" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="_Import words or questions...">
+                <MenuItem Header="_Import words or questions..."
+                          Click="ImportEntriesOnClick"
+                          IsEnabled="{Binding IsEditorEnabled}"
+                          ToolTip="Normal mode: one word per line. Quiz mode: answer, tab, then question.">
                     <MenuItem.Icon>
                         <icons:FluentIcon Icon="ArrowImport" IconSize="Size20" FontSize="16" />
                     </MenuItem.Icon>
@@ -67,7 +83,7 @@
                               Click="SaveCurrentBoardAsPngOnClick" />
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="E_xit">
+                <MenuItem Header="E_xit" Click="ExitOnClick">
                     <MenuItem.Icon>
                         <icons:FluentIcon Icon="Dismiss" IconSize="Size20" FontSize="16" />
                     </MenuItem.Icon>
