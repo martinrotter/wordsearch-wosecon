@@ -3,6 +3,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using WordSearchGenerator.Common.WoSeCon;
 using WordSearchGenerator.Desktop.Commands;
+using WordSearchGenerator.Desktop.Localization;
 using WordSearchGenerator.Desktop.Models;
 using WordSearchGenerator.Desktop.Models.Rendering;
 using WordSearchGenerator.Desktop.Services;
@@ -14,48 +15,53 @@ namespace WordSearchGenerator.Desktop.ViewModels
   {
     #region Fields
 
+    private readonly IBoardHtmlRenderer _boardHtmlRenderer;
+    private readonly IPuzzleGenerator _puzzleGenerator;
+
     private int _activeAttemptCount;
     private int _attemptCount;
     private long _backtrackings;
     private BoardRenderModel? _boardRenderModel;
     private int _cancelledAttemptCount;
-    private string _columnsText = NewProjectColumnsText;
     private bool _canGenerate;
+    private string _columnsText = NewProjectColumnsText;
     private GenerationResult? _currentResult;
     private CancellationTokenSource? _difficultyCancellation;
+
     private DifficultyDisplayState _difficultyDisplayState =
       DifficultyDisplayState.Unavailable;
-    private string _difficultyText = "Not estimated";
-    private TimeSpan _elapsed;
+
+    private string _difficultyText = AppStrings.Get("NotEstimated");
     private EditorActionState _editorActionState = EditorActionState.Invalid;
-    private string _editorStatusMessage = "Enter at least one word.";
-    private string _editorStatusTitle = "Puzzle needs attention";
-    private string _entryListHeading = "Words to find";
+    private string _editorStatusMessage = AppStrings.Get("EnterAtLeastOneWord");
+    private string _editorStatusTitle = AppStrings.Get("EditorNeedsAttention");
+    private TimeSpan _elapsed;
+    private string _entryListHeading = AppStrings.Get("WordsToFind");
     private int _finishedAttemptCount;
     private int _furthestPlacedWordCount;
     private bool _isExporting;
     private bool _isPreviewReady;
     private int _messageRejectedAttemptCount;
     private PuzzleMode _mode;
-    private int _placementFailureCount;
     private int _placedWordCount;
+    private int _placementFailureCount;
+    private string _previewHtml = string.Empty;
+
+    private string _previewMessage =
+      AppStrings.Get("GenerateProjectBoard");
+
+    private BoardPreviewMode _previewMode = BoardPreviewMode.Puzzle;
+    private string _previewTitle = AppStrings.Get("NoBoardGenerated");
     private double _progressMaximum = 1;
     private double _progressValue;
-    private string _previewHtml = string.Empty;
-    private string _previewMessage =
-      "Generate a puzzle to see its printable board here.";
-    private BoardPreviewMode _previewMode = BoardPreviewMode.Puzzle;
-    private string _previewTitle = "No board generated";
     private string _puzzleHeading = string.Empty;
-    private ParallelismOption _selectedParallelismOption;
     private string _rowsText = NewProjectRowsText;
     private string _secretMessage = NewProjectSecretMessage;
-    private string _statusText = "Idle";
+    private ParallelismOption _selectedParallelismOption;
+    private string _statusText = AppStrings.Get("Idle");
     private long _testedPositions;
     private int _totalWordCount;
     private string _wordsText = NewProjectWordsText;
-    private readonly IBoardHtmlRenderer _boardHtmlRenderer;
-    private readonly IPuzzleGenerator _puzzleGenerator;
 
     #endregion
 
@@ -96,7 +102,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
       {
         if (SetProperty(ref _columnsText, value ?? string.Empty))
         {
-          MarkDocumentChanged(invalidateGeneratedBoard: true);
+          MarkDocumentChanged(true);
           RefreshEditorState();
         }
       }
@@ -145,7 +151,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
       {
         if (SetProperty(ref _entryListHeading, value ?? string.Empty))
         {
-          MarkDocumentChanged(invalidateGeneratedBoard: false);
+          MarkDocumentChanged(false);
           RefreshPreviewText();
         }
       }
@@ -177,14 +183,15 @@ namespace WordSearchGenerator.Desktop.ViewModels
       get;
     }
 
-    public string GenerateButtonText => EditorActionState switch
-    {
-      EditorActionState.Completed => "Generate again",
-      EditorActionState.MessageDidNotFit => "Try again",
-      EditorActionState.Failed => "Try again",
-      EditorActionState.Cancelled => "Generate again",
-      _ => "Generate"
-    };
+    public string GenerateButtonText =>
+      EditorActionState switch
+      {
+        EditorActionState.Completed => AppStrings.Get("GenerateAgain"),
+        EditorActionState.MessageDidNotFit => AppStrings.Get("TryAgain"),
+        EditorActionState.Failed => AppStrings.Get("TryAgain"),
+        EditorActionState.Cancelled => AppStrings.Get("GenerateAgain"),
+        _ => AppStrings.Get("Generate")
+      };
 
     public bool HasPreview => !string.IsNullOrEmpty(PreviewHtml);
 
@@ -208,8 +215,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
       }
     }
 
-    public bool IsPuzzlePreviewSelected =>
-      PreviewMode == BoardPreviewMode.Puzzle;
+    public bool IsPuzzlePreviewSelected => PreviewMode == BoardPreviewMode.Puzzle;
 
     public bool IsPreviewReady
     {
@@ -223,8 +229,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
       }
     }
 
-    public bool IsSolutionPreviewSelected =>
-      PreviewMode == BoardPreviewMode.Solution;
+    public bool IsSolutionPreviewSelected => PreviewMode == BoardPreviewMode.Solution;
 
     public IReadOnlyList<PuzzleMode> Modes
     {
@@ -251,7 +256,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
           EntryListHeading = GetDefaultEntryListHeading(value);
         }
 
-        MarkDocumentChanged(invalidateGeneratedBoard: true);
+        MarkDocumentChanged(true);
         RefreshEditorState();
       }
     }
@@ -272,17 +277,20 @@ namespace WordSearchGenerator.Desktop.ViewModels
     }
 
     public string ProgressToolTip =>
-      "The bar shows the furthest search depth, not elapsed-time completion.\n" +
-      $"Workers: {ActiveAttemptCount:N0} active; " +
-      $"{FinishedAttemptCount:N0} of {AttemptCount:N0} finished\n" +
-      $"Placement failures: {PlacementFailureCount:N0}\n" +
-      $"Message-capacity rejections: {MessageRejectedAttemptCount:N0}\n" +
-      $"Cancelled attempts: {CancelledAttemptCount:N0}\n" +
-      $"Currently placed: {PlacedWordCount:N0} of {TotalWordCount:N0}\n" +
-      $"Furthest placed: {FurthestPlacedWordCount:N0} of {TotalWordCount:N0}\n" +
-      $"Tested positions: {TestedPositions:N0}\n" +
-      $"Backtracks: {Backtrackings:N0}\n" +
-      $"Elapsed: {ElapsedText}";
+      AppStrings.Format(
+        "ProgressTooltip",
+        ActiveAttemptCount,
+        FinishedAttemptCount,
+        AttemptCount,
+        PlacementFailureCount,
+        MessageRejectedAttemptCount,
+        CancelledAttemptCount,
+        PlacedWordCount,
+        TotalWordCount,
+        FurthestPlacedWordCount,
+        TestedPositions,
+        Backtrackings,
+        ElapsedText);
 
     public double ProgressValue
     {
@@ -337,7 +345,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
       {
         if (SetProperty(ref _puzzleHeading, value ?? string.Empty))
         {
-          MarkDocumentChanged(invalidateGeneratedBoard: false);
+          MarkDocumentChanged(false);
           RefreshPreviewText();
         }
       }
@@ -355,7 +363,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
       {
         if (SetProperty(ref _rowsText, value ?? string.Empty))
         {
-          MarkDocumentChanged(invalidateGeneratedBoard: true);
+          MarkDocumentChanged(true);
           RefreshEditorState();
         }
       }
@@ -378,7 +386,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
       {
         if (SetProperty(ref _secretMessage, value ?? string.Empty))
         {
-          MarkDocumentChanged(invalidateGeneratedBoard: true);
+          MarkDocumentChanged(true);
           RefreshEditorState();
         }
       }
@@ -405,9 +413,10 @@ namespace WordSearchGenerator.Desktop.ViewModels
 
     public string TestedPositionsText => TestedPositions.ToString("N0");
 
-    public string WorkersText => AttemptCount == 0
-      ? "0"
-      : $"{ActiveAttemptCount:N0} / {AttemptCount:N0}";
+    public string WorkersText =>
+      AttemptCount == 0
+        ? "0"
+        : $"{ActiveAttemptCount:N0} / {AttemptCount:N0}";
 
     private int ActiveAttemptCount
     {
@@ -526,7 +535,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
       {
         if (SetProperty(ref _selectedParallelismOption, value))
         {
-          MarkDocumentChanged(invalidateGeneratedBoard: false);
+          MarkDocumentChanged(false);
           RefreshEditorState();
         }
       }
@@ -539,7 +548,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
       {
         if (SetProperty(ref _wordsText, value ?? string.Empty))
         {
-          MarkDocumentChanged(invalidateGeneratedBoard: true);
+          MarkDocumentChanged(true);
           RefreshEditorState();
         }
       }
@@ -563,7 +572,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
       ParallelismOptions =
       [
         new ParallelismOption(
-          $"Automatic ({automaticParallelism})",
+          AppStrings.Format("AutomaticParallelism", automaticParallelism),
           automaticParallelism),
         new ParallelismOption("1", 1),
         new ParallelismOption("2", 2),
@@ -623,10 +632,10 @@ namespace WordSearchGenerator.Desktop.ViewModels
       StatusText = status;
     }
 
-    internal void ReportExportFailed(string status = "Export failed")
+    internal void ReportExportFailed(string? status = null)
     {
       IsExporting = false;
-      StatusText = status;
+      StatusText = status ?? AppStrings.Get("ExportFailed");
     }
 
     internal void ReportExportStarted(string status)
@@ -661,19 +670,27 @@ namespace WordSearchGenerator.Desktop.ViewModels
     {
       return estimate switch
       {
-        WoSeCon.EstimatedConstructionTime.FastInSeconds => "Fast — seconds",
-        WoSeCon.EstimatedConstructionTime.FastUnderMinute => "Fast — under a minute",
-        WoSeCon.EstimatedConstructionTime.SlowFewMinutes => "Slow — a few minutes",
-        WoSeCon.EstimatedConstructionTime.SlowerManyMinutes => "Very slow — many minutes",
-        WoSeCon.EstimatedConstructionTime.CrazySlowHours => "Extremely slow — possibly hours",
-        WoSeCon.EstimatedConstructionTime.LikelyImpossible => "Likely impossible",
-        _ => "Unknown"
+        WoSeCon.EstimatedConstructionTime.FastInSeconds =>
+          AppStrings.Get("DifficultyFastSeconds"),
+        WoSeCon.EstimatedConstructionTime.FastUnderMinute =>
+          AppStrings.Get("DifficultyFastMinute"),
+        WoSeCon.EstimatedConstructionTime.SlowFewMinutes =>
+          AppStrings.Get("DifficultySlowMinutes"),
+        WoSeCon.EstimatedConstructionTime.SlowerManyMinutes =>
+          AppStrings.Get("DifficultyVerySlow"),
+        WoSeCon.EstimatedConstructionTime.CrazySlowHours =>
+          AppStrings.Get("DifficultyExtreme"),
+        WoSeCon.EstimatedConstructionTime.LikelyImpossible =>
+          AppStrings.Get("DifficultyImpossible"),
+        _ => AppStrings.Get("Unknown")
       };
     }
 
     private static string GetDefaultEntryListHeading(PuzzleMode mode)
     {
-      return mode == PuzzleMode.Quiz ? "Questions" : "Words to find";
+      return mode == PuzzleMode.Quiz
+        ? AppStrings.Get("Questions")
+        : AppStrings.Get("WordsToFind");
     }
 
     private static DifficultyDisplayState GetDifficultyDisplayState(
@@ -728,16 +745,15 @@ namespace WordSearchGenerator.Desktop.ViewModels
         definition!.Entries.Count,
         definition.Generation.ParallelAttempts);
       ClearGeneratedBoard();
-      MarkDocumentChanged(invalidateGeneratedBoard: false);
-      StatusText = "Starting";
+      MarkDocumentChanged(false);
+      StatusText = AppStrings.Get("Starting");
       EditorActionState = EditorActionState.Generating;
-      EditorStatusTitle = "Generating puzzle";
-      EditorStatusMessage =
-        $"Running {definition.Generation.ParallelAttempts:N0} independent " +
-        "shuffled attempts.";
-      PreviewTitle = "Generating board...";
-      PreviewMessage =
-        "Search progress and diagnostics are available below the preview.";
+      EditorStatusTitle = AppStrings.Get("GeneratingPuzzle");
+      EditorStatusMessage = AppStrings.Format(
+        "RunningAttempts",
+        definition.Generation.ParallelAttempts);
+      PreviewTitle = AppStrings.Get("GeneratingBoard");
+      PreviewMessage = AppStrings.Get("ProgressAvailableBelow");
 
       var progress = new Progress<MonteCarloProgress>(UpdateProgress);
 
@@ -753,7 +769,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
           result,
           PuzzleHeading,
           EntryListHeading);
-        SetPreviewMode(BoardPreviewMode.Puzzle, force: true);
+        SetPreviewMode(BoardPreviewMode.Puzzle, true);
         Elapsed = result.Elapsed;
         TestedPositions = result.TestedPositions;
         Backtrackings = result.Backtrackings;
@@ -766,30 +782,34 @@ namespace WordSearchGenerator.Desktop.ViewModels
         PlacedWordCount = definition.Entries.Count;
         FurthestPlacedWordCount = definition.Entries.Count;
         ProgressValue = definition.Entries.Count;
-        StatusText = "Completed";
+        StatusText = AppStrings.Get("Completed");
         EditorActionState = EditorActionState.Completed;
-        EditorStatusTitle = "Puzzle generated";
-        EditorStatusMessage =
-          $"Attempt {result.WinningAttemptNumber:N0} of " +
-          $"{result.AttemptCount:N0} won with seed {result.WinningSeed}. " +
-          $"Completed in {FormatElapsed(result.Elapsed)}.";
-        PreviewTitle = "Board generated";
-        PreviewMessage =
-          $"{result.Board.RowCount} × {result.Board.ColumnCount}, " +
-          $"{definition.Entries.Count} entries, " +
-          $"{result.PuzzleOccupancyPercentage:F1}% puzzle occupancy, " +
-          $"{result.MessageCellCount} message cells and " +
-          $"{result.BlackBoxCount} black boxes. " +
-          $"Winning seed: {result.WinningSeed}.";
+        EditorStatusTitle = AppStrings.Get("PuzzleGenerated");
+        EditorStatusMessage = AppStrings.Format(
+          "WinningAttemptSummary",
+          result.WinningAttemptNumber,
+          result.AttemptCount,
+          result.WinningSeed,
+          FormatElapsed(result.Elapsed));
+        PreviewTitle = AppStrings.Get("BoardGenerated");
+        PreviewMessage = AppStrings.Format(
+          "BoardSummary",
+          result.Board.RowCount,
+          result.Board.ColumnCount,
+          definition.Entries.Count,
+          result.PuzzleOccupancyPercentage,
+          result.MessageCellCount,
+          result.BlackBoxCount,
+          result.WinningSeed);
       }
       catch (OperationCanceledException)
       {
-        StatusText = "Cancelled";
+        StatusText = AppStrings.Get("Cancelled");
         EditorActionState = EditorActionState.Cancelled;
-        EditorStatusTitle = "Generation cancelled";
-        EditorStatusMessage = "The background search stopped safely.";
-        PreviewTitle = "Generation cancelled";
-        PreviewMessage = "Adjust the puzzle or start another attempt.";
+        EditorStatusTitle = AppStrings.Get("GenerationCancelled");
+        EditorStatusMessage = AppStrings.Get("BackgroundSearchStopped");
+        PreviewTitle = AppStrings.Get("GenerationCancelled");
+        PreviewMessage = AppStrings.Get("AdjustOrTryAgain");
       }
       catch (MonteCarloGenerationException exception)
       {
@@ -801,35 +821,31 @@ namespace WordSearchGenerator.Desktop.ViewModels
         if (exception.MessageRejectedAttemptCount > 0 &&
             exception.PlacementFailureCount == 0)
         {
-          StatusText = "Message did not fit";
+          StatusText = AppStrings.Get("MessageDidNotFit");
           EditorActionState = EditorActionState.MessageDidNotFit;
-          EditorStatusTitle =
-            "The generated placements left too few message cells";
+          EditorStatusTitle = AppStrings.Get("PlacementsTooFewMessageCells");
           EditorStatusMessage = exception.Message;
-          PreviewTitle = "Message needs more vacant cells";
-          PreviewMessage =
-            "Try again for different placements, shorten the message, or enlarge the matrix.";
+          PreviewTitle = AppStrings.Get("MessageNeedsVacantCells");
+          PreviewMessage = AppStrings.Get("MessageFitAdvice");
         }
         else
         {
-          StatusText = "No acceptable board";
+          StatusText = AppStrings.Get("NoAcceptableBoard");
           EditorActionState = EditorActionState.Failed;
-          EditorStatusTitle = "No attempt produced an acceptable board";
+          EditorStatusTitle = AppStrings.Get("NoAttemptProducedBoard");
           EditorStatusMessage = exception.Message;
-          PreviewTitle = "No board generated";
-          PreviewMessage =
-            "Some attempts may have failed placement while others left too few message cells.";
+          PreviewTitle = AppStrings.Get("NoBoardGenerated");
+          PreviewMessage = AppStrings.Get("AttemptsFailedDescription");
         }
       }
       catch (Exception exception)
       {
-        StatusText = "Failed";
+        StatusText = AppStrings.Get("Failed");
         EditorActionState = EditorActionState.Failed;
-        EditorStatusTitle = "Generation failed";
+        EditorStatusTitle = AppStrings.Get("GenerationFailed");
         EditorStatusMessage = exception.Message;
-        PreviewTitle = "No board generated";
-        PreviewMessage =
-          "The words could not be placed in this matrix. Adjust the input and try again.";
+        PreviewTitle = AppStrings.Get("NoBoardGenerated");
+        PreviewMessage = AppStrings.Get("WordsCouldNotBePlaced");
       }
     }
 
@@ -881,7 +897,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
         CurrentResult,
         PuzzleHeading,
         EntryListHeading);
-      SetPreviewMode(PreviewMode, force: true);
+      SetPreviewMode(PreviewMode, true);
     }
 
     private void SetPreviewMode(
@@ -923,12 +939,13 @@ namespace WordSearchGenerator.Desktop.ViewModels
       Elapsed = progress.Elapsed;
       ProgressMaximum = Math.Max(1, progress.TotalWordCount);
       ProgressValue = progress.FurthestPlacedWordCount;
-      StatusText = "Searching";
-      EditorStatusMessage =
-        $"{progress.ActiveAttemptCount:N0} active, " +
-        $"{progress.FinishedAttemptCount:N0} finished; best depth " +
-        $"{progress.FurthestPlacedWordCount:N0} of " +
-        $"{progress.TotalWordCount:N0}.";
+      StatusText = AppStrings.Get("Searching");
+      EditorStatusMessage = AppStrings.Format(
+        "SearchProgressSummary",
+        progress.ActiveAttemptCount,
+        progress.FinishedAttemptCount,
+        progress.FurthestPlacedWordCount,
+        progress.TotalWordCount);
     }
 
     private void QuizEntriesOnCollectionChanged(
@@ -953,7 +970,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
         }
       }
 
-      MarkDocumentChanged(invalidateGeneratedBoard: true);
+      MarkDocumentChanged(true);
       RefreshEditorState();
     }
 
@@ -968,7 +985,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
       object? sender,
       PropertyChangedEventArgs e)
     {
-      MarkDocumentChanged(invalidateGeneratedBoard: true);
+      MarkDocumentChanged(true);
       RefreshEditorState();
     }
 
@@ -982,16 +999,17 @@ namespace WordSearchGenerator.Desktop.ViewModels
       if (CanGenerate)
       {
         EditorActionState = EditorActionState.Ready;
-        EditorStatusTitle = "Ready to generate";
-        EditorStatusMessage =
-          $"{GetNormalizedEntries().Count} unique entries will be used.";
+        EditorStatusTitle = AppStrings.Get("ReadyToGenerate");
+        EditorStatusMessage = AppStrings.Format(
+          "UniqueEntriesUsed",
+          GetNormalizedEntries().Count);
       }
       else
       {
         EditorActionState = EditorActionState.Invalid;
-        EditorStatusTitle = "Puzzle needs attention";
+        EditorStatusTitle = AppStrings.Get("EditorNeedsAttention");
         EditorStatusMessage = GetAllErrors().FirstOrDefault() ??
-                              "Check the puzzle definition.";
+                              AppStrings.Get("CheckPuzzleDefinition");
       }
 
       ScheduleDifficultyEstimate();
@@ -1006,14 +1024,14 @@ namespace WordSearchGenerator.Desktop.ViewModels
       if (!CanGenerate)
       {
         DifficultyDisplayState = DifficultyDisplayState.Unavailable;
-        DifficultyText = "Not estimated";
+        DifficultyText = AppStrings.Get("NotEstimated");
         return;
       }
 
       var cancellation = new CancellationTokenSource();
       _difficultyCancellation = cancellation;
       DifficultyDisplayState = DifficultyDisplayState.Estimating;
-      DifficultyText = "Estimating...";
+      DifficultyText = AppStrings.Get("Estimating");
       _ = UpdateDifficultyAsync(cancellation);
     }
 
@@ -1042,7 +1060,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
       catch (ArgumentException)
       {
         DifficultyDisplayState = DifficultyDisplayState.Unavailable;
-        DifficultyText = "Not estimated";
+        DifficultyText = AppStrings.Get("NotEstimated");
       }
       finally
       {
@@ -1056,19 +1074,22 @@ namespace WordSearchGenerator.Desktop.ViewModels
 
     private void ValidateEditor()
     {
-      var rowsValid = ValidateDimension(RowsText, nameof(RowsText), "Rows");
+      var rowsValid = ValidateDimension(
+        RowsText,
+        nameof(RowsText),
+        AppStrings.Get("Rows"));
       var columnsValid = ValidateDimension(
         ColumnsText,
         nameof(ColumnsText),
-        "Columns");
+        AppStrings.Get("Columns"));
       var entries = GetNormalizedEntries();
       var entryErrors = new List<string>();
 
       if (entries.Count == 0)
       {
         entryErrors.Add(Mode == PuzzleMode.Normal
-          ? "Enter at least one word."
-          : "Enter at least one complete question and answer.");
+          ? AppStrings.Get("EnterAtLeastOneWord")
+          : AppStrings.Get("EnterQuizEntry"));
       }
 
       if (Mode == PuzzleMode.Normal)
@@ -1077,13 +1098,14 @@ namespace WordSearchGenerator.Desktop.ViewModels
 
         if (shortWord != null)
         {
-          entryErrors.Add(
-            $"The word '{shortWord.Answer}' must contain at least two characters.");
+          entryErrors.Add(AppStrings.Format(
+            "WordMinimumLength",
+            shortWord.Answer));
         }
       }
       else if (QuizEntries.Any(entry => !entry.IsEmpty && entry.HasErrors))
       {
-        entryErrors.Add("Complete every quiz question and answer.");
+        entryErrors.Add(AppStrings.Get("CompleteQuizEntries"));
       }
 
       if (rowsValid && columnsValid && entries.Count != 0)
@@ -1092,14 +1114,14 @@ namespace WordSearchGenerator.Desktop.ViewModels
         var columns = int.Parse(ColumnsText);
         var maximumLength = Math.Max(rows, columns);
         var extraQuestionCell = Mode == PuzzleMode.Quiz ? 1 : 0;
-        var entryThatDoesNotFit = entries.FirstOrDefault(
-          entry => entry.Answer.Length + extraQuestionCell > maximumLength);
+        var entryThatDoesNotFit =
+          entries.FirstOrDefault(entry => entry.Answer.Length + extraQuestionCell > maximumLength);
 
         if (entryThatDoesNotFit != null)
         {
-          entryErrors.Add(
-            $"'{entryThatDoesNotFit.Answer}' is too long for this matrix" +
-            (Mode == PuzzleMode.Quiz ? " including its question cell." : "."));
+          entryErrors.Add(AppStrings.Format(
+            Mode == PuzzleMode.Quiz ? "QuizEntryTooLong" : "EntryTooLong",
+            entryThatDoesNotFit.Answer));
         }
       }
 
@@ -1117,15 +1139,13 @@ namespace WordSearchGenerator.Desktop.ViewModels
         var rows = int.Parse(RowsText);
         var columns = int.Parse(ColumnsText);
         var extraQuestionCell = Mode == PuzzleMode.Quiz ? 1 : 0;
-        var minimumOccupiedCells = entries.Max(
-          entry => entry.Answer.Length + extraQuestionCell);
+        var minimumOccupiedCells = entries.Max(entry => entry.Answer.Length + extraQuestionCell);
         var maximumMessageLength = (long)rows * columns -
                                    minimumOccupiedCells;
 
         if (SecretMessage.Length > maximumMessageLength)
         {
-          messageErrors.Add(
-            "The secret message cannot fit even with maximum word overlap.");
+          messageErrors.Add(AppStrings.Get("SecretMessageTooLong"));
         }
       }
 
@@ -1141,7 +1161,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
 
       if (!int.TryParse(value, out var parsedValue) || parsedValue <= 0)
       {
-        errors.Add($"{displayName} must be a positive whole number.");
+        errors.Add(AppStrings.Format("PositiveWholeNumber", displayName));
       }
 
       SetErrors(propertyName, errors);

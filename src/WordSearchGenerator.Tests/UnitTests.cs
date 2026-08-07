@@ -405,17 +405,17 @@ namespace WordSearchGenerator.Tests
     {
       var sourceWords = new List<WordInfo>
       {
-        new()
+        new WordInfo
         {
           Text = "ABC",
           WordNumber = 1
         },
-        new()
+        new WordInfo
         {
           Text = "DEF",
           WordNumber = 2
         },
-        new()
+        new WordInfo
         {
           Text = "GHI",
           WordNumber = 3
@@ -537,6 +537,7 @@ namespace WordSearchGenerator.Tests
     }
 
     [TestMethod]
+    [TestCategory("LongRunning")]
     public async Task ConstructsMemorialWords()
     {
       var wordTexts = File
@@ -1008,7 +1009,7 @@ namespace WordSearchGenerator.Tests
 
     private static void AssertFillsGrid(WoSeCon generator, int size)
     {
-      Dictionary<(int Row, int Column), char> occupiedCells = new();
+      Dictionary<(int Row, int Column), char> occupiedCells = new Dictionary<(int Row, int Column), char>();
 
       foreach (var word in generator.Words)
       {

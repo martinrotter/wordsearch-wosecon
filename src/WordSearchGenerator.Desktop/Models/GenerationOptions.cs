@@ -1,3 +1,5 @@
+using WordSearchGenerator.Desktop.Localization;
+
 namespace WordSearchGenerator.Desktop.Models
 {
   public sealed class GenerationOptions
@@ -20,7 +22,7 @@ namespace WordSearchGenerator.Desktop.Models
         throw new ArgumentOutOfRangeException(
           nameof(parallelAttempts),
           parallelAttempts,
-          "Parallel attempts must be positive.");
+          AppStrings.Get("ParallelAttemptsPositive"));
       }
 
       ParallelAttempts = parallelAttempts;

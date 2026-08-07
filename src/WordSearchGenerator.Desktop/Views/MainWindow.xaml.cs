@@ -2,7 +2,9 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Threading;
 using CefSharp;
+using WordSearchGenerator.Desktop.Models.Settings;
 using WordSearchGenerator.Desktop.Services.Persistence;
+using WordSearchGenerator.Desktop.Services.Settings;
 using WordSearchGenerator.Desktop.ViewModels;
 
 namespace WordSearchGenerator.Desktop.Views
@@ -11,9 +13,12 @@ namespace WordSearchGenerator.Desktop.Views
   {
     #region Fields
 
-    private string? _loadedPreviewHtml;
+    private readonly IApplicationSettingsService _applicationSettingsService;
     private readonly IPuzzleProjectSerializer _projectSerializer;
     private readonly MainWindowViewModel _viewModel;
+    private ApplicationSettings _applicationSettings;
+
+    private string? _loadedPreviewHtml;
 
     #endregion
 
@@ -21,14 +26,20 @@ namespace WordSearchGenerator.Desktop.Views
 
     public MainWindow(
       MainWindowViewModel viewModel,
-      IPuzzleProjectSerializer projectSerializer)
+      IPuzzleProjectSerializer projectSerializer,
+      IApplicationSettingsService applicationSettingsService,
+      ApplicationSettings applicationSettings)
     {
       ArgumentNullException.ThrowIfNull(viewModel);
       ArgumentNullException.ThrowIfNull(projectSerializer);
+      ArgumentNullException.ThrowIfNull(applicationSettingsService);
+      ArgumentNullException.ThrowIfNull(applicationSettings);
 
       InitializeComponent();
       _viewModel = viewModel;
       _projectSerializer = projectSerializer;
+      _applicationSettingsService = applicationSettingsService;
+      _applicationSettings = applicationSettings;
       DataContext = viewModel;
 
       _viewModel.PropertyChanged += ViewModelOnPropertyChanged;
@@ -104,7 +115,7 @@ namespace WordSearchGenerator.Desktop.Views
         return;
       }
 
-      PreviewBrowser.LoadHtml(html, base64Encode: true);
+      PreviewBrowser.LoadHtml(html, true);
     }
 
     private void ViewModelOnPropertyChanged(

@@ -3,13 +3,14 @@ using System.Security.Cryptography;
 using WordSearchGenerator.Common;
 using WordSearchGenerator.Common.WoSeCon;
 using WordSearchGenerator.Common.WoSeCon.Api;
+using WordSearchGenerator.Desktop.Localization;
 using WordSearchGenerator.Desktop.Models;
 
 namespace WordSearchGenerator.Desktop.Services
 {
   public sealed class MonteCarloPuzzleGenerator : IPuzzleGenerator
   {
-    #region Constants
+    #region Static Fields
 
     private const string NoSolutionMessage =
       "given words cannot fit into the grid";
@@ -46,7 +47,7 @@ namespace WordSearchGenerator.Desktop.Services
           CancellationToken.None))
         .ToList();
 
-      aggregator.Report(force: true);
+      aggregator.Report(true);
       AttemptOutcome? winner = null;
 
       while (remainingTasks.Count != 0)
@@ -66,11 +67,12 @@ namespace WordSearchGenerator.Desktop.Services
             await Task.WhenAll(remainingTasks).ConfigureAwait(false);
           }
 
-          aggregator.Report(force: true);
+          aggregator.Report(true);
           cancellationToken.ThrowIfCancellationRequested();
 
-          throw new InvalidOperationException(
-            $"Generation attempt {outcome.AttemptNumber} failed unexpectedly.",
+          throw new InvalidOperationException(AppStrings.Format(
+              "GenerationAttemptUnexpected",
+              outcome.AttemptNumber),
             outcome.Error);
         }
 
@@ -89,7 +91,7 @@ namespace WordSearchGenerator.Desktop.Services
         await Task.WhenAll(remainingTasks).ConfigureAwait(false);
       }
 
-      var finalProgress = aggregator.Report(force: true);
+      var finalProgress = aggregator.Report(true);
       cancellationToken.ThrowIfCancellationRequested();
 
       if (winner == null)
@@ -177,8 +179,8 @@ namespace WordSearchGenerator.Desktop.Services
           definition.Columns,
           definition.QuizMode,
           locations => ShuffleLocations(locations, seed));
-        var attemptProgress = new DelegateProgress<ConstructionProgress>(
-          value => aggregator.Update(attemptIndex, value));
+        var attemptProgress =
+          new DelegateProgress<ConstructionProgress>(value => aggregator.Update(attemptIndex, value));
 
         generator.Construct(attemptProgress, cancellationToken);
         cancellationToken.ThrowIfCancellationRequested();
@@ -283,6 +285,10 @@ namespace WordSearchGenerator.Desktop.Services
       }
     }
 
+    #endregion
+
+    #region Nested Types
+
     private enum AttemptCompletion
     {
       Running,
@@ -302,6 +308,8 @@ namespace WordSearchGenerator.Desktop.Services
       int Backtrackings,
       Exception? Error)
     {
+      #region Other Stuff
+
       public static AttemptOutcome Cancelled(
         int attemptNumber,
         int seed,
@@ -384,10 +392,14 @@ namespace WordSearchGenerator.Desktop.Services
           backtrackings,
           null);
       }
+
+      #endregion
     }
 
     private sealed class AttemptState
     {
+      #region Properties
+
       public AttemptCompletion Completion
       {
         get;
@@ -411,27 +423,43 @@ namespace WordSearchGenerator.Desktop.Services
         get;
         set;
       }
+
+      #endregion
     }
 
     private sealed class DelegateProgress<T>(Action<T> report) : IProgress<T>
     {
+      #region Interface Implementations
+
       public void Report(T value)
       {
         report(value);
       }
+
+      #endregion
     }
 
     private sealed class ProgressAggregator
     {
+      #region Static Fields
+
       private static readonly long ReportIntervalTicks =
         Stopwatch.Frequency / 10;
 
+      #endregion
+
+      #region Fields
+
       private readonly object _gate = new();
       private readonly IProgress<MonteCarloProgress>? _progress;
-      private readonly Stopwatch _stopwatch = Stopwatch.StartNew();
       private readonly AttemptState[] _states;
+      private readonly Stopwatch _stopwatch = Stopwatch.StartNew();
       private readonly int _totalWordCount;
       private long _nextReportAt;
+
+      #endregion
+
+      #region Constructors
 
       public ProgressAggregator(
         int attemptCount,
@@ -445,6 +473,10 @@ namespace WordSearchGenerator.Desktop.Services
         _totalWordCount = totalWordCount;
         _progress = progress;
       }
+
+      #endregion
+
+      #region Other Stuff
 
       public void Complete(
         int attemptIndex,
@@ -514,15 +546,13 @@ namespace WordSearchGenerator.Desktop.Services
 
       private MonteCarloProgress CreateSnapshot()
       {
-        var activeAttemptCount = _states.Count(
-          state => state.Completion == AttemptCompletion.Running);
+        var activeAttemptCount = _states.Count(state => state.Completion == AttemptCompletion.Running);
         var finishedAttemptCount = _states.Length - activeAttemptCount;
-        var placementFailureCount = _states.Count(
-          state => state.Completion == AttemptCompletion.PlacementFailed);
-        var messageRejectedAttemptCount = _states.Count(
-          state => state.Completion == AttemptCompletion.MessageRejected);
-        var cancelledAttemptCount = _states.Count(
-          state => state.Completion == AttemptCompletion.Cancelled);
+        var placementFailureCount =
+          _states.Count(state => state.Completion == AttemptCompletion.PlacementFailed);
+        var messageRejectedAttemptCount =
+          _states.Count(state => state.Completion == AttemptCompletion.MessageRejected);
+        var cancelledAttemptCount = _states.Count(state => state.Completion == AttemptCompletion.Cancelled);
         var placedWordCount = _states
           .Where(state => state.Completion == AttemptCompletion.Running)
           .Select(state => state.Progress?.PlacedWordCount ?? 0)
@@ -533,8 +563,7 @@ namespace WordSearchGenerator.Desktop.Services
           .DefaultIfEmpty()
           .Max();
         var testedPositions = _states.Sum(state => state.TestedPositions);
-        var backtrackings = _states.Sum(
-          state => (long)state.Backtrackings);
+        var backtrackings = _states.Sum(state => (long)state.Backtrackings);
 
         return new MonteCarloProgress(
           activeAttemptCount,
@@ -550,6 +579,8 @@ namespace WordSearchGenerator.Desktop.Services
           backtrackings,
           _stopwatch.Elapsed);
       }
+
+      #endregion
     }
 
     #endregion

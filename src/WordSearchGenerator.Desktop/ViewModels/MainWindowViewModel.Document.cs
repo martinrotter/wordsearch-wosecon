@@ -1,4 +1,5 @@
 using System.IO;
+using WordSearchGenerator.Desktop.Localization;
 using WordSearchGenerator.Desktop.Models;
 using WordSearchGenerator.Desktop.Models.Persistence;
 using WordSearchGenerator.Desktop.Models.Rendering;
@@ -7,7 +8,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
 {
   public sealed partial class MainWindowViewModel
   {
-    #region Constants
+    #region Static Fields
 
     private const string NewProjectColumnsText = "5";
     private const string NewProjectRowsText = "4";
@@ -55,7 +56,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
       get
       {
         var documentName = ProjectFilePath == null
-          ? "Untitled"
+          ? AppStrings.Get("Untitled")
           : Path.GetFileNameWithoutExtension(ProjectFilePath);
         var dirtyMarker = IsDirty ? " *" : string.Empty;
 
@@ -92,8 +93,8 @@ namespace WordSearchGenerator.Desktop.ViewModels
       }
 
       StatusText = Mode == PuzzleMode.Normal
-        ? "Words imported"
-        : "Quiz entries imported";
+        ? AppStrings.Get("WordsImported")
+        : AppStrings.Get("QuizEntriesImported");
     }
 
     internal void LoadProject(PuzzleProject project, string path)
@@ -149,9 +150,9 @@ namespace WordSearchGenerator.Desktop.ViewModels
         else
         {
           ResetGenerationProgress(definition.Entries.Count, 0);
-          StatusText = "Project loaded";
-          PreviewTitle = "No board generated";
-          PreviewMessage = "Generate the puzzle to create its board.";
+          StatusText = AppStrings.Get("ProjectLoaded");
+          PreviewTitle = AppStrings.Get("NoBoardGenerated");
+          PreviewMessage = AppStrings.Get("GenerateProjectBoard");
         }
       }
       finally
@@ -169,7 +170,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
 
       ProjectFilePath = Path.GetFullPath(path);
       IsDirty = false;
-      StatusText = "Project saved";
+      StatusText = AppStrings.Get("ProjectSaved");
     }
 
     internal void NewProject()
@@ -190,9 +191,9 @@ namespace WordSearchGenerator.Desktop.ViewModels
         QuizEntries.Clear();
         QuizEntries.Add(new QuizEntryViewModel());
         ResetGenerationProgress(GetNormalizedEntries().Count, 0);
-        StatusText = "Idle";
-        PreviewTitle = "No board generated";
-        PreviewMessage = "Generate a puzzle to see its printable board here.";
+        StatusText = AppStrings.Get("Idle");
+        PreviewTitle = AppStrings.Get("NoBoardGenerated");
+        PreviewMessage = AppStrings.Get("GenerateProjectBoard");
         RefreshEditorState();
       }
       finally
@@ -228,8 +229,8 @@ namespace WordSearchGenerator.Desktop.ViewModels
 
     private ParallelismOption GetOrAddParallelismOption(int parallelAttempts)
     {
-      var option = ParallelismOptions.FirstOrDefault(
-        candidate => candidate.ParallelAttempts == parallelAttempts);
+      var option =
+        ParallelismOptions.FirstOrDefault(candidate => candidate.ParallelAttempts == parallelAttempts);
 
       if (option != null)
       {
@@ -252,10 +253,9 @@ namespace WordSearchGenerator.Desktop.ViewModels
 
       ClearGeneratedBoard();
       ResetGenerationProgress(GetNormalizedEntries().Count, 0);
-      StatusText = "Modified";
-      PreviewTitle = "Board needs regeneration";
-      PreviewMessage =
-        "Puzzle content changed. Generate again to create an updated board.";
+      StatusText = AppStrings.Get("Modified");
+      PreviewTitle = AppStrings.Get("BoardNeedsRegeneration");
+      PreviewMessage = AppStrings.Get("ContentChangedRegenerate");
     }
 
     private void MarkDocumentChanged(bool invalidateGeneratedBoard)
@@ -280,7 +280,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
         result,
         PuzzleHeading,
         EntryListHeading);
-      SetPreviewMode(BoardPreviewMode.Puzzle, force: true);
+      SetPreviewMode(BoardPreviewMode.Puzzle, true);
       Elapsed = result.Elapsed;
       TestedPositions = result.TestedPositions;
       Backtrackings = result.Backtrackings;
@@ -294,19 +294,22 @@ namespace WordSearchGenerator.Desktop.ViewModels
       FurthestPlacedWordCount = result.Definition.Entries.Count;
       ProgressMaximum = Math.Max(1, result.Definition.Entries.Count);
       ProgressValue = result.Definition.Entries.Count;
-      StatusText = "Project loaded";
+      StatusText = AppStrings.Get("ProjectLoaded");
       EditorActionState = EditorActionState.Completed;
-      EditorStatusTitle = "Generated board restored";
-      EditorStatusMessage =
-        $"Winning seed {result.WinningSeed} was restored without regeneration.";
-      PreviewTitle = "Board generated";
-      PreviewMessage =
-        $"{result.Board.RowCount} x {result.Board.ColumnCount}, " +
-        $"{result.Definition.Entries.Count} entries, " +
-        $"{result.PuzzleOccupancyPercentage:F1}% puzzle occupancy, " +
-        $"{result.MessageCellCount} message cells and " +
-        $"{result.BlackBoxCount} black boxes. " +
-        $"Winning seed: {result.WinningSeed}.";
+      EditorStatusTitle = AppStrings.Get("GeneratedBoardRestored");
+      EditorStatusMessage = AppStrings.Format(
+        "WinningSeedRestored",
+        result.WinningSeed);
+      PreviewTitle = AppStrings.Get("BoardGenerated");
+      PreviewMessage = AppStrings.Format(
+        "BoardSummary",
+        result.Board.RowCount,
+        result.Board.ColumnCount,
+        result.Definition.Entries.Count,
+        result.PuzzleOccupancyPercentage,
+        result.MessageCellCount,
+        result.BlackBoxCount,
+        result.WinningSeed);
     }
 
     #endregion

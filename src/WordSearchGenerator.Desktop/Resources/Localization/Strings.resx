@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="MenuFile" xml:space="preserve"><value>_File</value></data>
+  <data name="MenuNew" xml:space="preserve"><value>_New</value></data>
+  <data name="MenuOpen" xml:space="preserve"><value>_Open...</value></data>
+  <data name="MenuSave" xml:space="preserve"><value>_Save</value></data>
+  <data name="MenuSaveAs" xml:space="preserve"><value>Save _As...</value></data>
+  <data name="MenuImport" xml:space="preserve"><value>_Import words or questions...</value></data>
+  <data name="MenuImportTooltip" xml:space="preserve"><value>Normal mode: one word per line. Quiz mode: answer, tab, then question.</value></data>
+  <data name="MenuExportPrint" xml:space="preserve"><value>_Export / Print</value></data>
+  <data name="MenuPrintPreview" xml:space="preserve"><value>_Print current preview...</value></data>
+  <data name="MenuSavePdf" xml:space="preserve"><value>Save current preview as _PDF...</value></data>
+  <data name="MenuSaveHtml" xml:space="preserve"><value>Save current preview as _HTML...</value></data>
+  <data name="MenuSavePng" xml:space="preserve"><value>Save current _board as PNG...</value></data>
+  <data name="MenuSettings" xml:space="preserve"><value>_Settings...</value></data>
+  <data name="MenuExit" xml:space="preserve"><value>E_xit</value></data>
+  <data name="PuzzleEditor" xml:space="preserve"><value>Puzzle editor</value></data>
+  <data name="Puzzle" xml:space="preserve"><value>Puzzle</value></data>
+  <data name="Mode" xml:space="preserve"><value>Mode</value></data>
+  <data name="Rows" xml:space="preserve"><value>Rows</value></data>
+  <data name="Columns" xml:space="preserve"><value>Columns</value></data>
+  <data name="RowsTooltip" xml:space="preserve"><value>Number of rows in the generated matrix</value></data>
+  <data name="ColumnsTooltip" xml:space="preserve"><value>Number of columns in the generated matrix</value></data>
+  <data name="WordsOrQuestions" xml:space="preserve"><value>Words or questions</value></data>
+  <data name="WordsInstructions" xml:space="preserve"><value>Enter one word per line. Words are case-sensitive; surrounding spaces are trimmed.</value></data>
+  <data name="WordsTooltip" xml:space="preserve"><value>Empty lines and case-sensitive duplicates are ignored</value></data>
+  <data name="QuizInstructions" xml:space="preserve"><value>Enter each answer and its question. Use the blank row to add another item; select a row and press Delete to remove it.</value></data>
+  <data name="Answer" xml:space="preserve"><value>Answer</value></data>
+  <data name="Question" xml:space="preserve"><value>Question</value></data>
+  <data name="SecretMessage" xml:space="preserve"><value>Secret message</value></data>
+  <data name="SecretMessageDescription" xml:space="preserve"><value>The message fills cells not occupied by words. Remaining vacant cells become black boxes.</value></data>
+  <data name="SecretMessageTooltip" xml:space="preserve"><value>Spaces are preserved as message characters</value></data>
+  <data name="PreviewText" xml:space="preserve"><value>Preview text</value></data>
+  <data name="PreviewTextDescription" xml:space="preserve"><value>These headings are used in the preview and exported or printed output.</value></data>
+  <data name="PuzzleHeadingOptional" xml:space="preserve"><value>Puzzle heading (optional)</value></data>
+  <data name="OmitHeadingTooltip" xml:space="preserve"><value>Leave empty to omit the heading</value></data>
+  <data name="EntryListHeading" xml:space="preserve"><value>Word or question list heading</value></data>
+  <data name="OmitListHeadingTooltip" xml:space="preserve"><value>Leave empty to omit the list heading</value></data>
+  <data name="Generation" xml:space="preserve"><value>Generation</value></data>
+  <data name="ParallelAttempts" xml:space="preserve"><value>Parallel attempts</value></data>
+  <data name="DifficultyTooltip" xml:space="preserve"><value>This is a heuristic estimate, not a guaranteed completion time.</value></data>
+  <data name="DifficultyLabel" xml:space="preserve"><value>Difficulty:</value></data>
+  <data name="Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="BoardPreview" xml:space="preserve"><value>Board preview</value></data>
+  <data name="Solution" xml:space="preserve"><value>Solution</value></data>
+  <data name="StatusLabel" xml:space="preserve"><value>Status:</value></data>
+  <data name="Elapsed" xml:space="preserve"><value>Elapsed</value></data>
+  <data name="Workers" xml:space="preserve"><value>Workers</value></data>
+  <data name="Tested" xml:space="preserve"><value>Tested</value></data>
+  <data name="Backtracks" xml:space="preserve"><value>Backtracks</value></data>
+  <data name="GenerationDetails" xml:space="preserve"><value>Generation details</value></data>
+  <data name="ModeNormal" xml:space="preserve"><value>Normal</value></data>
+  <data name="ModeQuiz" xml:space="preserve"><value>Quiz</value></data>
+  <data name="SettingsTitle" xml:space="preserve"><value>Settings</value></data>
+  <data name="SettingsLanguage" xml:space="preserve"><value>Language</value></data>
+  <data name="SettingsLanguageDescription" xml:space="preserve"><value>Choose the language used by the application interface.</value></data>
+  <data name="SettingsRestartNotice" xml:space="preserve"><value>A restart is required after changing the language.</value></data>
+  <data name="SettingsOk" xml:space="preserve"><value>OK</value></data>
+  <data name="LanguageEnglish" xml:space="preserve"><value>English</value></data>
+  <data name="LanguageCzech" xml:space="preserve"><value>Czech</value></data>
+  <data name="LanguageRestartMessage" xml:space="preserve"><value>The language setting was saved. Restart WoSeCon to apply it.</value></data>
+  <data name="LanguageRestartTitle" xml:space="preserve"><value>Restart required</value></data>
+  <data name="SettingsSaveFailed" xml:space="preserve"><value>The settings could not be saved.</value></data>
+  <data name="SettingsSaveFailedTitle" xml:space="preserve"><value>Could not save settings</value></data>
+  <data name="Untitled" xml:space="preserve"><value>Untitled</value></data>
+  <data name="WordsToFind" xml:space="preserve"><value>Words to find</value></data>
+  <data name="Questions" xml:space="preserve"><value>Questions</value></data>
+  <data name="AutomaticParallelism" xml:space="preserve"><value>Automatic ({0})</value></data>
+  <data name="NotEstimated" xml:space="preserve"><value>Not estimated</value></data>
+  <data name="Estimating" xml:space="preserve"><value>Estimating...</value></data>
+  <data name="DifficultyFastSeconds" xml:space="preserve"><value>Fast — seconds</value></data>
+  <data name="DifficultyFastMinute" xml:space="preserve"><value>Fast — under a minute</value></data>
+  <data name="DifficultySlowMinutes" xml:space="preserve"><value>Slow — a few minutes</value></data>
+  <data name="DifficultyVerySlow" xml:space="preserve"><value>Very slow — many minutes</value></data>
+  <data name="DifficultyExtreme" xml:space="preserve"><value>Extremely slow — possibly hours</value></data>
+  <data name="DifficultyImpossible" xml:space="preserve"><value>Likely impossible</value></data>
+  <data name="Unknown" xml:space="preserve"><value>Unknown</value></data>
+  <data name="Generate" xml:space="preserve"><value>Generate</value></data>
+  <data name="GenerateAgain" xml:space="preserve"><value>Generate again</value></data>
+  <data name="TryAgain" xml:space="preserve"><value>Try again</value></data>
+  <data name="Idle" xml:space="preserve"><value>Idle</value></data>
+  <data name="Starting" xml:space="preserve"><value>Starting</value></data>
+  <data name="Searching" xml:space="preserve"><value>Searching</value></data>
+  <data name="Completed" xml:space="preserve"><value>Completed</value></data>
+  <data name="Cancelled" xml:space="preserve"><value>Cancelled</value></data>
+  <data name="Failed" xml:space="preserve"><value>Failed</value></data>
+  <data name="Modified" xml:space="preserve"><value>Modified</value></data>
+  <data name="ExportFailed" xml:space="preserve"><value>Export failed</value></data>
+  <data name="EditorNeedsAttention" xml:space="preserve"><value>Puzzle needs attention</value></data>
+  <data name="EnterAtLeastOneWord" xml:space="preserve"><value>Enter at least one word.</value></data>
+  <data name="EnterQuizEntry" xml:space="preserve"><value>Enter at least one complete question and answer.</value></data>
+  <data name="CheckPuzzleDefinition" xml:space="preserve"><value>Check the puzzle definition.</value></data>
+  <data name="ReadyToGenerate" xml:space="preserve"><value>Ready to generate</value></data>
+  <data name="UniqueEntriesUsed" xml:space="preserve"><value>{0} unique entries will be used.</value></data>
+  <data name="GeneratingPuzzle" xml:space="preserve"><value>Generating puzzle</value></data>
+  <data name="RunningAttempts" xml:space="preserve"><value>Running {0:N0} independent shuffled attempts.</value></data>
+  <data name="GeneratingBoard" xml:space="preserve"><value>Generating board...</value></data>
+  <data name="ProgressAvailableBelow" xml:space="preserve"><value>Search progress and diagnostics are available below the preview.</value></data>
+  <data name="PuzzleGenerated" xml:space="preserve"><value>Puzzle generated</value></data>
+  <data name="WinningAttemptSummary" xml:space="preserve"><value>Attempt {0:N0} of {1:N0} won with seed {2}. Completed in {3}.</value></data>
+  <data name="BoardGenerated" xml:space="preserve"><value>Board generated</value></data>
+  <data name="BoardSummary" xml:space="preserve"><value>{0} × {1}, {2} entries, {3:F1}% puzzle occupancy, {4} message cells and {5} black boxes. Winning seed: {6}.</value></data>
+  <data name="GenerationCancelled" xml:space="preserve"><value>Generation cancelled</value></data>
+  <data name="BackgroundSearchStopped" xml:space="preserve"><value>The background search stopped safely.</value></data>
+  <data name="AdjustOrTryAgain" xml:space="preserve"><value>Adjust the puzzle or start another attempt.</value></data>
+  <data name="MessageDidNotFit" xml:space="preserve"><value>Message did not fit</value></data>
+  <data name="PlacementsTooFewMessageCells" xml:space="preserve"><value>The generated placements left too few message cells.</value></data>
+  <data name="MessageNeedsVacantCells" xml:space="preserve"><value>Message needs more vacant cells</value></data>
+  <data name="MessageFitAdvice" xml:space="preserve"><value>Try again for different placements, shorten the message, or enlarge the matrix.</value></data>
+  <data name="NoAcceptableBoard" xml:space="preserve"><value>No acceptable board</value></data>
+  <data name="NoAttemptProducedBoard" xml:space="preserve"><value>No attempt produced an acceptable board</value></data>
+  <data name="NoBoardGenerated" xml:space="preserve"><value>No board generated</value></data>
+  <data name="AttemptsFailedDescription" xml:space="preserve"><value>Some attempts may have failed placement while others left too few message cells.</value></data>
+  <data name="GenerationFailed" xml:space="preserve"><value>Generation failed</value></data>
+  <data name="WordsCouldNotBePlaced" xml:space="preserve"><value>The words could not be placed in this matrix. Adjust the input and try again.</value></data>
+  <data name="SearchProgressSummary" xml:space="preserve"><value>{0:N0} active, {1:N0} finished; best depth {2:N0} of {3:N0}.</value></data>
+  <data name="ProgressTooltip" xml:space="preserve"><value>The bar shows the furthest search depth, not elapsed-time completion.&#xA;Workers: {0:N0} active; {1:N0} of {2:N0} finished&#xA;Placement failures: {3:N0}&#xA;Message-capacity rejections: {4:N0}&#xA;Cancelled attempts: {5:N0}&#xA;Currently placed: {6:N0} of {7:N0}&#xA;Furthest placed: {8:N0} of {7:N0}&#xA;Tested positions: {9:N0}&#xA;Backtracks: {10:N0}&#xA;Elapsed: {11}</value></data>
+  <data name="AnswerRequired" xml:space="preserve"><value>An answer is required.</value></data>
+  <data name="AnswerMinimumLength" xml:space="preserve"><value>An answer must contain at least two characters.</value></data>
+  <data name="QuestionRequired" xml:space="preserve"><value>A question is required.</value></data>
+  <data name="WordMinimumLength" xml:space="preserve"><value>The word '{0}' must contain at least two characters.</value></data>
+  <data name="CompleteQuizEntries" xml:space="preserve"><value>Complete every quiz question and answer.</value></data>
+  <data name="EntryTooLong" xml:space="preserve"><value>'{0}' is too long for this matrix.</value></data>
+  <data name="QuizEntryTooLong" xml:space="preserve"><value>'{0}' is too long for this matrix including its question cell.</value></data>
+  <data name="SecretMessageTooLong" xml:space="preserve"><value>The secret message cannot fit even with maximum word overlap.</value></data>
+  <data name="PositiveWholeNumber" xml:space="preserve"><value>{0} must be a positive whole number.</value></data>
+  <data name="WordsImported" xml:space="preserve"><value>Words imported</value></data>
+  <data name="QuizEntriesImported" xml:space="preserve"><value>Quiz entries imported</value></data>
+  <data name="ImportedCount" xml:space="preserve"><value>Imported {0} {1}</value></data>
+  <data name="WordsCountNoun" xml:space="preserve"><value>words</value></data>
+  <data name="QuizEntriesCountNoun" xml:space="preserve"><value>quiz entries</value></data>
+  <data name="ProjectLoaded" xml:space="preserve"><value>Project loaded</value></data>
+  <data name="ProjectSaved" xml:space="preserve"><value>Project saved</value></data>
+  <data name="GenerateProjectBoard" xml:space="preserve"><value>Generate the puzzle to create its board.</value></data>
+  <data name="BoardNeedsRegeneration" xml:space="preserve"><value>Board needs regeneration</value></data>
+  <data name="ContentChangedRegenerate" xml:space="preserve"><value>Puzzle content changed. Generate again to create an updated board.</value></data>
+  <data name="GeneratedBoardRestored" xml:space="preserve"><value>Generated board restored</value></data>
+  <data name="WinningSeedRestored" xml:space="preserve"><value>Winning seed {0} was restored without regeneration.</value></data>
+  <data name="UnsavedChangesMessage" xml:space="preserve"><value>The current puzzle has unsaved changes. Do you want to save them?</value></data>
+  <data name="UnsavedChangesTitle" xml:space="preserve"><value>Unsaved changes</value></data>
+  <data name="TextFilesFilter" xml:space="preserve"><value>Text files (*.txt)|*.txt|All files (*.*)|*.*</value></data>
+  <data name="TabTextFilesFilter" xml:space="preserve"><value>Tab-separated text (*.txt;*.tsv)|*.txt;*.tsv|All files (*.*)|*.*</value></data>
+  <data name="ImportWordsTitle" xml:space="preserve"><value>Import words</value></data>
+  <data name="ImportQuizTitle" xml:space="preserve"><value>Import quiz answers and questions</value></data>
+  <data name="ImportingEntries" xml:space="preserve"><value>Importing entries</value></data>
+  <data name="ImportFailed" xml:space="preserve"><value>Import failed</value></data>
+  <data name="CouldNotImport" xml:space="preserve"><value>Could not import entries</value></data>
+  <data name="UntitledProjectFile" xml:space="preserve"><value>Untitled.wosecon</value></data>
+  <data name="ProjectFilesFilter" xml:space="preserve"><value>WoSeCon projects (*.wosecon)|*.wosecon|All files (*.*)|*.*</value></data>
+  <data name="ProjectSaveFilter" xml:space="preserve"><value>WoSeCon projects (*.wosecon)|*.wosecon</value></data>
+  <data name="OpenProjectTitle" xml:space="preserve"><value>Open WoSeCon project</value></data>
+  <data name="OpeningProject" xml:space="preserve"><value>Opening project</value></data>
+  <data name="OpenFailed" xml:space="preserve"><value>Open failed</value></data>
+  <data name="CouldNotOpenProject" xml:space="preserve"><value>Could not open project</value></data>
+  <data name="CorrectSettingsBeforeSaving" xml:space="preserve"><value>Correct the highlighted puzzle settings before saving.</value></data>
+  <data name="PuzzleCannotBeSaved" xml:space="preserve"><value>Puzzle cannot be saved</value></data>
+  <data name="SaveProjectTitle" xml:space="preserve"><value>Save WoSeCon project</value></data>
+  <data name="SavingProject" xml:space="preserve"><value>Saving project</value></data>
+  <data name="SaveFailed" xml:space="preserve"><value>Save failed</value></data>
+  <data name="CouldNotSaveProject" xml:space="preserve"><value>Could not save project</value></data>
+  <data name="PreviewNotRendered" xml:space="preserve"><value>The current preview has not finished rendering.</value></data>
+  <data name="OperationCouldNotComplete" xml:space="preserve"><value>{0} could not be completed.&#xA;&#xA;{1}</value></data>
+  <data name="PreparingPrint" xml:space="preserve"><value>Preparing print</value></data>
+  <data name="PrintDialogOpened" xml:space="preserve"><value>Print dialog opened</value></data>
+  <data name="Printing" xml:space="preserve"><value>Printing</value></data>
+  <data name="PngFilter" xml:space="preserve"><value>PNG image (*.png)|*.png</value></data>
+  <data name="HtmlFilter" xml:space="preserve"><value>HTML document (*.html)|*.html</value></data>
+  <data name="PdfFilter" xml:space="preserve"><value>PDF document (*.pdf)|*.pdf</value></data>
+  <data name="SavingPng" xml:space="preserve"><value>Saving PNG</value></data>
+  <data name="SavingHtml" xml:space="preserve"><value>Saving HTML</value></data>
+  <data name="SavingPdf" xml:space="preserve"><value>Saving PDF</value></data>
+  <data name="PngSaved" xml:space="preserve"><value>PNG saved</value></data>
+  <data name="HtmlSaved" xml:space="preserve"><value>HTML saved</value></data>
+  <data name="PdfSaved" xml:space="preserve"><value>PDF saved</value></data>
+  <data name="NoBoardToExport" xml:space="preserve"><value>There is no generated board to export.</value></data>
+  <data name="ChromiumPdfFailed" xml:space="preserve"><value>Chromium could not create the PDF file.</value></data>
+  <data name="PngExport" xml:space="preserve"><value>PNG export</value></data>
+  <data name="HtmlExport" xml:space="preserve"><value>HTML export</value></data>
+  <data name="PdfExport" xml:space="preserve"><value>PDF export</value></data>
+  <data name="SaveCurrentPreviewTitle" xml:space="preserve"><value>Save current preview</value></data>
+  <data name="DefaultExportBaseName" xml:space="preserve"><value>word-search</value></data>
+  <data name="PuzzleFileSuffix" xml:space="preserve"><value>-puzzle</value></data>
+  <data name="SolutionFileSuffix" xml:space="preserve"><value>-solution</value></data>
+  <data name="BoardFileSuffix" xml:space="preserve"><value>-board</value></data>
+  <data name="QuizImportLineFormat" xml:space="preserve"><value>Line {0} must contain an answer, a tab, and a question.</value></data>
+  <data name="QuizImportLineInvalid" xml:space="preserve"><value>Line {0} must contain an answer of at least two characters and a non-empty question.</value></data>
+  <data name="NoQuizEntriesInFile" xml:space="preserve"><value>The selected file contains no complete quiz entries.</value></data>
+  <data name="NoWordsInFile" xml:space="preserve"><value>The selected file contains no words.</value></data>
+  <data name="HtmlPuzzleSolution" xml:space="preserve"><value>Puzzle solution</value></data>
+  <data name="HtmlWordSearchPuzzle" xml:space="preserve"><value>Word-search puzzle</value></data>
+  <data name="HtmlHeadingSolution" xml:space="preserve"><value>{0} - Solution</value></data>
+  <data name="HtmlAnswer" xml:space="preserve"><value>Answer: </value></data>
+  <data name="HtmlWordCell" xml:space="preserve"><value>Word cell</value></data>
+  <data name="HtmlMessageCell" xml:space="preserve"><value>Secret-message cell</value></data>
+  <data name="HtmlIntersection" xml:space="preserve"><value>Word intersection</value></data>
+  <data name="HtmlBlackBox" xml:space="preserve"><value>Black box</value></data>
+  <data name="HtmlStatistics" xml:space="preserve"><value>{0:N0} puzzle cells, {1:N0} message cells, {2:N0} black boxes and {3:N0} intersections.</value></data>
+  <data name="HtmlPosition" xml:space="preserve"><value>row {0}, column {1}</value></data>
+  <data name="HtmlBlackBoxLabel" xml:space="preserve"><value>Black box, {0}</value></data>
+  <data name="HtmlQuestionLabel" xml:space="preserve"><value>Question {0}, direction {1}, {2}</value></data>
+  <data name="HtmlSpace" xml:space="preserve"><value>space</value></data>
+  <data name="HtmlLetterLabel" xml:space="preserve"><value>Letter {0}, {1}</value></data>
+  <data name="HtmlMessageCharacterLabel" xml:space="preserve"><value>Secret-message character {0}, {1}</value></data>
+  <data name="HtmlWordCharacter" xml:space="preserve"><value>Word character</value></data>
+  <data name="HtmlWordLabel" xml:space="preserve"><value>{0} {1}, words {2}, {3}</value></data>
+  <data name="MonteCarloFailure" xml:space="preserve"><value>None of {0} attempts produced an acceptable board. Placement failures: {1}; message-capacity rejections: {2}.</value></data>
+  <data name="ProjectFileEmpty" xml:space="preserve"><value>The project file is empty.</value></data>
+  <data name="ProjectJsonInvalid" xml:space="preserve"><value>The project file does not contain valid WoSeCon JSON.</value></data>
+  <data name="ProjectPathNoParent" xml:space="preserve"><value>The project path has no parent directory.</value></data>
+  <data name="DirectoryDoesNotExist" xml:space="preserve"><value>The directory '{0}' does not exist.</value></data>
+  <data name="GeneratedWordNoPlacement" xml:space="preserve"><value>Generated word {0} has no placement.</value></data>
+  <data name="SavedBoardPlacementCount" xml:space="preserve"><value>The saved board does not contain one placement for every entry.</value></data>
+  <data name="SavedAttemptNumbersInvalid" xml:space="preserve"><value>The saved generation attempt numbers are invalid.</value></data>
+  <data name="SavedPlacementMissing" xml:space="preserve"><value>Word {0} has a missing or duplicate placement.</value></data>
+  <data name="SavedDirectionInvalid" xml:space="preserve"><value>Word {0} has an invalid direction.</value></data>
+  <data name="SavedPlacementOutside" xml:space="preserve"><value>Word {0} is placed outside the matrix.</value></data>
+  <data name="SavedPlacementConflict" xml:space="preserve"><value>Word {0} conflicts with another saved placement.</value></data>
+  <data name="SavedBoardCannotReconstruct" xml:space="preserve"><value>The saved placements cannot reconstruct the board.</value></data>
+  <data name="UnsupportedProjectVersion" xml:space="preserve"><value>Unsupported project format version {0}. This application supports version {1}.</value></data>
+  <data name="ProjectModeInvalid" xml:space="preserve"><value>The project mode is invalid.</value></data>
+  <data name="ProjectEntryRequired" xml:space="preserve"><value>The project must contain at least one word or quiz entry.</value></data>
+  <data name="ProjectEntriesInvalid" xml:space="preserve"><value>The project contains blank, duplicate, or one-character entries.</value></data>
+  <data name="ProjectSettingsInvalid" xml:space="preserve"><value>The project settings are invalid.</value></data>
+  <data name="SavedStatisticNegative" xml:space="preserve"><value>Saved statistic '{0}' is negative.</value></data>
+  <data name="RenderCellCountInvalid" xml:space="preserve"><value>The render model must contain exactly one cell per matrix position.</value></data>
+  <data name="BoardDimensionsPositive" xml:space="preserve"><value>The board dimensions must be positive.</value></data>
+  <data name="UiCultureUnsupported" xml:space="preserve"><value>The selected UI culture is not supported.</value></data>
+  <data name="SettingsPathNoParent" xml:space="preserve"><value>The settings path has no parent directory.</value></data>
+  <data name="ParallelAttemptsPositive" xml:space="preserve"><value>Parallel attempts must be positive.</value></data>
+  <data name="PuzzleEntryRequired" xml:space="preserve"><value>At least one puzzle entry is required.</value></data>
+  <data name="PuzzleEntriesNoNull" xml:space="preserve"><value>Puzzle entries cannot contain null values.</value></data>
+  <data name="GenerationAttemptUnexpected" xml:space="preserve"><value>Generation attempt {0} failed unexpectedly.</value></data>
+</root>

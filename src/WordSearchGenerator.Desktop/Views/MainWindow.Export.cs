@@ -3,6 +3,7 @@ using System.Text;
 using System.Windows;
 using CefSharp;
 using Microsoft.Win32;
+using WordSearchGenerator.Desktop.Localization;
 using WordSearchGenerator.Desktop.Models.Rendering;
 using WordSearchGenerator.Desktop.Services.Rendering;
 
@@ -24,23 +25,25 @@ namespace WordSearchGenerator.Desktop.Views
       bool boardOnly = false)
     {
       var baseName = string.IsNullOrWhiteSpace(_viewModel.PuzzleHeading)
-        ? "word-search"
+        ? AppStrings.Get("DefaultExportBaseName")
         : _viewModel.PuzzleHeading.Trim();
       var modeSuffix = _viewModel.PreviewMode == BoardPreviewMode.Solution
-        ? "-solution"
-        : "-puzzle";
-      var boardSuffix = boardOnly ? "-board" : string.Empty;
+        ? AppStrings.Get("SolutionFileSuffix")
+        : AppStrings.Get("PuzzleFileSuffix");
+      var boardSuffix = boardOnly
+        ? AppStrings.Get("BoardFileSuffix")
+        : string.Empty;
       var invalidCharacters = Path.GetInvalidFileNameChars().ToHashSet();
       var sanitized = new string(baseName
-        .Select(character => invalidCharacters.Contains(character)
-          ? '-'
-          : character)
-        .ToArray())
+          .Select(character => invalidCharacters.Contains(character)
+            ? '-'
+            : character)
+          .ToArray())
         .Trim(' ', '.');
 
       if (string.IsNullOrWhiteSpace(sanitized))
       {
-        sanitized = "word-search";
+        sanitized = AppStrings.Get("DefaultExportBaseName");
       }
 
       return $"{sanitized}{modeSuffix}{boardSuffix}{extension}";
@@ -51,7 +54,7 @@ namespace WordSearchGenerator.Desktop.Views
       if (!_viewModel.IsPreviewReady || !PreviewBrowser.IsBrowserInitialized)
       {
         throw new InvalidOperationException(
-          "The current preview has not finished rendering.");
+          AppStrings.Get("PreviewNotRendered"));
       }
 
       await PreviewBrowser.WaitForRenderIdleAsync(
@@ -65,8 +68,11 @@ namespace WordSearchGenerator.Desktop.Views
 
       MessageBox.Show(
         this,
-        $"{operation} could not be completed.\n\n{exception.Message}",
-        "Export failed",
+        AppStrings.Format(
+          "OperationCouldNotComplete",
+          operation,
+          exception.Message),
+        AppStrings.Get("ExportFailed"),
         MessageBoxButton.OK,
         MessageBoxImage.Error);
     }
@@ -77,14 +83,14 @@ namespace WordSearchGenerator.Desktop.Views
     {
       try
       {
-        _viewModel.ReportExportStarted("Preparing print");
+        _viewModel.ReportExportStarted(AppStrings.Get("PreparingPrint"));
         await EnsurePreviewIsReadyAsync();
         PreviewBrowser.Print();
-        _viewModel.ReportExportCompleted("Print dialog opened");
+        _viewModel.ReportExportCompleted(AppStrings.Get("PrintDialogOpened"));
       }
       catch (Exception exception)
       {
-        HandleExportError("Printing", exception);
+        HandleExportError(AppStrings.Get("Printing"), exception);
       }
     }
 
@@ -94,8 +100,8 @@ namespace WordSearchGenerator.Desktop.Views
     {
       var path = ShowExportSaveDialog(
         ".png",
-        "PNG image (*.png)|*.png",
-        boardOnly: true);
+        AppStrings.Get("PngFilter"),
+        true);
 
       if (path == null)
       {
@@ -104,21 +110,21 @@ namespace WordSearchGenerator.Desktop.Views
 
       try
       {
-        _viewModel.ReportExportStarted("Saving PNG");
+        _viewModel.ReportExportStarted(AppStrings.Get("SavingPng"));
         await EnsurePreviewIsReadyAsync();
         var model = _viewModel.GetCurrentBoardRenderModel() ??
                     throw new InvalidOperationException(
-                      "There is no generated board to export.");
+                      AppStrings.Get("NoBoardToExport"));
         var png = _boardPngRenderer.Render(
           model,
           _viewModel.PreviewMode);
 
         await File.WriteAllBytesAsync(path, png);
-        _viewModel.ReportExportCompleted("PNG saved");
+        _viewModel.ReportExportCompleted(AppStrings.Get("PngSaved"));
       }
       catch (Exception exception)
       {
-        HandleExportError("PNG export", exception);
+        HandleExportError(AppStrings.Get("PngExport"), exception);
       }
     }
 
@@ -128,7 +134,7 @@ namespace WordSearchGenerator.Desktop.Views
     {
       var path = ShowExportSaveDialog(
         ".html",
-        "HTML document (*.html)|*.html");
+        AppStrings.Get("HtmlFilter"));
 
       if (path == null)
       {
@@ -137,17 +143,17 @@ namespace WordSearchGenerator.Desktop.Views
 
       try
       {
-        _viewModel.ReportExportStarted("Saving HTML");
+        _viewModel.ReportExportStarted(AppStrings.Get("SavingHtml"));
         await EnsurePreviewIsReadyAsync();
         await File.WriteAllTextAsync(
           path,
           _viewModel.PreviewHtml,
-          new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
-        _viewModel.ReportExportCompleted("HTML saved");
+          new UTF8Encoding(false));
+        _viewModel.ReportExportCompleted(AppStrings.Get("HtmlSaved"));
       }
       catch (Exception exception)
       {
-        HandleExportError("HTML export", exception);
+        HandleExportError(AppStrings.Get("HtmlExport"), exception);
       }
     }
 
@@ -157,7 +163,7 @@ namespace WordSearchGenerator.Desktop.Views
     {
       var path = ShowExportSaveDialog(
         ".pdf",
-        "PDF document (*.pdf)|*.pdf");
+        AppStrings.Get("PdfFilter"));
 
       if (path == null)
       {
@@ -166,7 +172,7 @@ namespace WordSearchGenerator.Desktop.Views
 
       try
       {
-        _viewModel.ReportExportStarted("Saving PDF");
+        _viewModel.ReportExportStarted(AppStrings.Get("SavingPdf"));
         await EnsurePreviewIsReadyAsync();
         var succeeded = await PreviewBrowser.PrintToPdfAsync(
           path,
@@ -179,14 +185,14 @@ namespace WordSearchGenerator.Desktop.Views
 
         if (!succeeded)
         {
-          throw new IOException("Chromium could not create the PDF file.");
+          throw new IOException(AppStrings.Get("ChromiumPdfFailed"));
         }
 
-        _viewModel.ReportExportCompleted("PDF saved");
+        _viewModel.ReportExportCompleted(AppStrings.Get("PdfSaved"));
       }
       catch (Exception exception)
       {
-        HandleExportError("PDF export", exception);
+        HandleExportError(AppStrings.Get("PdfExport"), exception);
       }
     }
 
@@ -203,7 +209,7 @@ namespace WordSearchGenerator.Desktop.Views
         FileName = CreateSuggestedFileName(extension, boardOnly),
         Filter = filter,
         OverwritePrompt = true,
-        Title = "Save current preview"
+        Title = AppStrings.Get("SaveCurrentPreviewTitle")
       };
 
       if (_lastExportDirectory != null &&

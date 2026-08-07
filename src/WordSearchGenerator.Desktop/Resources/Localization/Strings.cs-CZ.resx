@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="MenuFile" xml:space="preserve"><value>_Soubor</value></data>
+  <data name="MenuNew" xml:space="preserve"><value>_Nový</value></data>
+  <data name="MenuOpen" xml:space="preserve"><value>_Otevřít...</value></data>
+  <data name="MenuSave" xml:space="preserve"><value>_Uložit</value></data>
+  <data name="MenuSaveAs" xml:space="preserve"><value>Uložit _jako...</value></data>
+  <data name="MenuImport" xml:space="preserve"><value>_Importovat slova nebo otázky...</value></data>
+  <data name="MenuImportTooltip" xml:space="preserve"><value>Normální režim: jedno slovo na řádek. Kvízový režim: odpověď, tabulátor a otázka.</value></data>
+  <data name="MenuExportPrint" xml:space="preserve"><value>_Export / tisk</value></data>
+  <data name="MenuPrintPreview" xml:space="preserve"><value>_Vytisknout aktuální náhled...</value></data>
+  <data name="MenuSavePdf" xml:space="preserve"><value>Uložit aktuální náhled jako _PDF...</value></data>
+  <data name="MenuSaveHtml" xml:space="preserve"><value>Uložit aktuální náhled jako _HTML...</value></data>
+  <data name="MenuSavePng" xml:space="preserve"><value>Uložit aktuální _mřížku jako PNG...</value></data>
+  <data name="MenuSettings" xml:space="preserve"><value>_Nastavení...</value></data>
+  <data name="MenuExit" xml:space="preserve"><value>U_končit</value></data>
+  <data name="PuzzleEditor" xml:space="preserve"><value>Editor osmisměrky</value></data>
+  <data name="Puzzle" xml:space="preserve"><value>Osmisměrka</value></data>
+  <data name="Mode" xml:space="preserve"><value>Režim</value></data>
+  <data name="Rows" xml:space="preserve"><value>Řádky</value></data>
+  <data name="Columns" xml:space="preserve"><value>Sloupce</value></data>
+  <data name="RowsTooltip" xml:space="preserve"><value>Počet řádků v generované mřížce</value></data>
+  <data name="ColumnsTooltip" xml:space="preserve"><value>Počet sloupců v generované mřížce</value></data>
+  <data name="WordsOrQuestions" xml:space="preserve"><value>Slova nebo otázky</value></data>
+  <data name="WordsInstructions" xml:space="preserve"><value>Zadejte jedno slovo na řádek. Rozlišují se malá a velká písmena; mezery na začátku a konci se odstraní.</value></data>
+  <data name="WordsTooltip" xml:space="preserve"><value>Prázdné řádky a duplicitní slova se stejnou velikostí písmen budou ignorovány</value></data>
+  <data name="QuizInstructions" xml:space="preserve"><value>Zadejte každou odpověď a její otázku. Další položku přidáte do prázdného řádku; řádek odstraníte jeho výběrem a klávesou Delete.</value></data>
+  <data name="Answer" xml:space="preserve"><value>Odpověď</value></data>
+  <data name="Question" xml:space="preserve"><value>Otázka</value></data>
+  <data name="SecretMessage" xml:space="preserve"><value>Tajenka</value></data>
+  <data name="SecretMessageDescription" xml:space="preserve"><value>Tajenka vyplní buňky neobsazené slovy. Zbývající volné buňky budou černé.</value></data>
+  <data name="SecretMessageTooltip" xml:space="preserve"><value>Mezery zůstanou zachovány jako znaky tajenky</value></data>
+  <data name="PreviewText" xml:space="preserve"><value>Text náhledu</value></data>
+  <data name="PreviewTextDescription" xml:space="preserve"><value>Tyto nadpisy se použijí v náhledu a v exportovaném nebo tištěném výstupu.</value></data>
+  <data name="PuzzleHeadingOptional" xml:space="preserve"><value>Nadpis osmisměrky (volitelný)</value></data>
+  <data name="OmitHeadingTooltip" xml:space="preserve"><value>Ponechte prázdné, pokud nadpis nechcete zobrazit</value></data>
+  <data name="EntryListHeading" xml:space="preserve"><value>Nadpis seznamu slov nebo otázek</value></data>
+  <data name="OmitListHeadingTooltip" xml:space="preserve"><value>Ponechte prázdné, pokud nadpis seznamu nechcete zobrazit</value></data>
+  <data name="Generation" xml:space="preserve"><value>Generování</value></data>
+  <data name="ParallelAttempts" xml:space="preserve"><value>Paralelní pokusy</value></data>
+  <data name="DifficultyTooltip" xml:space="preserve"><value>Jde o orientační odhad, nikoli zaručenou dobu dokončení.</value></data>
+  <data name="DifficultyLabel" xml:space="preserve"><value>Obtížnost:</value></data>
+  <data name="Cancel" xml:space="preserve"><value>Zrušit</value></data>
+  <data name="BoardPreview" xml:space="preserve"><value>Náhled mřížky</value></data>
+  <data name="Solution" xml:space="preserve"><value>Řešení</value></data>
+  <data name="StatusLabel" xml:space="preserve"><value>Stav:</value></data>
+  <data name="Elapsed" xml:space="preserve"><value>Uplynulo</value></data>
+  <data name="Workers" xml:space="preserve"><value>Vlákna</value></data>
+  <data name="Tested" xml:space="preserve"><value>Otestováno</value></data>
+  <data name="Backtracks" xml:space="preserve"><value>Návraty</value></data>
+  <data name="GenerationDetails" xml:space="preserve"><value>Podrobnosti generování</value></data>
+  <data name="ModeNormal" xml:space="preserve"><value>Normální</value></data>
+  <data name="ModeQuiz" xml:space="preserve"><value>Kvíz</value></data>
+  <data name="SettingsTitle" xml:space="preserve"><value>Nastavení</value></data>
+  <data name="SettingsLanguage" xml:space="preserve"><value>Jazyk</value></data>
+  <data name="SettingsLanguageDescription" xml:space="preserve"><value>Zvolte jazyk uživatelského rozhraní aplikace.</value></data>
+  <data name="SettingsRestartNotice" xml:space="preserve"><value>Po změně jazyka je nutné aplikaci restartovat.</value></data>
+  <data name="SettingsOk" xml:space="preserve"><value>OK</value></data>
+  <data name="LanguageEnglish" xml:space="preserve"><value>Angličtina</value></data>
+  <data name="LanguageCzech" xml:space="preserve"><value>Čeština</value></data>
+  <data name="LanguageRestartMessage" xml:space="preserve"><value>Nastavení jazyka bylo uloženo. Pro jeho použití restartujte WoSeCon.</value></data>
+  <data name="LanguageRestartTitle" xml:space="preserve"><value>Je nutný restart</value></data>
+  <data name="SettingsSaveFailed" xml:space="preserve"><value>Nastavení se nepodařilo uložit.</value></data>
+  <data name="SettingsSaveFailedTitle" xml:space="preserve"><value>Nastavení nelze uložit</value></data>
+  <data name="Untitled" xml:space="preserve"><value>Bez názvu</value></data>
+  <data name="WordsToFind" xml:space="preserve"><value>Hledaná slova</value></data>
+  <data name="Questions" xml:space="preserve"><value>Otázky</value></data>
+  <data name="AutomaticParallelism" xml:space="preserve"><value>Automaticky ({0})</value></data>
+  <data name="NotEstimated" xml:space="preserve"><value>Neodhadnuto</value></data>
+  <data name="Estimating" xml:space="preserve"><value>Probíhá odhad...</value></data>
+  <data name="DifficultyFastSeconds" xml:space="preserve"><value>Rychlé — sekundy</value></data>
+  <data name="DifficultyFastMinute" xml:space="preserve"><value>Rychlé — do minuty</value></data>
+  <data name="DifficultySlowMinutes" xml:space="preserve"><value>Pomalé — několik minut</value></data>
+  <data name="DifficultyVerySlow" xml:space="preserve"><value>Velmi pomalé — mnoho minut</value></data>
+  <data name="DifficultyExtreme" xml:space="preserve"><value>Extrémně pomalé — možná hodiny</value></data>
+  <data name="DifficultyImpossible" xml:space="preserve"><value>Pravděpodobně nemožné</value></data>
+  <data name="Unknown" xml:space="preserve"><value>Neznámé</value></data>
+  <data name="Generate" xml:space="preserve"><value>Generovat</value></data>
+  <data name="GenerateAgain" xml:space="preserve"><value>Generovat znovu</value></data>
+  <data name="TryAgain" xml:space="preserve"><value>Zkusit znovu</value></data>
+  <data name="Idle" xml:space="preserve"><value>Nečinné</value></data>
+  <data name="Starting" xml:space="preserve"><value>Spouštění</value></data>
+  <data name="Searching" xml:space="preserve"><value>Hledání</value></data>
+  <data name="Completed" xml:space="preserve"><value>Dokončeno</value></data>
+  <data name="Cancelled" xml:space="preserve"><value>Zrušeno</value></data>
+  <data name="Failed" xml:space="preserve"><value>Selhalo</value></data>
+  <data name="Modified" xml:space="preserve"><value>Změněno</value></data>
+  <data name="ExportFailed" xml:space="preserve"><value>Export selhal</value></data>
+  <data name="EditorNeedsAttention" xml:space="preserve"><value>Osmisměrka vyžaduje opravu</value></data>
+  <data name="EnterAtLeastOneWord" xml:space="preserve"><value>Zadejte alespoň jedno slovo.</value></data>
+  <data name="EnterQuizEntry" xml:space="preserve"><value>Zadejte alespoň jednu úplnou otázku a odpověď.</value></data>
+  <data name="CheckPuzzleDefinition" xml:space="preserve"><value>Zkontrolujte zadání osmisměrky.</value></data>
+  <data name="ReadyToGenerate" xml:space="preserve"><value>Připraveno ke generování</value></data>
+  <data name="UniqueEntriesUsed" xml:space="preserve"><value>Použije se {0} jedinečných položek.</value></data>
+  <data name="GeneratingPuzzle" xml:space="preserve"><value>Generování osmisměrky</value></data>
+  <data name="RunningAttempts" xml:space="preserve"><value>Probíhá {0:N0} nezávislých pokusů s promíchaným pořadím.</value></data>
+  <data name="GeneratingBoard" xml:space="preserve"><value>Generování mřížky...</value></data>
+  <data name="ProgressAvailableBelow" xml:space="preserve"><value>Průběh hledání a diagnostika jsou zobrazeny pod náhledem.</value></data>
+  <data name="PuzzleGenerated" xml:space="preserve"><value>Osmisměrka vygenerována</value></data>
+  <data name="WinningAttemptSummary" xml:space="preserve"><value>Uspěl pokus {0:N0} z {1:N0} se seedem {2}. Dokončeno za {3}.</value></data>
+  <data name="BoardGenerated" xml:space="preserve"><value>Mřížka vygenerována</value></data>
+  <data name="BoardSummary" xml:space="preserve"><value>{0} × {1}, {2} položek, zaplnění osmisměrkou {3:F1} %, {4} buněk tajenky a {5} černých polí. Vítězný seed: {6}.</value></data>
+  <data name="GenerationCancelled" xml:space="preserve"><value>Generování zrušeno</value></data>
+  <data name="BackgroundSearchStopped" xml:space="preserve"><value>Hledání na pozadí bylo bezpečně zastaveno.</value></data>
+  <data name="AdjustOrTryAgain" xml:space="preserve"><value>Upravte osmisměrku nebo spusťte nový pokus.</value></data>
+  <data name="MessageDidNotFit" xml:space="preserve"><value>Tajenka se nevešla</value></data>
+  <data name="PlacementsTooFewMessageCells" xml:space="preserve"><value>Vygenerované umístění ponechalo příliš málo buněk pro tajenku.</value></data>
+  <data name="MessageNeedsVacantCells" xml:space="preserve"><value>Tajenka potřebuje více volných buněk</value></data>
+  <data name="MessageFitAdvice" xml:space="preserve"><value>Zkuste jiné umístění, zkraťte tajenku nebo zvětšete mřížku.</value></data>
+  <data name="NoAcceptableBoard" xml:space="preserve"><value>Nebyla nalezena přijatelná mřížka</value></data>
+  <data name="NoAttemptProducedBoard" xml:space="preserve"><value>Žádný pokus nevytvořil přijatelnou mřížku</value></data>
+  <data name="NoBoardGenerated" xml:space="preserve"><value>Mřížka nebyla vygenerována</value></data>
+  <data name="AttemptsFailedDescription" xml:space="preserve"><value>Některé pokusy nemusely umístit slova, jiné mohly ponechat málo buněk pro tajenku.</value></data>
+  <data name="GenerationFailed" xml:space="preserve"><value>Generování selhalo</value></data>
+  <data name="WordsCouldNotBePlaced" xml:space="preserve"><value>Slova se do této mřížky nepodařilo umístit. Upravte zadání a zkuste to znovu.</value></data>
+  <data name="SearchProgressSummary" xml:space="preserve"><value>{0:N0} aktivních, {1:N0} dokončených; nejlepší hloubka {2:N0} z {3:N0}.</value></data>
+  <data name="ProgressTooltip" xml:space="preserve"><value>Ukazatel znázorňuje největší dosaženou hloubku hledání, nikoli časový průběh.&#xA;Vlákna: {0:N0} aktivních; dokončeno {1:N0} z {2:N0}&#xA;Selhání umístění: {3:N0}&#xA;Odmítnutí kvůli kapacitě tajenky: {4:N0}&#xA;Zrušené pokusy: {5:N0}&#xA;Právě umístěno: {6:N0} z {7:N0}&#xA;Nejvíce umístěno: {8:N0} z {7:N0}&#xA;Otestované pozice: {9:N0}&#xA;Návraty: {10:N0}&#xA;Uplynulo: {11}</value></data>
+  <data name="AnswerRequired" xml:space="preserve"><value>Odpověď je povinná.</value></data>
+  <data name="AnswerMinimumLength" xml:space="preserve"><value>Odpověď musí obsahovat alespoň dva znaky.</value></data>
+  <data name="QuestionRequired" xml:space="preserve"><value>Otázka je povinná.</value></data>
+  <data name="WordMinimumLength" xml:space="preserve"><value>Slovo „{0}“ musí obsahovat alespoň dva znaky.</value></data>
+  <data name="CompleteQuizEntries" xml:space="preserve"><value>Doplňte všechny kvízové otázky a odpovědi.</value></data>
+  <data name="EntryTooLong" xml:space="preserve"><value>„{0}“ je pro tuto mřížku příliš dlouhé.</value></data>
+  <data name="QuizEntryTooLong" xml:space="preserve"><value>„{0}“ je pro tuto mřížku příliš dlouhé včetně buňky otázky.</value></data>
+  <data name="SecretMessageTooLong" xml:space="preserve"><value>Tajenka se nevejde ani při maximálním překrytí slov.</value></data>
+  <data name="PositiveWholeNumber" xml:space="preserve"><value>{0} musí být kladné celé číslo.</value></data>
+  <data name="WordsImported" xml:space="preserve"><value>Slova importována</value></data>
+  <data name="QuizEntriesImported" xml:space="preserve"><value>Kvízové položky importovány</value></data>
+  <data name="ImportedCount" xml:space="preserve"><value>Importováno: {0} {1}</value></data>
+  <data name="WordsCountNoun" xml:space="preserve"><value>slov</value></data>
+  <data name="QuizEntriesCountNoun" xml:space="preserve"><value>kvízových položek</value></data>
+  <data name="ProjectLoaded" xml:space="preserve"><value>Projekt načten</value></data>
+  <data name="ProjectSaved" xml:space="preserve"><value>Projekt uložen</value></data>
+  <data name="GenerateProjectBoard" xml:space="preserve"><value>Vygenerujte osmisměrku a vytvořte její mřížku.</value></data>
+  <data name="BoardNeedsRegeneration" xml:space="preserve"><value>Mřížku je nutné vygenerovat znovu</value></data>
+  <data name="ContentChangedRegenerate" xml:space="preserve"><value>Obsah osmisměrky se změnil. Vygenerujte aktualizovanou mřížku.</value></data>
+  <data name="GeneratedBoardRestored" xml:space="preserve"><value>Vygenerovaná mřížka obnovena</value></data>
+  <data name="WinningSeedRestored" xml:space="preserve"><value>Vítězný seed {0} byl obnoven bez nového generování.</value></data>
+  <data name="UnsavedChangesMessage" xml:space="preserve"><value>Aktuální osmisměrka obsahuje neuložené změny. Chcete je uložit?</value></data>
+  <data name="UnsavedChangesTitle" xml:space="preserve"><value>Neuložené změny</value></data>
+  <data name="TextFilesFilter" xml:space="preserve"><value>Textové soubory (*.txt)|*.txt|Všechny soubory (*.*)|*.*</value></data>
+  <data name="TabTextFilesFilter" xml:space="preserve"><value>Text oddělený tabulátory (*.txt;*.tsv)|*.txt;*.tsv|Všechny soubory (*.*)|*.*</value></data>
+  <data name="ImportWordsTitle" xml:space="preserve"><value>Import slov</value></data>
+  <data name="ImportQuizTitle" xml:space="preserve"><value>Import kvízových odpovědí a otázek</value></data>
+  <data name="ImportingEntries" xml:space="preserve"><value>Import položek</value></data>
+  <data name="ImportFailed" xml:space="preserve"><value>Import selhal</value></data>
+  <data name="CouldNotImport" xml:space="preserve"><value>Položky nelze importovat</value></data>
+  <data name="UntitledProjectFile" xml:space="preserve"><value>Bez názvu.wosecon</value></data>
+  <data name="ProjectFilesFilter" xml:space="preserve"><value>Projekty WoSeCon (*.wosecon)|*.wosecon|Všechny soubory (*.*)|*.*</value></data>
+  <data name="ProjectSaveFilter" xml:space="preserve"><value>Projekty WoSeCon (*.wosecon)|*.wosecon</value></data>
+  <data name="OpenProjectTitle" xml:space="preserve"><value>Otevřít projekt WoSeCon</value></data>
+  <data name="OpeningProject" xml:space="preserve"><value>Otevírání projektu</value></data>
+  <data name="OpenFailed" xml:space="preserve"><value>Otevření selhalo</value></data>
+  <data name="CouldNotOpenProject" xml:space="preserve"><value>Projekt nelze otevřít</value></data>
+  <data name="CorrectSettingsBeforeSaving" xml:space="preserve"><value>Před uložením opravte zvýrazněná nastavení osmisměrky.</value></data>
+  <data name="PuzzleCannotBeSaved" xml:space="preserve"><value>Osmisměrku nelze uložit</value></data>
+  <data name="SaveProjectTitle" xml:space="preserve"><value>Uložit projekt WoSeCon</value></data>
+  <data name="SavingProject" xml:space="preserve"><value>Ukládání projektu</value></data>
+  <data name="SaveFailed" xml:space="preserve"><value>Uložení selhalo</value></data>
+  <data name="CouldNotSaveProject" xml:space="preserve"><value>Projekt nelze uložit</value></data>
+  <data name="PreviewNotRendered" xml:space="preserve"><value>Aktuální náhled se ještě nedokončil.</value></data>
+  <data name="OperationCouldNotComplete" xml:space="preserve"><value>Operaci {0} nebylo možné dokončit.&#xA;&#xA;{1}</value></data>
+  <data name="PreparingPrint" xml:space="preserve"><value>Příprava tisku</value></data>
+  <data name="PrintDialogOpened" xml:space="preserve"><value>Dialog tisku otevřen</value></data>
+  <data name="Printing" xml:space="preserve"><value>Tisk</value></data>
+  <data name="PngFilter" xml:space="preserve"><value>Obrázek PNG (*.png)|*.png</value></data>
+  <data name="HtmlFilter" xml:space="preserve"><value>Dokument HTML (*.html)|*.html</value></data>
+  <data name="PdfFilter" xml:space="preserve"><value>Dokument PDF (*.pdf)|*.pdf</value></data>
+  <data name="SavingPng" xml:space="preserve"><value>Ukládání PNG</value></data>
+  <data name="SavingHtml" xml:space="preserve"><value>Ukládání HTML</value></data>
+  <data name="SavingPdf" xml:space="preserve"><value>Ukládání PDF</value></data>
+  <data name="PngSaved" xml:space="preserve"><value>PNG uloženo</value></data>
+  <data name="HtmlSaved" xml:space="preserve"><value>HTML uloženo</value></data>
+  <data name="PdfSaved" xml:space="preserve"><value>PDF uloženo</value></data>
+  <data name="NoBoardToExport" xml:space="preserve"><value>Není k dispozici žádná vygenerovaná mřížka pro export.</value></data>
+  <data name="ChromiumPdfFailed" xml:space="preserve"><value>Chromium nedokázal vytvořit soubor PDF.</value></data>
+  <data name="PngExport" xml:space="preserve"><value>Export PNG</value></data>
+  <data name="HtmlExport" xml:space="preserve"><value>Export HTML</value></data>
+  <data name="PdfExport" xml:space="preserve"><value>Export PDF</value></data>
+  <data name="SaveCurrentPreviewTitle" xml:space="preserve"><value>Uložit aktuální náhled</value></data>
+  <data name="DefaultExportBaseName" xml:space="preserve"><value>osmisměrka</value></data>
+  <data name="PuzzleFileSuffix" xml:space="preserve"><value>-zadání</value></data>
+  <data name="SolutionFileSuffix" xml:space="preserve"><value>-řešení</value></data>
+  <data name="BoardFileSuffix" xml:space="preserve"><value>-mřížka</value></data>
+  <data name="QuizImportLineFormat" xml:space="preserve"><value>Řádek {0} musí obsahovat odpověď, tabulátor a otázku.</value></data>
+  <data name="QuizImportLineInvalid" xml:space="preserve"><value>Řádek {0} musí obsahovat odpověď o alespoň dvou znacích a neprázdnou otázku.</value></data>
+  <data name="NoQuizEntriesInFile" xml:space="preserve"><value>Vybraný soubor neobsahuje žádné úplné kvízové položky.</value></data>
+  <data name="NoWordsInFile" xml:space="preserve"><value>Vybraný soubor neobsahuje žádná slova.</value></data>
+  <data name="HtmlPuzzleSolution" xml:space="preserve"><value>Řešení osmisměrky</value></data>
+  <data name="HtmlWordSearchPuzzle" xml:space="preserve"><value>Osmisměrka</value></data>
+  <data name="HtmlHeadingSolution" xml:space="preserve"><value>{0} - Řešení</value></data>
+  <data name="HtmlAnswer" xml:space="preserve"><value>Odpověď: </value></data>
+  <data name="HtmlWordCell" xml:space="preserve"><value>Buňka slova</value></data>
+  <data name="HtmlMessageCell" xml:space="preserve"><value>Buňka tajenky</value></data>
+  <data name="HtmlIntersection" xml:space="preserve"><value>Křížení slov</value></data>
+  <data name="HtmlBlackBox" xml:space="preserve"><value>Černé pole</value></data>
+  <data name="HtmlStatistics" xml:space="preserve"><value>{0:N0} buněk osmisměrky, {1:N0} buněk tajenky, {2:N0} černých polí a {3:N0} křížení.</value></data>
+  <data name="HtmlPosition" xml:space="preserve"><value>řádek {0}, sloupec {1}</value></data>
+  <data name="HtmlBlackBoxLabel" xml:space="preserve"><value>Černé pole, {0}</value></data>
+  <data name="HtmlQuestionLabel" xml:space="preserve"><value>Otázka {0}, směr {1}, {2}</value></data>
+  <data name="HtmlSpace" xml:space="preserve"><value>mezera</value></data>
+  <data name="HtmlLetterLabel" xml:space="preserve"><value>Písmeno {0}, {1}</value></data>
+  <data name="HtmlMessageCharacterLabel" xml:space="preserve"><value>Znak tajenky {0}, {1}</value></data>
+  <data name="HtmlWordCharacter" xml:space="preserve"><value>Znak slova</value></data>
+  <data name="HtmlWordLabel" xml:space="preserve"><value>{0} {1}, slova {2}, {3}</value></data>
+  <data name="MonteCarloFailure" xml:space="preserve"><value>Žádný z {0} pokusů nevytvořil přijatelnou mřížku. Selhání umístění: {1}; odmítnutí kvůli kapacitě tajenky: {2}.</value></data>
+  <data name="ProjectFileEmpty" xml:space="preserve"><value>Soubor projektu je prázdný.</value></data>
+  <data name="ProjectJsonInvalid" xml:space="preserve"><value>Soubor projektu neobsahuje platný JSON WoSeCon.</value></data>
+  <data name="ProjectPathNoParent" xml:space="preserve"><value>Cesta projektu nemá nadřazenou složku.</value></data>
+  <data name="DirectoryDoesNotExist" xml:space="preserve"><value>Složka „{0}“ neexistuje.</value></data>
+  <data name="GeneratedWordNoPlacement" xml:space="preserve"><value>Vygenerované slovo {0} nemá umístění.</value></data>
+  <data name="SavedBoardPlacementCount" xml:space="preserve"><value>Uložená mřížka neobsahuje právě jedno umístění pro každou položku.</value></data>
+  <data name="SavedAttemptNumbersInvalid" xml:space="preserve"><value>Uložená čísla pokusů generování nejsou platná.</value></data>
+  <data name="SavedPlacementMissing" xml:space="preserve"><value>Slovo {0} má chybějící nebo duplicitní umístění.</value></data>
+  <data name="SavedDirectionInvalid" xml:space="preserve"><value>Slovo {0} má neplatný směr.</value></data>
+  <data name="SavedPlacementOutside" xml:space="preserve"><value>Slovo {0} je umístěno mimo mřížku.</value></data>
+  <data name="SavedPlacementConflict" xml:space="preserve"><value>Slovo {0} je v konfliktu s jiným uloženým umístěním.</value></data>
+  <data name="SavedBoardCannotReconstruct" xml:space="preserve"><value>Z uložených umístění nelze mřížku obnovit.</value></data>
+  <data name="UnsupportedProjectVersion" xml:space="preserve"><value>Nepodporovaná verze formátu projektu {0}. Tato aplikace podporuje verzi {1}.</value></data>
+  <data name="ProjectModeInvalid" xml:space="preserve"><value>Režim projektu není platný.</value></data>
+  <data name="ProjectEntryRequired" xml:space="preserve"><value>Projekt musí obsahovat alespoň jedno slovo nebo kvízovou položku.</value></data>
+  <data name="ProjectEntriesInvalid" xml:space="preserve"><value>Projekt obsahuje prázdné, duplicitní nebo jednoznakové položky.</value></data>
+  <data name="ProjectSettingsInvalid" xml:space="preserve"><value>Nastavení projektu nejsou platná.</value></data>
+  <data name="SavedStatisticNegative" xml:space="preserve"><value>Uložená statistika „{0}“ je záporná.</value></data>
+  <data name="RenderCellCountInvalid" xml:space="preserve"><value>Model vykreslení musí obsahovat právě jednu buňku pro každou pozici mřížky.</value></data>
+  <data name="BoardDimensionsPositive" xml:space="preserve"><value>Rozměry mřížky musí být kladné.</value></data>
+  <data name="UiCultureUnsupported" xml:space="preserve"><value>Vybraný jazyk uživatelského rozhraní není podporován.</value></data>
+  <data name="SettingsPathNoParent" xml:space="preserve"><value>Cesta k nastavení nemá nadřazenou složku.</value></data>
+  <data name="ParallelAttemptsPositive" xml:space="preserve"><value>Počet paralelních pokusů musí být kladný.</value></data>
+  <data name="PuzzleEntryRequired" xml:space="preserve"><value>Je nutná alespoň jedna položka osmisměrky.</value></data>
+  <data name="PuzzleEntriesNoNull" xml:space="preserve"><value>Položky osmisměrky nesmí obsahovat hodnoty null.</value></data>
+  <data name="GenerationAttemptUnexpected" xml:space="preserve"><value>Pokus o generování {0} neočekávaně selhal.</value></data>
+</root>

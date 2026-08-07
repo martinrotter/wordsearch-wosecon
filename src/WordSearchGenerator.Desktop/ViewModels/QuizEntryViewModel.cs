@@ -1,3 +1,5 @@
+using WordSearchGenerator.Desktop.Localization;
+
 namespace WordSearchGenerator.Desktop.ViewModels
 {
   public sealed class QuizEntryViewModel : ValidatableViewModelBase
@@ -35,8 +37,9 @@ namespace WordSearchGenerator.Desktop.ViewModels
       }
     }
 
-    public bool IsEmpty => string.IsNullOrWhiteSpace(Answer) &&
-                           string.IsNullOrWhiteSpace(Question);
+    public bool IsEmpty =>
+      string.IsNullOrWhiteSpace(Answer) &&
+      string.IsNullOrWhiteSpace(Question);
 
     #endregion
 
@@ -67,16 +70,16 @@ namespace WordSearchGenerator.Desktop.ViewModels
       {
         if (answer.Length == 0)
         {
-          answerErrors.Add("An answer is required.");
+          answerErrors.Add(AppStrings.Get("AnswerRequired"));
         }
         else if (answer.Length < 2)
         {
-          answerErrors.Add("An answer must contain at least two characters.");
+          answerErrors.Add(AppStrings.Get("AnswerMinimumLength"));
         }
 
         if (question.Length == 0)
         {
-          questionErrors.Add("A question is required.");
+          questionErrors.Add(AppStrings.Get("QuestionRequired"));
         }
 
         SetErrors(nameof(Answer), answerErrors);

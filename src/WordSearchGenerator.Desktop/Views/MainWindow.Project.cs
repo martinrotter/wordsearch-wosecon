@@ -5,8 +5,8 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Microsoft.Win32;
+using WordSearchGenerator.Desktop.Localization;
 using WordSearchGenerator.Desktop.Models;
-using WordSearchGenerator.Desktop.Models.Persistence;
 using WordSearchGenerator.Desktop.Services.Persistence;
 
 namespace WordSearchGenerator.Desktop.Views
@@ -31,14 +31,14 @@ namespace WordSearchGenerator.Desktop.Views
 
       var result = MessageBox.Show(
         this,
-        "The current puzzle has unsaved changes. Do you want to save them?",
-        "Unsaved changes",
+        AppStrings.Get("UnsavedChangesMessage"),
+        AppStrings.Get("UnsavedChangesTitle"),
         MessageBoxButton.YesNoCancel,
         MessageBoxImage.Warning);
 
       return result switch
       {
-        MessageBoxResult.Yes => await SaveProjectAsync(forceSaveAs: false),
+        MessageBoxResult.Yes => await SaveProjectAsync(false),
         MessageBoxResult.No => true,
         _ => false
       };
@@ -69,13 +69,13 @@ namespace WordSearchGenerator.Desktop.Views
         CheckFileExists = true,
         DefaultExt = ".txt",
         Filter = _viewModel.Mode == PuzzleMode.Normal
-          ? "Text files (*.txt)|*.txt|All files (*.*)|*.*"
-          : "Tab-separated text (*.txt;*.tsv)|*.txt;*.tsv|All files (*.*)|*.*",
+          ? AppStrings.Get("TextFilesFilter")
+          : AppStrings.Get("TabTextFilesFilter"),
         InitialDirectory = GetInitialDirectory(),
         Multiselect = false,
         Title = _viewModel.Mode == PuzzleMode.Normal
-          ? "Import words"
-          : "Import quiz answers and questions"
+          ? AppStrings.Get("ImportWordsTitle")
+          : AppStrings.Get("ImportQuizTitle")
       };
 
       if (dialog.ShowDialog(this) != true)
@@ -85,29 +85,32 @@ namespace WordSearchGenerator.Desktop.Views
 
       try
       {
-        _viewModel.ReportExportStarted("Importing entries");
+        _viewModel.ReportExportStarted(AppStrings.Get("ImportingEntries"));
         var utf8 = new UTF8Encoding(
-          encoderShouldEmitUTF8Identifier: false,
-          throwOnInvalidBytes: true);
+          false,
+          true);
         var source = await File.ReadAllTextAsync(dialog.FileName, utf8);
-        IReadOnlyList<PuzzleEntry> entries =
+        var entries =
           _viewModel.Mode == PuzzleMode.Normal
             ? PuzzleInputFileParser.ParseWords(source)
             : PuzzleInputFileParser.ParseQuizEntries(source);
 
         _viewModel.ApplyImportedEntries(entries);
         _lastProjectDirectory = Path.GetDirectoryName(dialog.FileName);
-        _viewModel.ReportExportCompleted(
-          $"Imported {entries.Count} " +
-          (_viewModel.Mode == PuzzleMode.Normal ? "words" : "quiz entries"));
+        _viewModel.ReportExportCompleted(AppStrings.Format(
+          "ImportedCount",
+          entries.Count,
+          AppStrings.Get(_viewModel.Mode == PuzzleMode.Normal
+            ? "WordsCountNoun"
+            : "QuizEntriesCountNoun")));
       }
       catch (Exception exception)
       {
-        _viewModel.ReportExportFailed("Import failed");
+        _viewModel.ReportExportFailed(AppStrings.Get("ImportFailed"));
         MessageBox.Show(
           this,
           exception.Message,
-          "Could not import entries",
+          AppStrings.Get("CouldNotImport"),
           MessageBoxButton.OK,
           MessageBoxImage.Error);
       }
@@ -129,7 +132,7 @@ namespace WordSearchGenerator.Desktop.Views
 
       if (name.Length == 0)
       {
-        return "Untitled.wosecon";
+        return AppStrings.Get("UntitledProjectFile");
       }
 
       foreach (var invalidCharacter in Path.GetInvalidFileNameChars())
@@ -183,7 +186,6 @@ namespace WordSearchGenerator.Desktop.Views
         case Key.S:
           e.Handled = true;
           await SaveProjectAsync(
-            forceSaveAs:
             (Keyboard.Modifiers & ModifierKeys.Shift) != 0);
           break;
       }
@@ -227,10 +229,10 @@ namespace WordSearchGenerator.Desktop.Views
         AddExtension = true,
         CheckFileExists = true,
         DefaultExt = ".wosecon",
-        Filter = "WoSeCon projects (*.wosecon)|*.wosecon|All files (*.*)|*.*",
+        Filter = AppStrings.Get("ProjectFilesFilter"),
         InitialDirectory = GetInitialDirectory(),
         Multiselect = false,
-        Title = "Open WoSeCon project"
+        Title = AppStrings.Get("OpenProjectTitle")
       };
 
       if (dialog.ShowDialog(this) != true)
@@ -240,20 +242,20 @@ namespace WordSearchGenerator.Desktop.Views
 
       try
       {
-        _viewModel.ReportExportStarted("Opening project");
-        PuzzleProject project = await _projectSerializer.LoadAsync(
+        _viewModel.ReportExportStarted(AppStrings.Get("OpeningProject"));
+        var project = await _projectSerializer.LoadAsync(
           dialog.FileName);
         _viewModel.LoadProject(project, dialog.FileName);
         _lastProjectDirectory = Path.GetDirectoryName(dialog.FileName);
-        _viewModel.ReportExportCompleted("Project loaded");
+        _viewModel.ReportExportCompleted(AppStrings.Get("ProjectLoaded"));
       }
       catch (Exception exception)
       {
-        _viewModel.ReportExportFailed("Open failed");
+        _viewModel.ReportExportFailed(AppStrings.Get("OpenFailed"));
         MessageBox.Show(
           this,
           exception.Message,
-          "Could not open project",
+          AppStrings.Get("CouldNotOpenProject"),
           MessageBoxButton.OK,
           MessageBoxImage.Error);
       }
@@ -263,14 +265,14 @@ namespace WordSearchGenerator.Desktop.Views
       object sender,
       RoutedEventArgs e)
     {
-      await SaveProjectAsync(forceSaveAs: true);
+      await SaveProjectAsync(true);
     }
 
     private async void SaveProjectOnClick(
       object sender,
       RoutedEventArgs e)
     {
-      await SaveProjectAsync(forceSaveAs: false);
+      await SaveProjectAsync(false);
     }
 
     private async Task<bool> SaveProjectAsync(bool forceSaveAs)
@@ -287,8 +289,8 @@ namespace WordSearchGenerator.Desktop.Views
       {
         MessageBox.Show(
           this,
-          "Correct the highlighted puzzle settings before saving.",
-          "Puzzle cannot be saved",
+          AppStrings.Get("CorrectSettingsBeforeSaving"),
+          AppStrings.Get("PuzzleCannotBeSaved"),
           MessageBoxButton.OK,
           MessageBoxImage.Warning);
         return false;
@@ -303,10 +305,10 @@ namespace WordSearchGenerator.Desktop.Views
           AddExtension = true,
           DefaultExt = ".wosecon",
           FileName = GetSuggestedProjectName(definition.PuzzleHeading),
-          Filter = "WoSeCon projects (*.wosecon)|*.wosecon",
+          Filter = AppStrings.Get("ProjectSaveFilter"),
           InitialDirectory = GetInitialDirectory(),
           OverwritePrompt = true,
-          Title = "Save WoSeCon project"
+          Title = AppStrings.Get("SaveProjectTitle")
         };
 
         if (dialog.ShowDialog(this) != true)
@@ -319,23 +321,23 @@ namespace WordSearchGenerator.Desktop.Views
 
       try
       {
-        _viewModel.ReportExportStarted("Saving project");
+        _viewModel.ReportExportStarted(AppStrings.Get("SavingProject"));
         await _projectSerializer.SaveAsync(
           path,
           definition,
           generatedResult);
         _viewModel.MarkProjectSaved(path);
         _lastProjectDirectory = Path.GetDirectoryName(path);
-        _viewModel.ReportExportCompleted("Project saved");
+        _viewModel.ReportExportCompleted(AppStrings.Get("ProjectSaved"));
         return true;
       }
       catch (Exception exception)
       {
-        _viewModel.ReportExportFailed("Save failed");
+        _viewModel.ReportExportFailed(AppStrings.Get("SaveFailed"));
         MessageBox.Show(
           this,
           exception.Message,
-          "Could not save project",
+          AppStrings.Get("CouldNotSaveProject"),
           MessageBoxButton.OK,
           MessageBoxImage.Error);
         return false;

@@ -1,3 +1,5 @@
+using WordSearchGenerator.Desktop.Localization;
+
 namespace WordSearchGenerator.Desktop.Models
 {
   public sealed class MonteCarloGenerationException : Exception
@@ -46,9 +48,11 @@ namespace WordSearchGenerator.Desktop.Models
       int placementFailureCount,
       int messageRejectedAttemptCount)
     {
-      return $"None of {attemptCount} attempts produced an acceptable board. " +
-             $"Placement failures: {placementFailureCount}; " +
-             $"message-capacity rejections: {messageRejectedAttemptCount}.";
+      return AppStrings.Format(
+        "MonteCarloFailure",
+        attemptCount,
+        placementFailureCount,
+        messageRejectedAttemptCount);
     }
 
     #endregion

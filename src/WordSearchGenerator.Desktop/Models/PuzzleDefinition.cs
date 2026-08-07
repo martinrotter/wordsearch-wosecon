@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using WordSearchGenerator.Common.WoSeCon.Api;
+using WordSearchGenerator.Desktop.Localization;
 
 namespace WordSearchGenerator.Desktop.Models
 {
@@ -76,14 +77,14 @@ namespace WordSearchGenerator.Desktop.Models
       if (entryArray.Length == 0)
       {
         throw new ArgumentException(
-          "At least one puzzle entry is required.",
+          AppStrings.Get("PuzzleEntryRequired"),
           nameof(entries));
       }
 
       if (entryArray.Any(entry => entry == null))
       {
         throw new ArgumentException(
-          "Puzzle entries cannot contain null values.",
+          AppStrings.Get("PuzzleEntriesNoNull"),
           nameof(entries));
       }
 

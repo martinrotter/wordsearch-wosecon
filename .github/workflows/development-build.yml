@@ -1,0 +1,117 @@
+name: Development build
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: development-release
+  cancel-in-progress: true
+
+jobs:
+  build-test-publish:
+    name: Build, test, and publish
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore
+        run: dotnet restore src/WordSearchGenerator.sln --runtime win-x64
+
+      - name: Build
+        run: dotnet build src/WordSearchGenerator.sln --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test src/WordSearchGenerator.sln --configuration Release --no-build --no-restore --filter "TestCategory!=LongRunning"
+
+      - name: Publish Windows x64 application
+        shell: pwsh
+        run: |
+          dotnet publish src/WordSearchGenerator.Desktop/WordSearchGenerator.Desktop.csproj `
+            --configuration Release `
+            --runtime win-x64 `
+            --self-contained true `
+            --no-restore `
+            -p:PublishSingleFile=false `
+            -p:DebugType=None `
+            -p:DebugSymbols=false `
+            --output artifacts/wosecon-win64
+
+      - name: Create application archive
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $archive = Join-Path $PWD 'artifacts/wosecon-win64.zip'
+
+          Compress-Archive `
+            -Path (Join-Path $PWD 'artifacts/wosecon-win64/*') `
+            -DestinationPath $archive `
+            -CompressionLevel Optimal `
+            -Force
+
+      - name: Move development tag
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+          git tag --force dev $env:GITHUB_SHA
+          if ($LASTEXITCODE -ne 0) {
+            throw 'Could not create the dev tag.'
+          }
+
+          git push origin refs/tags/dev --force
+          if ($LASTEXITCODE -ne 0) {
+            throw 'Could not update the remote dev tag.'
+          }
+
+      - name: Update development release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+
+          gh release view dev --repo $env:GITHUB_REPOSITORY *> $null
+          if ($LASTEXITCODE -eq 0) {
+            gh release edit dev `
+              --repo $env:GITHUB_REPOSITORY `
+              --title 'Development build' `
+              --prerelease
+          }
+          else {
+            gh release create dev `
+              --repo $env:GITHUB_REPOSITORY `
+              --title 'Development build' `
+              --prerelease `
+              --notes "Automated development build of commit $env:GITHUB_SHA."
+          }
+
+          if ($LASTEXITCODE -ne 0) {
+            throw 'Could not create or update the development release.'
+          }
+
+          gh release upload dev `
+            'artifacts/wosecon-win64.zip#wosecon-win64.zip' `
+            --repo $env:GITHUB_REPOSITORY `
+            --clobber
+
+          if ($LASTEXITCODE -ne 0) {
+            throw 'Could not upload the development archive.'
+          }

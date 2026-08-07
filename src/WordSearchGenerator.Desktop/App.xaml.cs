@@ -1,7 +1,9 @@
 using System.Windows;
+using WordSearchGenerator.Desktop.Localization;
 using WordSearchGenerator.Desktop.Services;
 using WordSearchGenerator.Desktop.Services.Persistence;
 using WordSearchGenerator.Desktop.Services.Rendering;
+using WordSearchGenerator.Desktop.Services.Settings;
 using WordSearchGenerator.Desktop.ViewModels;
 using WordSearchGenerator.Desktop.Views;
 
@@ -15,6 +17,11 @@ namespace WordSearchGenerator.Desktop
     {
       base.OnStartup(e);
 
+      var settingsService = new JsonApplicationSettingsService();
+      var settings = settingsService.Load();
+
+      ApplicationCulture.Apply(settings.UiCulture);
+
       var puzzleGenerator = new MonteCarloPuzzleGenerator();
       var boardHtmlRenderer = new BoardHtmlRenderer();
       var projectSerializer = new PuzzleProjectSerializer();
@@ -23,7 +30,9 @@ namespace WordSearchGenerator.Desktop
         boardHtmlRenderer);
       var mainWindow = new MainWindow(
         mainWindowViewModel,
-        projectSerializer);
+        projectSerializer,
+        settingsService,
+        settings);
 
       MainWindow = mainWindow;
       MainWindow.Show();

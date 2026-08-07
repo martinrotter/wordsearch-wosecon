@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using WordSearchGenerator.Common;
 using WordSearchGenerator.Common.WoSeCon.Api;
+using WordSearchGenerator.Desktop.Localization;
 using WordSearchGenerator.Desktop.Models;
 using WordSearchGenerator.Desktop.Models.Persistence;
 
@@ -10,13 +11,9 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
 {
   public sealed class PuzzleProjectSerializer : IPuzzleProjectSerializer
   {
-    #region Constants
+    #region Static Fields
 
     private const int CurrentFormatVersion = 1;
-
-    #endregion
-
-    #region Static Fields
 
     private static readonly JsonSerializerOptions JsonOptions = CreateOptions();
 
@@ -40,17 +37,18 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
           64 * 1024,
           FileOptions.Asynchronous | FileOptions.SequentialScan);
         var file = await JsonSerializer.DeserializeAsync<ProjectFile>(
-          stream,
-          JsonOptions,
-          cancellationToken) ??
-                   throw new InvalidDataException("The project file is empty.");
+                     stream,
+                     JsonOptions,
+                     cancellationToken) ??
+                   throw new InvalidDataException(
+                     AppStrings.Get("ProjectFileEmpty"));
 
         return RestoreProject(file);
       }
       catch (JsonException exception)
       {
         throw new InvalidDataException(
-          "The project file does not contain valid WoSeCon JSON.",
+          AppStrings.Get("ProjectJsonInvalid"),
           exception);
       }
     }
@@ -67,12 +65,13 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
       var fullPath = Path.GetFullPath(path);
       var directory = Path.GetDirectoryName(fullPath) ??
                       throw new InvalidOperationException(
-                        "The project path has no parent directory.");
+                        AppStrings.Get("ProjectPathNoParent"));
 
       if (!Directory.Exists(directory))
       {
-        throw new DirectoryNotFoundException(
-          $"The directory '{directory}' does not exist.");
+        throw new DirectoryNotFoundException(AppStrings.Format(
+          "DirectoryDoesNotExist",
+          directory));
       }
 
       var file = CreateFile(definition, generatedResult);
@@ -98,7 +97,7 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
           await stream.FlushAsync(cancellationToken);
         }
 
-        File.Move(temporaryPath, fullPath, overwrite: true);
+        File.Move(temporaryPath, fullPath, true);
       }
       finally
       {
@@ -129,8 +128,9 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
           PlacementFailureCount = result.PlacementFailureCount,
           Placements = result.Board.Words
             .Select(word => word.Placement == null
-              ? throw new InvalidOperationException(
-                $"Generated word {word.WordNumber} has no placement.")
+              ? throw new InvalidOperationException(AppStrings.Format(
+                "GeneratedWordNoPlacement",
+                word.WordNumber))
               : new PlacementFile
               {
                 Column = word.Placement.Column,
@@ -189,7 +189,7 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
           generated.Placements.Count != definition.Entries.Count)
       {
         throw new InvalidDataException(
-          "The saved board does not contain one placement for every entry.");
+          AppStrings.Get("SavedBoardPlacementCount"));
       }
 
       ValidateNonNegative(generated.AttemptCount, nameof(generated.AttemptCount));
@@ -222,7 +222,7 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
           generated.WinningAttemptNumber > generated.AttemptCount)
       {
         throw new InvalidDataException(
-          "The saved generation attempt numbers are invalid.");
+          AppStrings.Get("SavedAttemptNumbersInvalid"));
       }
 
       var placementsByNumber = generated.Placements
@@ -236,16 +236,18 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
         if (!placementsByNumber.TryGetValue(word.WordNumber, out var matches) ||
             matches.Count != 1)
         {
-          throw new InvalidDataException(
-            $"Word {word.WordNumber} has a missing or duplicate placement.");
+          throw new InvalidDataException(AppStrings.Format(
+            "SavedPlacementMissing",
+            word.WordNumber));
         }
 
         var placement = matches[0];
 
         if (!Enum.IsDefined(placement.Direction))
         {
-          throw new InvalidDataException(
-            $"Word {word.WordNumber} has an invalid direction.");
+          throw new InvalidDataException(AppStrings.Format(
+            "SavedDirectionInvalid",
+            word.WordNumber));
         }
 
         word.Placement = new DirectedLocation
@@ -261,8 +263,9 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
               definition.Columns,
               definition.QuizMode))
         {
-          throw new InvalidDataException(
-            $"Word {word.WordNumber} is placed outside the matrix.");
+          throw new InvalidDataException(AppStrings.Format(
+            "SavedPlacementOutside",
+            word.WordNumber));
         }
 
         var locations = word.GetAllPlacementLocations(definition.QuizMode);
@@ -272,8 +275,9 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
               previous,
               definition.QuizMode)))
         {
-          throw new InvalidDataException(
-            $"Word {word.WordNumber} conflicts with another saved placement.");
+          throw new InvalidDataException(AppStrings.Format(
+            "SavedPlacementConflict",
+            word.WordNumber));
         }
 
         placedWords.Add(word);
@@ -293,7 +297,7 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
       catch (Exception exception)
       {
         throw new InvalidDataException(
-          "The saved placements cannot reconstruct the board.",
+          AppStrings.Get("SavedBoardCannotReconstruct"),
           exception);
       }
 
@@ -318,20 +322,20 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
     {
       if (file.FormatVersion != CurrentFormatVersion)
       {
-        throw new InvalidDataException(
-          $"Unsupported project format version {file.FormatVersion}. " +
-          $"This application supports version {CurrentFormatVersion}.");
+        throw new InvalidDataException(AppStrings.Format(
+          "UnsupportedProjectVersion",
+          file.FormatVersion,
+          CurrentFormatVersion));
       }
 
       if (!Enum.IsDefined(file.Mode))
       {
-        throw new InvalidDataException("The project mode is invalid.");
+        throw new InvalidDataException(AppStrings.Get("ProjectModeInvalid"));
       }
 
       if (file.Entries == null || file.Entries.Count == 0)
       {
-        throw new InvalidDataException(
-          "The project must contain at least one word or quiz entry.");
+        throw new InvalidDataException(AppStrings.Get("ProjectEntryRequired"));
       }
 
       var rawEntries = file.Entries.Select(entry => new PuzzleEntry(
@@ -344,11 +348,10 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
 
       if (entries.Count != file.Entries.Count ||
           entries.Any(entry => entry.Answer.Length < 2) ||
-          file.Mode == PuzzleMode.Quiz &&
-          entries.Any(entry => string.IsNullOrWhiteSpace(entry.Question)))
+          (file.Mode == PuzzleMode.Quiz &&
+           entries.Any(entry => string.IsNullOrWhiteSpace(entry.Question))))
       {
-        throw new InvalidDataException(
-          "The project contains blank, duplicate, or one-character entries.");
+        throw new InvalidDataException(AppStrings.Get("ProjectEntriesInvalid"));
       }
 
       PuzzleDefinition definition;
@@ -369,7 +372,7 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
         when (exception is ArgumentException)
       {
         throw new InvalidDataException(
-          "The project settings are invalid.",
+          AppStrings.Get("ProjectSettingsInvalid"),
           exception);
       }
 
@@ -384,7 +387,9 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
     {
       if (value < 0)
       {
-        throw new InvalidDataException($"Saved statistic '{name}' is negative.");
+        throw new InvalidDataException(AppStrings.Format(
+          "SavedStatisticNegative",
+          name));
       }
     }
 
@@ -394,6 +399,8 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
 
     private sealed class EntryFile
     {
+      #region Properties
+
       public string? Answer
       {
         get;
@@ -405,10 +412,14 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
         get;
         set;
       }
+
+      #endregion
     }
 
     private sealed class GeneratedBoardFile
     {
+      #region Properties
+
       public int AttemptCount
       {
         get;
@@ -486,10 +497,14 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
         get;
         set;
       }
+
+      #endregion
     }
 
     private sealed class PlacementFile
     {
+      #region Properties
+
       public int Column
       {
         get;
@@ -513,10 +528,14 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
         get;
         set;
       }
+
+      #endregion
     }
 
     private sealed class ProjectFile
     {
+      #region Properties
+
       public int Columns
       {
         get;
@@ -576,6 +595,8 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
         get;
         set;
       }
+
+      #endregion
     }
 
     #endregion

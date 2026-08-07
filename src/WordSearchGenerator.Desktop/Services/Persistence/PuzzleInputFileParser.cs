@@ -1,4 +1,5 @@
 using System.IO;
+using WordSearchGenerator.Desktop.Localization;
 using WordSearchGenerator.Desktop.Models;
 
 namespace WordSearchGenerator.Desktop.Services.Persistence
@@ -27,8 +28,9 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
 
         if (separatorIndex < 0)
         {
-          throw new InvalidDataException(
-            $"Line {index + 1} must contain an answer, a tab, and a question.");
+          throw new InvalidDataException(AppStrings.Format(
+            "QuizImportLineFormat",
+            index + 1));
         }
 
         var answer = line[..separatorIndex].Trim();
@@ -36,9 +38,9 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
 
         if (answer.Length < 2 || question.Length == 0)
         {
-          throw new InvalidDataException(
-            $"Line {index + 1} must contain an answer of at least two " +
-            "characters and a non-empty question.");
+          throw new InvalidDataException(AppStrings.Format(
+            "QuizImportLineInvalid",
+            index + 1));
         }
 
         rawEntries.Add(new PuzzleEntry(answer, question));
@@ -48,8 +50,7 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
 
       if (entries.Count == 0)
       {
-        throw new InvalidDataException(
-          "The selected file contains no complete quiz entries.");
+        throw new InvalidDataException(AppStrings.Get("NoQuizEntriesInFile"));
       }
 
       return entries;
@@ -63,16 +64,16 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
 
       if (entries.Count == 0)
       {
-        throw new InvalidDataException(
-          "The selected file contains no words.");
+        throw new InvalidDataException(AppStrings.Get("NoWordsInFile"));
       }
 
       var shortWord = entries.FirstOrDefault(entry => entry.Answer.Length < 2);
 
       if (shortWord != null)
       {
-        throw new InvalidDataException(
-          $"The word '{shortWord.Answer}' must contain at least two characters.");
+        throw new InvalidDataException(AppStrings.Format(
+          "WordMinimumLength",
+          shortWord.Answer));
       }
 
       return entries;

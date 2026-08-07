@@ -5,6 +5,8 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
 {
   public interface IPuzzleProjectSerializer
   {
+    #region Other Stuff
+
     Task<PuzzleProject> LoadAsync(
       string path,
       CancellationToken cancellationToken = default);
@@ -14,5 +16,7 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
       PuzzleDefinition definition,
       GenerationResult? generatedResult,
       CancellationToken cancellationToken = default);
+
+    #endregion
   }
 }

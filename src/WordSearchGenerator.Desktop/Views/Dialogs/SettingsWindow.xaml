@@ -1,0 +1,77 @@
+<Window x:Class="WordSearchGenerator.Desktop.Views.Dialogs.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:icons="clr-namespace:FluentIcons.Wpf;assembly=FluentIcons.Wpf"
+        xmlns:localization="clr-namespace:WordSearchGenerator.Desktop.Localization"
+        Title="{localization:Loc SettingsTitle}"
+        Icon="/WordSearchGenerator.Desktop;component/WordSearchGenerator.Desktop.ico"
+        Width="460"
+        SizeToContent="Height"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner">
+  <Grid Margin="24">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+
+    <StackPanel Grid.Row="0" Orientation="Horizontal">
+      <icons:FluentIcon Margin="0,0,10,0"
+                        VerticalAlignment="Center"
+                        Icon="Settings"
+                        IconSize="Size24"
+                        FontSize="22" />
+      <TextBlock VerticalAlignment="Center"
+                 Style="{StaticResource PaneTitleTextStyle}"
+                 Text="{localization:Loc SettingsTitle}" />
+    </StackPanel>
+
+    <StackPanel Grid.Row="1" Margin="0,22,0,0">
+      <TextBlock Style="{StaticResource FieldLabelTextStyle}"
+                 Text="{localization:Loc SettingsLanguage}" />
+      <TextBlock Margin="0,4,0,10"
+                 Style="{StaticResource SupportingTextStyle}"
+                 Text="{localization:Loc SettingsLanguageDescription}"
+                 TextWrapping="Wrap" />
+      <ComboBox MinWidth="240"
+                HorizontalAlignment="Left"
+                DisplayMemberPath="DisplayName"
+                ItemsSource="{Binding Languages}"
+                SelectedItem="{Binding SelectedLanguage}" />
+    </StackPanel>
+
+    <Border Grid.Row="2"
+            Margin="0,20,0,0"
+            Padding="12"
+            Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+            CornerRadius="5">
+      <StackPanel Orientation="Horizontal">
+        <icons:FluentIcon Margin="0,0,9,0"
+                          VerticalAlignment="Top"
+                          Icon="Info"
+                          IconSize="Size20"
+                          FontSize="17" />
+        <TextBlock VerticalAlignment="Center"
+                   Text="{localization:Loc SettingsRestartNotice}"
+                   TextWrapping="Wrap" />
+      </StackPanel>
+    </Border>
+
+    <StackPanel Grid.Row="3"
+                Margin="0,24,0,0"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
+      <Button MinWidth="92"
+              Margin="0,0,8,0"
+              IsDefault="True"
+              Click="OkOnClick"
+              Content="{localization:Loc SettingsOk}" />
+      <Button MinWidth="92"
+              IsCancel="True"
+              Content="{localization:Loc Cancel}" />
+    </StackPanel>
+  </Grid>
+</Window>

@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using WordSearchGenerator.Desktop.Localization;
 using WordSearchGenerator.Desktop.Models.Rendering;
 
 namespace WordSearchGenerator.Desktop.Services.Rendering
@@ -35,14 +36,14 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
       if (model.Rows <= 0 || model.Columns <= 0)
       {
         throw new ArgumentException(
-          "The board dimensions must be positive.",
+          AppStrings.Get("BoardDimensionsPositive"),
           nameof(model));
       }
 
       if (model.Cells.Count != model.Rows * model.Columns)
       {
         throw new ArgumentException(
-          "The render model must contain exactly one cell per matrix position.",
+          AppStrings.Get("RenderCellCountInvalid"),
           nameof(model));
       }
 
