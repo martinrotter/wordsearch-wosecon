@@ -25,6 +25,7 @@
   <data name="Columns" xml:space="preserve"><value>Columns</value></data>
   <data name="RowsTooltip" xml:space="preserve"><value>Number of rows in the generated matrix</value></data>
   <data name="ColumnsTooltip" xml:space="preserve"><value>Number of columns in the generated matrix</value></data>
+  <data name="CellCount" xml:space="preserve"><value>Cell count</value></data>
   <data name="WordsOrQuestions" xml:space="preserve"><value>Words or questions</value></data>
   <data name="WordsInstructions" xml:space="preserve"><value>Enter one word per line. Words are case-sensitive; surrounding spaces are trimmed.</value></data>
   <data name="WordsTooltip" xml:space="preserve"><value>Empty lines and case-sensitive duplicates are ignored</value></data>
@@ -33,7 +34,9 @@
   <data name="Question" xml:space="preserve"><value>Question</value></data>
   <data name="SecretMessage" xml:space="preserve"><value>Secret message</value></data>
   <data name="SecretMessageDescription" xml:space="preserve"><value>The message fills cells not occupied by words. Remaining vacant cells become black boxes.</value></data>
+  <data name="SecretMessageQuizDescription" xml:space="preserve"><value>Each message character must occur in the answers. Matching answer cells are highlighted and numbered in message order; unused cells become black boxes.</value></data>
   <data name="SecretMessageTooltip" xml:space="preserve"><value>Spaces are preserved as message characters</value></data>
+  <data name="SpaceCharacter" xml:space="preserve"><value>space</value></data>
   <data name="PreviewText" xml:space="preserve"><value>Preview text</value></data>
   <data name="PreviewTextDescription" xml:space="preserve"><value>These headings are used in the preview and exported or printed output.</value></data>
   <data name="PuzzleHeadingOptional" xml:space="preserve"><value>Puzzle heading (optional)</value></data>
@@ -127,6 +130,7 @@
   <data name="EntryTooLong" xml:space="preserve"><value>'{0}' is too long for this matrix.</value></data>
   <data name="QuizEntryTooLong" xml:space="preserve"><value>'{0}' is too long for this matrix including its question cell.</value></data>
   <data name="SecretMessageTooLong" xml:space="preserve"><value>The secret message cannot fit even with maximum word overlap.</value></data>
+  <data name="SecretMessageCharacterUnavailable" xml:space="preserve"><value>The answers contain {1:N0} occurrence(s) of {0}, but the secret message requires {2:N0}.</value></data>
   <data name="PositiveWholeNumber" xml:space="preserve"><value>{0} must be a positive whole number.</value></data>
   <data name="WordsImported" xml:space="preserve"><value>Words imported</value></data>
   <data name="QuizEntriesImported" xml:space="preserve"><value>Quiz entries imported</value></data>
@@ -196,12 +200,22 @@
   <data name="HtmlAnswer" xml:space="preserve"><value>Answer: </value></data>
   <data name="HtmlWordCell" xml:space="preserve"><value>Word cell</value></data>
   <data name="HtmlMessageCell" xml:space="preserve"><value>Secret-message cell</value></data>
+  <data name="HtmlQuizExtractionCell" xml:space="preserve"><value>Secret-message extraction cell</value></data>
   <data name="HtmlIntersection" xml:space="preserve"><value>Word intersection</value></data>
   <data name="HtmlBlackBox" xml:space="preserve"><value>Black box</value></data>
   <data name="HtmlStatistics" xml:space="preserve"><value>{0:N0} puzzle cells, {1:N0} message cells, {2:N0} black boxes and {3:N0} intersections.</value></data>
+  <data name="HtmlQuizStatistics" xml:space="preserve"><value>{0:N0} answer and question cells, of which {1:N0} extract the secret message, {2:N0} black boxes and {3:N0} intersections.</value></data>
+  <data name="HtmlSecretMessageNormalInstructions" xml:space="preserve"><value>Write the remaining letters here after finding all words.</value></data>
+  <data name="HtmlSecretMessageQuizInstructions" xml:space="preserve"><value>Write the letters from the highlighted numbered cells here after solving the answers.</value></data>
+  <data name="HtmlSecretMessageSolutionInstructions" xml:space="preserve"><value>Completed secret message.</value></data>
+  <data name="HtmlSecretMessagePlaceholderLabel" xml:space="preserve"><value>Blank secret message with {0:N0} character positions</value></data>
+  <data name="HtmlSecretMessageSolutionLabel" xml:space="preserve"><value>Secret message: {0}</value></data>
   <data name="HtmlPosition" xml:space="preserve"><value>row {0}, column {1}</value></data>
   <data name="HtmlBlackBoxLabel" xml:space="preserve"><value>Black box, {0}</value></data>
   <data name="HtmlQuestionLabel" xml:space="preserve"><value>Question {0}, direction {1}, {2}</value></data>
+  <data name="HtmlQuizAnswerCellLabel" xml:space="preserve"><value>Empty answer cell, {0}</value></data>
+  <data name="HtmlQuizExtractionCellLabel" xml:space="preserve"><value>Secret-message position {0}, empty answer cell, {1}</value></data>
+  <data name="HtmlQuizExtractionSolutionLabel" xml:space="preserve"><value>Secret-message position {0}, character {1}, {2}</value></data>
   <data name="HtmlSpace" xml:space="preserve"><value>space</value></data>
   <data name="HtmlLetterLabel" xml:space="preserve"><value>Letter {0}, {1}</value></data>
   <data name="HtmlMessageCharacterLabel" xml:space="preserve"><value>Secret-message character {0}, {1}</value></data>

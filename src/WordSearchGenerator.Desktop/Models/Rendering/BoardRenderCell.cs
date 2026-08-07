@@ -23,7 +23,14 @@ namespace WordSearchGenerator.Desktop.Models.Rendering
 
     public bool IsIntersection => WordNumbers.Count > 1;
 
+    public bool IsMessageExtraction => MessageIndex != null;
+
     public BoardRenderCellKind Kind
+    {
+      get;
+    }
+
+    public int? MessageIndex
     {
       get;
     }
@@ -52,6 +59,7 @@ namespace WordSearchGenerator.Desktop.Models.Rendering
       int column,
       BoardRenderCellKind kind,
       char? character,
+      int? messageIndex,
       int quizQuestionNumber,
       string? directionArrow,
       IEnumerable<int> wordNumbers)
@@ -62,6 +70,7 @@ namespace WordSearchGenerator.Desktop.Models.Rendering
       Column = column;
       Kind = kind;
       Character = character;
+      MessageIndex = messageIndex;
       QuizQuestionNumber = quizQuestionNumber;
       DirectionArrow = directionArrow ?? string.Empty;
       WordNumbers = new ReadOnlyCollection<int>(

@@ -141,6 +141,15 @@ namespace WordSearchGenerator.Desktop.Models
         switch (cell.Type)
         {
           case Board.Cell.CellType.CharFromText:
+            PuzzleCellCount++;
+
+            if (cell.MessageIndex != null)
+            {
+              MessageCellCount++;
+            }
+
+            break;
+
           case Board.Cell.CellType.QuizQuestion:
             PuzzleCellCount++;
             break;

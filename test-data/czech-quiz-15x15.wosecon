@@ -1,0 +1,109 @@
+{
+  "formatVersion": 1,
+  "mode": "Quiz",
+  "rows": 15,
+  "columns": 15,
+  "entries": [
+    {
+      "answer": "praha",
+      "question": "Které město je hlavním městem České republiky?"
+    },
+    {
+      "answer": "vltava",
+      "question": "Která řeka protéká Prahou?"
+    },
+    {
+      "answer": "sněžka",
+      "question": "Jak se jmenuje nejvyšší hora České republiky?"
+    },
+    {
+      "answer": "brno",
+      "question": "Které město je druhé největší v České republice?"
+    },
+    {
+      "answer": "olomouc",
+      "question": "Ve kterém městě stojí sloup Nejsvětější Trojice zapsaný na seznamu UNESCO?"
+    },
+    {
+      "answer": "ostrava",
+      "question": "Které moravskoslezské město je známé areálem Dolní Vítkovice?"
+    },
+    {
+      "answer": "karel čapek",
+      "question": "Který český spisovatel napsal drama R.U.R.?"
+    },
+    {
+      "answer": "smetana",
+      "question": "Jaké je příjmení skladatele cyklu symfonických básní Má vlast?"
+    },
+    {
+      "answer": "antonín dvořák",
+      "question": "Který český skladatel napsal Novosvětskou symfonii?"
+    },
+    {
+      "answer": "karlův most",
+      "question": "Jak se jmenuje historický most spojující Staré Město a Malou Stranu?"
+    },
+    {
+      "answer": "pražský hrad",
+      "question": "Jak se jmenuje tradiční sídlo prezidenta České republiky?"
+    },
+    {
+      "answer": "český krumlov",
+      "question": "Které jihočeské město s rozsáhlým zámkem leží na řece Vltavě?"
+    },
+    {
+      "answer": "moravský kras",
+      "question": "Ve které chráněné oblasti se nachází propast Macocha?"
+    },
+    {
+      "answer": "orloj",
+      "question": "Jak se nazývají astronomické hodiny na Staroměstské radnici?"
+    },
+    {
+      "answer": "lípa",
+      "question": "Který strom je českým národním symbolem?"
+    },
+    {
+      "answer": "lev",
+      "question": "Které zvíře je hlavním znakem Českého království?"
+    },
+    {
+      "answer": "koruna",
+      "question": "Jak se jmenuje měnová jednotka České republiky?"
+    },
+    {
+      "answer": "knedlíky",
+      "question": "Jaká tradiční příloha se často podává ke svíčkové?"
+    },
+    {
+      "answer": "hokej",
+      "question": "Který kolektivní zimní sport patří v Česku k nejoblíbenějším?"
+    },
+    {
+      "answer": "robot",
+      "question": "Které slovo pro umělého pracovníka proslavilo drama R.U.R.?"
+    },
+    {
+      "answer": "pivo",
+      "question": "Který kvašený nápoj je spojený s českou pivovarnickou tradicí?"
+    },
+    {
+      "answer": "říp",
+      "question": "Na kterou horu podle pověsti vystoupil praotec Čech?"
+    },
+    {
+      "answer": "kutná hora",
+      "question": "Ve kterém městě stojí chrám svaté Barbory?"
+    },
+    {
+      "answer": "zlatá ulička",
+      "question": "Jak se jmenuje malebná ulička s barevnými domky v areálu Pražského hradu?"
+    }
+  ],
+  "secretMessage": "česká republika",
+  "puzzleHeading": "České zajímavosti",
+  "entryListHeading": "Otázky",
+  "parallelAttempts": 8,
+  "generatedBoard": null
+}

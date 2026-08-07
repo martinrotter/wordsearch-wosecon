@@ -1,0 +1,109 @@
+{
+  "formatVersion": 1,
+  "mode": "Normal",
+  "rows": 15,
+  "columns": 15,
+  "entries": [
+    {
+      "answer": "praha",
+      "question": null
+    },
+    {
+      "answer": "vltava",
+      "question": null
+    },
+    {
+      "answer": "sněžka",
+      "question": null
+    },
+    {
+      "answer": "brno",
+      "question": null
+    },
+    {
+      "answer": "olomouc",
+      "question": null
+    },
+    {
+      "answer": "ostrava",
+      "question": null
+    },
+    {
+      "answer": "karel čapek",
+      "question": null
+    },
+    {
+      "answer": "smetana",
+      "question": null
+    },
+    {
+      "answer": "antonín dvořák",
+      "question": null
+    },
+    {
+      "answer": "karlův most",
+      "question": null
+    },
+    {
+      "answer": "pražský hrad",
+      "question": null
+    },
+    {
+      "answer": "český krumlov",
+      "question": null
+    },
+    {
+      "answer": "moravský kras",
+      "question": null
+    },
+    {
+      "answer": "orloj",
+      "question": null
+    },
+    {
+      "answer": "lípa",
+      "question": null
+    },
+    {
+      "answer": "lev",
+      "question": null
+    },
+    {
+      "answer": "koruna",
+      "question": null
+    },
+    {
+      "answer": "knedlíky",
+      "question": null
+    },
+    {
+      "answer": "hokej",
+      "question": null
+    },
+    {
+      "answer": "robot",
+      "question": null
+    },
+    {
+      "answer": "pivo",
+      "question": null
+    },
+    {
+      "answer": "říp",
+      "question": null
+    },
+    {
+      "answer": "kutná hora",
+      "question": null
+    },
+    {
+      "answer": "zlatá ulička",
+      "question": null
+    }
+  ],
+  "secretMessage": "česká republika",
+  "puzzleHeading": "Česká osmisměrka",
+  "entryListHeading": "Slova k nalezení",
+  "parallelAttempts": 8,
+  "generatedBoard": null
+}

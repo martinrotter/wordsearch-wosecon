@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using WordSearchGenerator.Desktop.Localization;
+using WordSearchGenerator.Desktop.Models;
 using WordSearchGenerator.Desktop.Models.Rendering;
 
 namespace WordSearchGenerator.Desktop.Services.Rendering
@@ -16,6 +17,8 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
     private static readonly Brush InkBrush = CreateBrush("#17202A");
     private static readonly Brush IntersectionBrush = CreateBrush("#E9D5FF");
     private static readonly Brush LineBrush = CreateBrush("#9AA7B2");
+    private static readonly Brush MessageBadgeBrush = CreateBrush("#FBBF24");
+    private static readonly Brush MessageBadgeBorderBrush = CreateBrush("#9A6700");
     private static readonly Brush MessageBrush = CreateBrush("#FEF3C7");
     private static readonly Brush QuizBrush = CreateBrush("#DCFCE7");
     private static readonly Brush WhiteBrush = Brushes.White;
@@ -72,7 +75,13 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
             GetCellBrush(cell, previewMode),
             cellPen,
             bounds);
-          DrawCellContent(drawing, cell, bounds, cellSize);
+          DrawCellContent(
+            drawing,
+            cell,
+            bounds,
+            cellSize,
+            model.Mode,
+            previewMode);
         }
 
         drawing.DrawRectangle(
@@ -113,7 +122,9 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
       DrawingContext drawing,
       BoardRenderCell cell,
       Rect bounds,
-      double cellSize)
+      double cellSize,
+      PuzzleMode mode,
+      BoardPreviewMode previewMode)
     {
       if (cell.Kind == BoardRenderCellKind.QuizQuestion)
       {
@@ -143,17 +154,56 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
         return;
       }
 
-      if (cell.Character is null or ' ')
+      var hideAnswer = mode == PuzzleMode.Quiz &&
+                       previewMode == BoardPreviewMode.Puzzle &&
+                       cell.Kind == BoardRenderCellKind.Word;
+
+      if (!hideAnswer && cell.Character is not null and not ' ')
       {
-        return;
+        DrawCenteredText(
+          drawing,
+          cell.Character.Value.ToString(),
+          bounds,
+          cellSize * 0.62,
+          FontWeights.SemiBold);
       }
 
+      if (cell.MessageIndex != null)
+      {
+        DrawMessageIndex(
+          drawing,
+          cell.MessageIndex.Value,
+          bounds,
+          cellSize);
+      }
+    }
+
+    private static void DrawMessageIndex(
+      DrawingContext drawing,
+      int messageIndex,
+      Rect bounds,
+      double cellSize)
+    {
+      var badgeSize = cellSize * 0.34;
+      var badgeBounds = new Rect(
+        bounds.Right - badgeSize - cellSize * 0.04,
+        bounds.Top + cellSize * 0.04,
+        badgeSize,
+        badgeSize);
+
+      drawing.DrawEllipse(
+        MessageBadgeBrush,
+        new Pen(MessageBadgeBorderBrush, Math.Max(1, cellSize / 100.0)),
+        new Point(badgeBounds.X + badgeBounds.Width / 2,
+          badgeBounds.Y + badgeBounds.Height / 2),
+        badgeBounds.Width / 2,
+        badgeBounds.Height / 2);
       DrawCenteredText(
         drawing,
-        cell.Character.Value.ToString(),
-        bounds,
-        cellSize * 0.62,
-        FontWeights.SemiBold);
+        messageIndex.ToString(CultureInfo.CurrentCulture),
+        badgeBounds,
+        cellSize * 0.18,
+        FontWeights.Bold);
     }
 
     private static void DrawCenteredText(
@@ -196,6 +246,11 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
       if (cell.Kind == BoardRenderCellKind.QuizQuestion)
       {
         return QuizBrush;
+      }
+
+      if (cell.MessageIndex != null)
+      {
+        return MessageBrush;
       }
 
       if (previewMode == BoardPreviewMode.Puzzle)

@@ -62,7 +62,7 @@ namespace WordSearchGenerator.Common
       RowCount = rowCount;
       ColumnCount = columnCount;
       QuizMode = quizMode;
-      Message = message;
+      Message = message ?? string.Empty;
 
       FillBoard();
     }
@@ -188,7 +188,6 @@ namespace WordSearchGenerator.Common
 
     private void FillBoard()
     {
-      var messageChars = Message == null ? [] : Message.ToCharArray().ToList();
       Matrix = new Cell[RowCount, ColumnCount];
 
       for (var i = 0; i < RowCount; i++)
@@ -232,6 +231,57 @@ namespace WordSearchGenerator.Common
         }
       }
 
+      if (QuizMode)
+      {
+        AssignQuizMessageCells();
+        return;
+      }
+
+      FillNormalMessageCells();
+    }
+
+    private void AssignQuizMessageCells()
+    {
+      var availableCells = new Dictionary<char, Queue<Cell>>();
+
+      for (var row = 0; row < RowCount; row++)
+      for (var column = 0; column < ColumnCount; column++)
+      {
+        var cell = Matrix[row, column];
+
+        if (cell.Type != Cell.CellType.CharFromText)
+        {
+          continue;
+        }
+
+        if (!availableCells.TryGetValue(cell.Char, out var cellsForCharacter))
+        {
+          cellsForCharacter = new Queue<Cell>();
+          availableCells.Add(cell.Char, cellsForCharacter);
+        }
+
+        cellsForCharacter.Enqueue(cell);
+      }
+
+      for (var messageIndex = 0; messageIndex < Message.Length; messageIndex++)
+      {
+        var messageCharacter = Message[messageIndex];
+
+        if (!availableCells.TryGetValue(messageCharacter, out var matchingCells) ||
+            matchingCells.Count == 0)
+        {
+          throw new MessageCannotBePlacedException(
+            $"message character at index {messageIndex} cannot be assigned to a distinct answer cell");
+        }
+
+        matchingCells.Dequeue().MessageIndex = messageIndex + 1;
+      }
+    }
+
+    private void FillNormalMessageCells()
+    {
+      var messageChars = Message.ToCharArray().ToList();
+
       for (var i = 0; i < RowCount; i++)
       for (var j = 0; j < ColumnCount; j++)
       {
@@ -251,7 +301,8 @@ namespace WordSearchGenerator.Common
 
       if (messageChars.Count > 0)
       {
-        throw new Exception($"message is too long, {messageChars.Count} characters remain to be placed");
+        throw new MessageCannotBePlacedException(
+          $"message is too long, {messageChars.Count} characters remain to be placed");
       }
     }
 
@@ -295,6 +346,17 @@ namespace WordSearchGenerator.Common
       {
         get;
       } = [];
+
+      /// <summary>
+      ///   One-based position of this answer cell in a quiz-mode secret
+      ///   message, or <see langword="null" /> when it is not an extraction
+      ///   cell.
+      /// </summary>
+      public int? MessageIndex
+      {
+        get;
+        set;
+      }
 
       public DirectedLocation.LocationDirection QuizWordDirection
       {

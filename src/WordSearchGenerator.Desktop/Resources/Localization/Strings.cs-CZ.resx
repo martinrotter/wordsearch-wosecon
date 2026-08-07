@@ -25,6 +25,7 @@
   <data name="Columns" xml:space="preserve"><value>Sloupce</value></data>
   <data name="RowsTooltip" xml:space="preserve"><value>Počet řádků v generované mřížce</value></data>
   <data name="ColumnsTooltip" xml:space="preserve"><value>Počet sloupců v generované mřížce</value></data>
+  <data name="CellCount" xml:space="preserve"><value>Počet buněk</value></data>
   <data name="WordsOrQuestions" xml:space="preserve"><value>Slova nebo otázky</value></data>
   <data name="WordsInstructions" xml:space="preserve"><value>Zadejte jedno slovo na řádek. Rozlišují se malá a velká písmena; mezery na začátku a konci se odstraní.</value></data>
   <data name="WordsTooltip" xml:space="preserve"><value>Prázdné řádky a duplicitní slova se stejnou velikostí písmen budou ignorovány</value></data>
@@ -33,7 +34,9 @@
   <data name="Question" xml:space="preserve"><value>Otázka</value></data>
   <data name="SecretMessage" xml:space="preserve"><value>Tajenka</value></data>
   <data name="SecretMessageDescription" xml:space="preserve"><value>Tajenka vyplní buňky neobsazené slovy. Zbývající volné buňky budou černé.</value></data>
+  <data name="SecretMessageQuizDescription" xml:space="preserve"><value>Každý znak tajenky se musí vyskytovat v odpovědích. Odpovídající buňky budou zvýrazněny a očíslovány v pořadí tajenky; nepoužité buňky budou černé.</value></data>
   <data name="SecretMessageTooltip" xml:space="preserve"><value>Mezery zůstanou zachovány jako znaky tajenky</value></data>
+  <data name="SpaceCharacter" xml:space="preserve"><value>mezera</value></data>
   <data name="PreviewText" xml:space="preserve"><value>Text náhledu</value></data>
   <data name="PreviewTextDescription" xml:space="preserve"><value>Tyto nadpisy se použijí v náhledu a v exportovaném nebo tištěném výstupu.</value></data>
   <data name="PuzzleHeadingOptional" xml:space="preserve"><value>Nadpis osmisměrky (volitelný)</value></data>
@@ -127,6 +130,7 @@
   <data name="EntryTooLong" xml:space="preserve"><value>„{0}“ je pro tuto mřížku příliš dlouhé.</value></data>
   <data name="QuizEntryTooLong" xml:space="preserve"><value>„{0}“ je pro tuto mřížku příliš dlouhé včetně buňky otázky.</value></data>
   <data name="SecretMessageTooLong" xml:space="preserve"><value>Tajenka se nevejde ani při maximálním překrytí slov.</value></data>
+  <data name="SecretMessageCharacterUnavailable" xml:space="preserve"><value>Znak {0} se v odpovědích vyskytuje {1:N0}×, ale tajenka jej vyžaduje {2:N0}×.</value></data>
   <data name="PositiveWholeNumber" xml:space="preserve"><value>{0} musí být kladné celé číslo.</value></data>
   <data name="WordsImported" xml:space="preserve"><value>Slova importována</value></data>
   <data name="QuizEntriesImported" xml:space="preserve"><value>Kvízové položky importovány</value></data>
@@ -196,12 +200,22 @@
   <data name="HtmlAnswer" xml:space="preserve"><value>Odpověď: </value></data>
   <data name="HtmlWordCell" xml:space="preserve"><value>Buňka slova</value></data>
   <data name="HtmlMessageCell" xml:space="preserve"><value>Buňka tajenky</value></data>
+  <data name="HtmlQuizExtractionCell" xml:space="preserve"><value>Výběrová buňka tajenky</value></data>
   <data name="HtmlIntersection" xml:space="preserve"><value>Křížení slov</value></data>
   <data name="HtmlBlackBox" xml:space="preserve"><value>Černé pole</value></data>
   <data name="HtmlStatistics" xml:space="preserve"><value>{0:N0} buněk osmisměrky, {1:N0} buněk tajenky, {2:N0} černých polí a {3:N0} křížení.</value></data>
+  <data name="HtmlQuizStatistics" xml:space="preserve"><value>{0:N0} buněk odpovědí a otázek, z nichž {1:N0} tvoří tajenku, {2:N0} černých polí a {3:N0} křížení.</value></data>
+  <data name="HtmlSecretMessageNormalInstructions" xml:space="preserve"><value>Po nalezení všech slov sem zapište zbývající písmena.</value></data>
+  <data name="HtmlSecretMessageQuizInstructions" xml:space="preserve"><value>Po vyřešení odpovědí sem zapište znaky ze zvýrazněných očíslovaných buněk.</value></data>
+  <data name="HtmlSecretMessageSolutionInstructions" xml:space="preserve"><value>Vyplněná tajenka.</value></data>
+  <data name="HtmlSecretMessagePlaceholderLabel" xml:space="preserve"><value>Prázdná tajenka s {0:N0} pozicemi pro znaky</value></data>
+  <data name="HtmlSecretMessageSolutionLabel" xml:space="preserve"><value>Tajenka: {0}</value></data>
   <data name="HtmlPosition" xml:space="preserve"><value>řádek {0}, sloupec {1}</value></data>
   <data name="HtmlBlackBoxLabel" xml:space="preserve"><value>Černé pole, {0}</value></data>
   <data name="HtmlQuestionLabel" xml:space="preserve"><value>Otázka {0}, směr {1}, {2}</value></data>
+  <data name="HtmlQuizAnswerCellLabel" xml:space="preserve"><value>Prázdná buňka odpovědi, {0}</value></data>
+  <data name="HtmlQuizExtractionCellLabel" xml:space="preserve"><value>Pozice tajenky {0}, prázdná buňka odpovědi, {1}</value></data>
+  <data name="HtmlQuizExtractionSolutionLabel" xml:space="preserve"><value>Pozice tajenky {0}, znak {1}, {2}</value></data>
   <data name="HtmlSpace" xml:space="preserve"><value>mezera</value></data>
   <data name="HtmlLetterLabel" xml:space="preserve"><value>Písmeno {0}, {1}</value></data>
   <data name="HtmlMessageCharacterLabel" xml:space="preserve"><value>Znak tajenky {0}, {1}</value></data>

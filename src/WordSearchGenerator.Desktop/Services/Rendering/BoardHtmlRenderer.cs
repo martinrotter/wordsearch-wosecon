@@ -42,6 +42,11 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
         isSolution);
       AppendMatrix(builder, model, isSolution);
 
+      if (model.SecretMessage.Length != 0)
+      {
+        AppendSecretMessageSection(builder, model, isSolution);
+      }
+
       if (isSolution)
       {
         AppendSolutionDetails(builder, model);
@@ -126,11 +131,13 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
                                margin: 0 auto;
                                overflow: hidden;
                                border: 2px solid #26313a;
+                               border-radius: 6px;
                                background: #26313a;
                                break-inside: avoid;
                              }
 
                              .cell {
+                               position: relative;
                                display: flex;
                                align-items: center;
                                justify-content: center;
@@ -163,6 +170,68 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
                              .solution .cell.word { background: var(--word); }
                              .solution .cell.message { background: var(--message); }
                              .solution .cell.intersection { background: var(--intersection); }
+                             .puzzle .cell.message-extraction,
+                             .solution .cell.message-extraction { background: var(--message); }
+
+                             .message-index {
+                               position: absolute;
+                               top: 4%;
+                               right: 4%;
+                               display: flex;
+                               align-items: center;
+                               justify-content: center;
+                               min-width: 30%;
+                               min-height: 30%;
+                               padding: 1px;
+                               border: 1px solid #9a6700;
+                               border-radius: 999px;
+                               background: #fbbf24;
+                               color: #3f2d00;
+                               font-size: clamp(6px, 1.25vmin, 13px);
+                               font-weight: 750;
+                               line-height: 1;
+                             }
+
+                             .secret-message {
+                               width: min(100%, 900px);
+                               margin: 24px auto 0;
+                               padding: 16px;
+                               border: 1px solid #d5dce2;
+                               border-radius: 8px;
+                               background: #f8fafc;
+                               break-inside: avoid;
+                             }
+
+                             .secret-message h2 {
+                               margin: 0 0 5px;
+                               font-size: 18px;
+                             }
+
+                             .secret-message-instructions {
+                               margin: 0 0 14px;
+                               color: var(--muted);
+                               font-size: 13px;
+                             }
+
+                             .message-slots {
+                               display: flex;
+                               flex-wrap: wrap;
+                               justify-content: center;
+                               gap: 9px 6px;
+                             }
+
+                             .message-slot {
+                               display: inline-flex;
+                               align-items: flex-end;
+                               justify-content: center;
+                               width: 30px;
+                               height: 34px;
+                               padding-bottom: 3px;
+                               border-bottom: 2px solid var(--ink);
+                               font-size: 21px;
+                               font-weight: 650;
+                               line-height: 1;
+                             }
 
                              .details,
                              .entries {
@@ -354,7 +423,7 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
       foreach (var cell in model.Cells)
       {
         var classes = GetCellClasses(cell, isSolution);
-        var label = GetAccessibleLabel(cell, isSolution);
+        var label = GetAccessibleLabel(cell, model.Mode, isSolution);
 
         builder.Append("        <div class=\"");
         builder.Append(classes);
@@ -370,7 +439,7 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
         }
 
         builder.Append(">");
-        AppendCellContent(builder, cell);
+        AppendCellContent(builder, cell, model.Mode, isSolution);
         builder.AppendLine("</div>");
       }
 
@@ -379,7 +448,9 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
 
     private static void AppendCellContent(
       StringBuilder builder,
-      BoardRenderCell cell)
+      BoardRenderCell cell,
+      PuzzleMode mode,
+      bool isSolution)
     {
       if (cell.Kind == BoardRenderCellKind.QuizQuestion)
       {
@@ -392,14 +463,73 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
         return;
       }
 
-      if (cell.Character == null)
+      var hideAnswer = mode == PuzzleMode.Quiz &&
+                       !isSolution &&
+                       cell.Kind == BoardRenderCellKind.Word;
+
+      if (!hideAnswer && cell.Character != null)
       {
-        return;
+        builder.Append(cell.Character == ' '
+          ? "&#160;"
+          : Encode(cell.Character.Value.ToString()));
       }
 
-      builder.Append(cell.Character == ' '
-        ? "&#160;"
-        : Encode(cell.Character.Value.ToString()));
+      if (cell.MessageIndex != null)
+      {
+        builder.Append("<span class=\"message-index\" aria-hidden=\"true\">");
+        builder.Append(cell.MessageIndex.Value.ToString(CultureInfo.InvariantCulture));
+        builder.Append("</span>");
+      }
+    }
+
+    private static void AppendSecretMessageSection(
+      StringBuilder builder,
+      BoardRenderModel model,
+      bool isSolution)
+    {
+      var accessibleLabel = isSolution
+        ? AppStrings.Format(
+          "HtmlSecretMessageSolutionLabel",
+          model.SecretMessage)
+        : AppStrings.Format(
+          "HtmlSecretMessagePlaceholderLabel",
+          model.SecretMessage.Length);
+
+      builder.AppendLine("      <section class=\"secret-message\">");
+      builder.Append("        <h2>");
+      builder.Append(Encode(AppStrings.Get("SecretMessage")));
+      builder.AppendLine("</h2>");
+      builder.Append("        <p class=\"secret-message-instructions\">");
+      builder.Append(Encode(AppStrings.Get(isSolution
+        ? "HtmlSecretMessageSolutionInstructions"
+        : model.Mode == PuzzleMode.Quiz
+          ? "HtmlSecretMessageQuizInstructions"
+          : "HtmlSecretMessageNormalInstructions")));
+      builder.AppendLine("</p>");
+      builder.Append("        <div class=\"message-slots\" aria-label=\"");
+      builder.Append(Encode(accessibleLabel));
+      builder.AppendLine("\">");
+
+      foreach (var character in model.SecretMessage)
+      {
+        builder.Append("          <span class=\"message-slot\" aria-hidden=\"true\">");
+
+        if (isSolution)
+        {
+          builder.Append(character == ' '
+            ? "&#160;"
+            : Encode(character.ToString()));
+        }
+        else
+        {
+          builder.Append("&#160;");
+        }
+
+        builder.AppendLine("</span>");
+      }
+
+      builder.AppendLine("        </div>");
+      builder.AppendLine("      </section>");
     }
 
     private static void AppendSolutionDetails(
@@ -409,7 +539,12 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
       builder.AppendLine("      <section class=\"details\">");
       builder.AppendLine("        <div class=\"legend\">");
       AppendLegendItem(builder, "word", AppStrings.Get("HtmlWordCell"));
-      AppendLegendItem(builder, "message", AppStrings.Get("HtmlMessageCell"));
+      AppendLegendItem(
+        builder,
+        "message",
+        AppStrings.Get(model.Mode == PuzzleMode.Quiz
+          ? "HtmlQuizExtractionCell"
+          : "HtmlMessageCell"));
       AppendLegendItem(
         builder,
         "intersection",
@@ -418,7 +553,9 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
       builder.AppendLine("        </div>");
       builder.Append("        <p class=\"statistics\">");
       builder.Append(Encode(AppStrings.Format(
-        "HtmlStatistics",
+        model.Mode == PuzzleMode.Quiz
+          ? "HtmlQuizStatistics"
+          : "HtmlStatistics",
         model.PuzzleCellCount,
         model.MessageCellCount,
         model.BlackBoxCount,
@@ -446,6 +583,7 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
 
     private static string GetAccessibleLabel(
       BoardRenderCell cell,
+      PuzzleMode mode,
       bool isSolution)
     {
       var position = AppStrings.Format(
@@ -471,6 +609,16 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
         ? AppStrings.Get("HtmlSpace")
         : cell.Character?.ToString() ?? string.Empty;
 
+      if (mode == PuzzleMode.Quiz && !isSolution)
+      {
+        return cell.MessageIndex == null
+          ? AppStrings.Format("HtmlQuizAnswerCellLabel", position)
+          : AppStrings.Format(
+            "HtmlQuizExtractionCellLabel",
+            cell.MessageIndex.Value,
+            position);
+      }
+
       if (!isSolution)
       {
         return AppStrings.Format("HtmlLetterLabel", character, position);
@@ -480,6 +628,15 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
       {
         return AppStrings.Format(
           "HtmlMessageCharacterLabel",
+          character,
+          position);
+      }
+
+      if (cell.MessageIndex != null)
+      {
+        return AppStrings.Format(
+          "HtmlQuizExtractionSolutionLabel",
+          cell.MessageIndex.Value,
           character,
           position);
       }
@@ -523,6 +680,11 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
         {
           builder.Append(" intersection");
         }
+      }
+
+      if (cell.MessageIndex != null)
+      {
+        builder.Append(" message-extraction");
       }
 
       return builder.ToString();

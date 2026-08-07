@@ -150,9 +150,15 @@ namespace WordSearchGenerator.Common.WoSeCon
     ///   The cancellation token was cancelled. Partial construction state is
     ///   cleared before the exception is rethrown.
     /// </exception>
+    /// <param name="completionValidator">
+    ///   Optional validator invoked after every complete word placement. When
+    ///   it returns <see langword="false" />, construction backtracks and
+    ///   searches for another complete placement.
+    /// </param>
     public void Construct(
       IProgress<ConstructionProgress> progress = null,
-      CancellationToken cancellationToken = default)
+      CancellationToken cancellationToken = default,
+      Func<IReadOnlyList<WordInfo>, bool> completionValidator = null)
     {
       if (Interlocked.CompareExchange(ref _isConstructing, 1, 0) != 0)
       {
@@ -233,9 +239,19 @@ namespace WordSearchGenerator.Common.WoSeCon
 
             if (wordIndex == Words.Count - 1)
             {
-              // Last word was placed, we are done.
-              ReportProgress(true);
-              break;
+              if (completionValidator == null || completionValidator(Words))
+              {
+                // Last word was placed and the complete layout is accepted.
+                ReportProgress(true);
+                break;
+              }
+
+              // The words fit, but the caller's complete-layout constraint
+              // rejected this arrangement. Continue with the next placement.
+              Backtrackings++;
+              Mode = OperationMode.Backward;
+              ReportProgress();
+              continue;
             }
 
             ++wordIndex;

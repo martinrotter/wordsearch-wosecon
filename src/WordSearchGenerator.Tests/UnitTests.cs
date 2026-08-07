@@ -675,6 +675,138 @@ namespace WordSearchGenerator.Tests
     }
 
     [TestMethod]
+    public void QuizMessageUsesDistinctAnswerCellsIncludingSpaces()
+    {
+      var words = new List<WordInfo>
+      {
+        new WordInfo
+        {
+          Placement = Location(
+            0,
+            0,
+            DirectedLocation.LocationDirection.LeftToRight),
+          QuizQuestion = "Example question",
+          Text = "A A",
+          WordNumber = 1
+        }
+      };
+
+      var board = new Board(words, 2, 4, true, "A A");
+
+      Assert.AreEqual(Board.Cell.CellType.QuizQuestion, board.Matrix[0, 0].Type);
+
+      for (var column = 1; column < 4; column++)
+      {
+        var cell = board.Matrix[0, column];
+
+        Assert.AreEqual(Board.Cell.CellType.CharFromText, cell.Type);
+        Assert.AreEqual(column, cell.MessageIndex);
+        Assert.AreEqual(words[0].Text[column - 1], cell.Char);
+      }
+
+      Assert.AreEqual(' ', board.Matrix[0, 2].Char);
+      Assert.IsTrue(board.Matrix
+        .OfType<Board.Cell>()
+        .Where(cell => cell.MessageIndex != null)
+        .All(cell => cell.Type == Board.Cell.CellType.CharFromText));
+      Assert.IsTrue(board.Matrix
+        .OfType<Board.Cell>()
+        .Skip(4)
+        .All(cell => cell.Type == Board.Cell.CellType.Empty));
+    }
+
+    [TestMethod]
+    public void QuizMessageRejectsReusingTheSameAnswerCell()
+    {
+      var words = new List<WordInfo>
+      {
+        new WordInfo
+        {
+          Placement = Location(
+            0,
+            0,
+            DirectedLocation.LocationDirection.LeftToRight),
+          QuizQuestion = "Example question",
+          Text = "AB",
+          WordNumber = 1
+        }
+      };
+
+      Assert.ThrowsExactly<MessageCannotBePlacedException>(() =>
+        new Board(words, 1, 3, true, "AA"));
+    }
+
+    [TestMethod]
+    public void NormalMessageStillUsesOtherwiseEmptyCells()
+    {
+      var words = new List<WordInfo>
+      {
+        new WordInfo
+        {
+          Placement = Location(
+            0,
+            0,
+            DirectedLocation.LocationDirection.LeftToRight),
+          Text = "AB",
+          WordNumber = 1
+        }
+      };
+
+      var board = new Board(words, 2, 2, false, " C");
+
+      Assert.AreEqual(Board.Cell.CellType.CharFromMessage, board.Matrix[1, 0].Type);
+      Assert.AreEqual(' ', board.Matrix[1, 0].Char);
+      Assert.IsNull(board.Matrix[1, 0].MessageIndex);
+      Assert.AreEqual(Board.Cell.CellType.CharFromMessage, board.Matrix[1, 1].Type);
+      Assert.AreEqual('C', board.Matrix[1, 1].Char);
+      Assert.IsNull(board.Matrix[1, 1].MessageIndex);
+    }
+
+    [TestMethod]
+    public void QuizMessageConstraintBacktracksFromMergedMessageLetters()
+    {
+      DirectedLocation[] crossingPlacements =
+      {
+        Location(1, 0, DirectedLocation.LocationDirection.LeftToRight),
+        Location(0, 1, DirectedLocation.LocationDirection.TopBottom)
+      };
+      var generator = CreateGenerator(
+        3,
+        new[]
+        {
+          "AA", "AA"
+        },
+        CreatePriorityOrderer(crossingPlacements),
+        true);
+      var rejectedLayoutCount = 0;
+
+      generator.Construct(
+        completionValidator: words =>
+        {
+          try
+          {
+            _ = new Board(words.ToList(), 3, 3, true, "AAAA");
+            return true;
+          }
+          catch (MessageCannotBePlacedException)
+          {
+            rejectedLayoutCount++;
+            return false;
+          }
+        });
+
+      var board = new Board(generator.Words, 3, 3, true, "AAAA");
+
+      Assert.IsTrue(rejectedLayoutCount >= 1);
+      Assert.IsTrue(generator.Backtrackings >= 1);
+      Assert.AreEqual(
+        4,
+        board.Matrix
+          .OfType<Board.Cell>()
+          .Count(cell => cell.MessageIndex != null));
+    }
+
+    [TestMethod]
     public void QuizQuestionCellOffsetsAnswerInEveryDirection()
     {
       (DirectedLocation.LocationDirection Direction, int Row, int Column)[] cases =

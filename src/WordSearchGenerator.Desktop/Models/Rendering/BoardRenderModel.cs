@@ -48,6 +48,11 @@ namespace WordSearchGenerator.Desktop.Models.Rendering
       get;
     }
 
+    public string SecretMessage
+    {
+      get;
+    }
+
     public string PuzzleHeading
     {
       get;
@@ -75,6 +80,7 @@ namespace WordSearchGenerator.Desktop.Models.Rendering
       IEnumerable<BoardRenderEntry> entries,
       string puzzleHeading,
       string entryListHeading,
+      string secretMessage,
       int puzzleCellCount,
       int messageCellCount,
       int blackBoxCount,
@@ -87,6 +93,7 @@ namespace WordSearchGenerator.Desktop.Models.Rendering
       Entries = new ReadOnlyCollection<BoardRenderEntry>(entries.ToArray());
       PuzzleHeading = puzzleHeading;
       EntryListHeading = entryListHeading;
+      SecretMessage = secretMessage;
       PuzzleCellCount = puzzleCellCount;
       MessageCellCount = messageCellCount;
       BlackBoxCount = blackBoxCount;
@@ -126,6 +133,7 @@ namespace WordSearchGenerator.Desktop.Models.Rendering
           column,
           kind,
           character,
+          sourceCell.MessageIndex,
           sourceCell.QuizWordNumber,
           directionArrow,
           sourceCell.Words.Select(word => word.WordNumber)));
@@ -145,6 +153,7 @@ namespace WordSearchGenerator.Desktop.Models.Rendering
         entries,
         (puzzleHeading ?? result.Definition.PuzzleHeading).Trim(),
         (entryListHeading ?? result.Definition.EntryListHeading).Trim(),
+        result.Definition.SecretMessage,
         result.PuzzleCellCount,
         result.MessageCellCount,
         result.BlackBoxCount,

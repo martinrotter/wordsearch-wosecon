@@ -102,6 +102,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
       {
         if (SetProperty(ref _columnsText, value ?? string.Empty))
         {
+          OnPropertyChanged(nameof(TotalCellCountText));
           MarkDocumentChanged(true);
           RefreshEditorState();
         }
@@ -250,6 +251,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
 
         OnPropertyChanged(nameof(IsNormalMode));
         OnPropertyChanged(nameof(IsQuizMode));
+        OnPropertyChanged(nameof(SecretMessageDescription));
 
         if (EntryListHeading == GetDefaultEntryListHeading(previousMode))
         {
@@ -363,6 +365,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
       {
         if (SetProperty(ref _rowsText, value ?? string.Empty))
         {
+          OnPropertyChanged(nameof(TotalCellCountText));
           MarkDocumentChanged(true);
           RefreshEditorState();
         }
@@ -392,6 +395,11 @@ namespace WordSearchGenerator.Desktop.ViewModels
       }
     }
 
+    public string SecretMessageDescription => AppStrings.Get(
+      IsQuizMode
+        ? "SecretMessageQuizDescription"
+        : "SecretMessageDescription");
+
     public string StatusText
     {
       get => _statusText;
@@ -408,6 +416,20 @@ namespace WordSearchGenerator.Desktop.ViewModels
           OnPropertyChanged(nameof(TestedPositionsText));
           OnPropertyChanged(nameof(ProgressToolTip));
         }
+      }
+    }
+
+    public string TotalCellCountText
+    {
+      get
+      {
+        if (!int.TryParse(RowsText, out var rows) || rows <= 0 ||
+            !int.TryParse(ColumnsText, out var columns) || columns <= 0)
+        {
+          return string.Empty;
+        }
+
+        return ((long)rows * columns).ToString("N0");
       }
     }
 
@@ -719,6 +741,18 @@ namespace WordSearchGenerator.Desktop.ViewModels
       return elapsed.TotalHours >= 1
         ? elapsed.ToString(@"h\:mm\:ss")
         : elapsed.ToString(@"m\:ss\.f");
+    }
+
+    private static string FormatMessageCharacter(char character)
+    {
+      if (character == ' ')
+      {
+        return AppStrings.Get("SpaceCharacter");
+      }
+
+      return char.IsControl(character)
+        ? $"U+{(int)character:X4}"
+        : $"'{character}'";
     }
 
     private IReadOnlyList<PuzzleEntry> GetNormalizedEntries()
@@ -1134,18 +1168,47 @@ namespace WordSearchGenerator.Desktop.ViewModels
 
       var messageErrors = new List<string>();
 
-      if (rowsValid && columnsValid && entries.Count != 0)
+      if (Mode == PuzzleMode.Normal &&
+          rowsValid &&
+          columnsValid &&
+          entries.Count != 0)
       {
         var rows = int.Parse(RowsText);
         var columns = int.Parse(ColumnsText);
-        var extraQuestionCell = Mode == PuzzleMode.Quiz ? 1 : 0;
-        var minimumOccupiedCells = entries.Max(entry => entry.Answer.Length + extraQuestionCell);
+        var minimumOccupiedCells = entries.Max(entry => entry.Answer.Length);
         var maximumMessageLength = (long)rows * columns -
                                    minimumOccupiedCells;
 
         if (SecretMessage.Length > maximumMessageLength)
         {
           messageErrors.Add(AppStrings.Get("SecretMessageTooLong"));
+        }
+      }
+      else if (Mode == PuzzleMode.Quiz &&
+               entries.Count != 0 &&
+               entryErrors.Count == 0)
+      {
+        var availableCharacters = entries
+          .SelectMany(entry => entry.Answer)
+          .GroupBy(character => character)
+          .ToDictionary(group => group.Key, group => group.Count());
+        var unavailableCharacter = SecretMessage
+          .GroupBy(character => character)
+          .Select(group => new
+          {
+            Character = group.Key,
+            Required = group.Count(),
+            Available = availableCharacters.GetValueOrDefault(group.Key)
+          })
+          .FirstOrDefault(counts => counts.Required > counts.Available);
+
+        if (unavailableCharacter != null)
+        {
+          messageErrors.Add(AppStrings.Format(
+            "SecretMessageCharacterUnavailable",
+            FormatMessageCharacter(unavailableCharacter.Character),
+            unavailableCharacter.Available,
+            unavailableCharacter.Required));
         }
       }
 

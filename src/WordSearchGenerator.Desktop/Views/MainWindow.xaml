@@ -138,6 +138,8 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="14" />
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="14" />
+                    <ColumnDefinition Width="*" />
                   </Grid.ColumnDefinitions>
                   <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -147,12 +149,12 @@
                   </Grid.RowDefinitions>
 
                   <TextBlock Grid.Row="0"
-                             Grid.ColumnSpan="3"
+                             Grid.ColumnSpan="5"
                              Style="{StaticResource FieldLabelTextStyle}"
                              Text="{localization:Loc Mode}" />
                   <ComboBox x:Name="ModeComboBox"
-                            Grid.Row="1"
-                            Grid.ColumnSpan="3"
+                             Grid.Row="1"
+                             Grid.ColumnSpan="5"
                             Margin="0,5,0,12"
                             ItemsSource="{Binding Modes}"
                             SelectedItem="{Binding Mode}">
@@ -171,6 +173,10 @@
                              Grid.Column="2"
                              Style="{StaticResource FieldLabelTextStyle}"
                              Text="{localization:Loc Columns}" />
+                  <TextBlock Grid.Row="2"
+                             Grid.Column="4"
+                             Style="{StaticResource FieldLabelTextStyle}"
+                             Text="{localization:Loc CellCount}" />
 
                   <TextBox x:Name="RowsTextBox"
                            Grid.Row="3"
@@ -186,8 +192,17 @@
                            Margin="0,5,0,0"
                            Text="{Binding ColumnsText,
                                                             UpdateSourceTrigger=PropertyChanged,
-                                                            ValidatesOnNotifyDataErrors=True}"
+                                                             ValidatesOnNotifyDataErrors=True}"
                            ToolTip="{localization:Loc ColumnsTooltip}" />
+                  <TextBox Grid.Row="3"
+                           Grid.Column="4"
+                           Margin="0,5,0,0"
+                           Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                           Cursor="Arrow"
+                           Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
+                           IsReadOnly="True"
+                           IsTabStop="False"
+                           Text="{Binding TotalCellCountText, Mode=OneWay}" />
                 </Grid>
               </GroupBox>
 
@@ -263,7 +278,7 @@
               <GroupBox Header="{localization:Loc SecretMessage}">
                 <StackPanel>
                   <TextBlock Style="{StaticResource SupportingTextStyle}"
-                             Text="{localization:Loc SecretMessageDescription}"
+                             Text="{Binding SecretMessageDescription}"
                              TextWrapping="Wrap" />
                   <TextBox x:Name="SecretMessageTextBox"
                            Margin="0,9,0,0"

@@ -169,6 +169,7 @@ namespace WordSearchGenerator.Desktop.Services
     {
       var stopwatch = Stopwatch.StartNew();
       WoSeCon? generator = null;
+      var completedLayoutRejected = false;
 
       try
       {
@@ -181,34 +182,63 @@ namespace WordSearchGenerator.Desktop.Services
           locations => ShuffleLocations(locations, seed));
         var attemptProgress =
           new DelegateProgress<ConstructionProgress>(value => aggregator.Update(attemptIndex, value));
+        Func<IReadOnlyList<WordInfo>, bool>? completionValidator = null;
 
-        generator.Construct(attemptProgress, cancellationToken);
+        if (definition.QuizMode && definition.SecretMessage.Length != 0)
+        {
+          completionValidator = placedWords =>
+          {
+            try
+            {
+              _ = new Board(
+                placedWords.ToList(),
+                definition.Rows,
+                definition.Columns,
+                true,
+                definition.SecretMessage);
+              return true;
+            }
+            catch (MessageCannotBePlacedException)
+            {
+              completedLayoutRejected = true;
+              return false;
+            }
+          };
+        }
+
+        generator.Construct(
+          attemptProgress,
+          cancellationToken,
+          completionValidator);
         cancellationToken.ThrowIfCancellationRequested();
 
-        var boardWithoutMessage = new Board(
-          generator.Words,
-          definition.Rows,
-          definition.Columns,
-          definition.QuizMode);
-        var availableCellCount = boardWithoutMessage.Matrix
-          .OfType<Board.Cell>()
-          .Count(cell => cell.Type == Board.Cell.CellType.Empty);
-
-        if (definition.SecretMessage.Length > availableCellCount)
+        if (!definition.QuizMode)
         {
-          stopwatch.Stop();
-          aggregator.Complete(
-            attemptIndex,
-            AttemptCompletion.MessageRejected,
-            generator.TestedPositions,
-            generator.Backtrackings);
+          var boardWithoutMessage = new Board(
+            generator.Words,
+            definition.Rows,
+            definition.Columns,
+            false);
+          var availableCellCount = boardWithoutMessage.Matrix
+            .OfType<Board.Cell>()
+            .Count(cell => cell.Type == Board.Cell.CellType.Empty);
 
-          return AttemptOutcome.Rejected(
-            attemptIndex + 1,
-            seed,
-            stopwatch.Elapsed,
-            generator.TestedPositions,
-            generator.Backtrackings);
+          if (definition.SecretMessage.Length > availableCellCount)
+          {
+            stopwatch.Stop();
+            aggregator.Complete(
+              attemptIndex,
+              AttemptCompletion.MessageRejected,
+              generator.TestedPositions,
+              generator.Backtrackings);
+
+            return AttemptOutcome.Rejected(
+              attemptIndex + 1,
+              seed,
+              stopwatch.Elapsed,
+              generator.TestedPositions,
+              generator.Backtrackings);
+          }
         }
 
         cancellationToken.ThrowIfCancellationRequested();
@@ -253,9 +283,12 @@ namespace WordSearchGenerator.Desktop.Services
         when (exception.Message == NoSolutionMessage)
       {
         stopwatch.Stop();
+        var completion = completedLayoutRejected
+          ? AttemptCompletion.MessageRejected
+          : AttemptCompletion.PlacementFailed;
         aggregator.Complete(
           attemptIndex,
-          AttemptCompletion.PlacementFailed,
+          completion,
           generator?.TestedPositions ?? 0,
           generator?.Backtrackings ?? 0);
 
