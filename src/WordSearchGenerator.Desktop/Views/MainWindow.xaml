@@ -102,6 +102,14 @@
           </MenuItem.Icon>
         </MenuItem>
       </MenuItem>
+      <MenuItem Header="{localization:Loc MenuHelp}">
+        <MenuItem Header="{localization:Loc MenuAbout}"
+                  Click="AboutOnClick">
+          <MenuItem.Icon>
+            <icons:FluentIcon Icon="Info" IconSize="Size20" FontSize="16" />
+          </MenuItem.Icon>
+        </MenuItem>
+      </MenuItem>
     </Menu>
 
     <Grid Grid.Row="1">

@@ -18,6 +18,10 @@
   <data name="MenuSavePng" xml:space="preserve"><value>Save current _board as PNG...</value></data>
   <data name="MenuSettings" xml:space="preserve"><value>_Settings...</value></data>
   <data name="MenuExit" xml:space="preserve"><value>E_xit</value></data>
+  <data name="MenuHelp" xml:space="preserve"><value>_Help</value></data>
+  <data name="MenuAbout" xml:space="preserve"><value>_About WoSeCon...</value></data>
+  <data name="AboutTitle" xml:space="preserve"><value>About WoSeCon</value></data>
+  <data name="AboutVersion" xml:space="preserve"><value>Version {0}</value></data>
   <data name="PuzzleEditor" xml:space="preserve"><value>Puzzle editor</value></data>
   <data name="Puzzle" xml:space="preserve"><value>Puzzle</value></data>
   <data name="Mode" xml:space="preserve"><value>Mode</value></data>

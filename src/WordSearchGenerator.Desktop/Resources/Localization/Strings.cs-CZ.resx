@@ -18,6 +18,10 @@
   <data name="MenuSavePng" xml:space="preserve"><value>Uložit aktuální _mřížku jako PNG...</value></data>
   <data name="MenuSettings" xml:space="preserve"><value>_Nastavení...</value></data>
   <data name="MenuExit" xml:space="preserve"><value>U_končit</value></data>
+  <data name="MenuHelp" xml:space="preserve"><value>_Nápověda</value></data>
+  <data name="MenuAbout" xml:space="preserve"><value>_O aplikaci WoSeCon...</value></data>
+  <data name="AboutTitle" xml:space="preserve"><value>O aplikaci WoSeCon</value></data>
+  <data name="AboutVersion" xml:space="preserve"><value>Verze {0}</value></data>
   <data name="PuzzleEditor" xml:space="preserve"><value>Editor osmisměrky</value></data>
   <data name="Puzzle" xml:space="preserve"><value>Osmisměrka</value></data>
   <data name="Mode" xml:space="preserve"><value>Režim</value></data>
