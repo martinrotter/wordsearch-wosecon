@@ -130,12 +130,12 @@
           </Grid.RowDefinitions>
 
           <TextBlock Grid.Row="0"
-                     Margin="18,16,18,8"
+                     Margin="14,9,14,4"
                      Style="{StaticResource PaneTitleTextStyle}"
                      Text="{localization:Loc PuzzleEditor}" />
 
           <ScrollViewer Grid.Row="1"
-                        Margin="18,8,12,8"
+                        Margin="14,4,9,6"
                         HorizontalScrollBarVisibility="Disabled"
                         IsEnabled="{Binding IsEditorEnabled}"
                         VerticalScrollBarVisibility="Auto">
@@ -163,7 +163,7 @@
                   <ComboBox x:Name="ModeComboBox"
                              Grid.Row="1"
                              Grid.ColumnSpan="5"
-                            Margin="0,5,0,12"
+                            Margin="0,5,0,9"
                             ItemsSource="{Binding Modes}"
                             SelectedItem="{Binding Mode}">
                     <ComboBox.ItemTemplate>
@@ -232,7 +232,7 @@
                                TextWrapping="Wrap" />
                     <TextBox x:Name="WordsTextBox"
                              Height="210"
-                             Margin="0,9,0,0"
+                             Margin="0,7,0,0"
                              AcceptsReturn="True"
                              AcceptsTab="False"
                              HorizontalScrollBarVisibility="Auto"
@@ -259,7 +259,7 @@
                                Text="{localization:Loc QuizInstructions}"
                                TextWrapping="Wrap" />
                     <DataGrid Height="240"
-                              Margin="0,9,0,0"
+                              Margin="0,7,0,0"
                               AutoGenerateColumns="False"
                               CanUserAddRows="True"
                               CanUserDeleteRows="True"
@@ -289,7 +289,7 @@
                              Text="{Binding SecretMessageDescription}"
                              TextWrapping="Wrap" />
                   <TextBox x:Name="SecretMessageTextBox"
-                           Margin="0,9,0,0"
+                           Margin="0,7,0,0"
                            Text="{Binding SecretMessage,
                                                             UpdateSourceTrigger=PropertyChanged,
                                                             ValidatesOnNotifyDataErrors=True}"
@@ -303,7 +303,7 @@
                              Text="{localization:Loc PreviewTextDescription}"
                              TextWrapping="Wrap" />
 
-                  <TextBlock Margin="0,10,0,0"
+                  <TextBlock Margin="0,8,0,0"
                              Style="{StaticResource FieldLabelTextStyle}"
                              Text="{localization:Loc PuzzleHeadingOptional}" />
                   <TextBox Margin="0,5,0,0"
@@ -311,7 +311,7 @@
                                                             UpdateSourceTrigger=PropertyChanged}"
                            ToolTip="{localization:Loc OmitHeadingTooltip}" />
 
-                  <TextBlock Margin="0,10,0,0"
+                  <TextBlock Margin="0,8,0,0"
                              Style="{StaticResource FieldLabelTextStyle}"
                              Text="{localization:Loc EntryListHeading}" />
                   <TextBox Margin="0,5,0,0"
@@ -343,8 +343,8 @@
           </ScrollViewer>
 
           <Border Grid.Row="2"
-                  MinHeight="148"
-                  Padding="18,14"
+                  MinHeight="136"
+                  Padding="14,10"
                   BorderBrush="{DynamicResource {x:Static SystemColors.InactiveBorderBrushKey}}"
                   BorderThickness="0,1,0,0">
             <Grid>
@@ -355,8 +355,8 @@
               </Grid.RowDefinitions>
 
               <Border Grid.Row="0"
-                      Margin="0,0,0,12"
-                      Padding="0,7"
+                      Margin="0,0,0,8"
+                      Padding="0,4"
                       BorderThickness="0"
                       ToolTip="{localization:Loc DifficultyTooltip}">
                 <Grid>
@@ -430,7 +430,7 @@
                 </Grid>
               </Border>
 
-              <Grid Grid.Row="1" Margin="0,0,0,12">
+              <Grid Grid.Row="1" Margin="0,0,0,8">
                 <Grid.ColumnDefinitions>
                   <ColumnDefinition Width="Auto" />
                   <ColumnDefinition Width="*" />
@@ -442,7 +442,8 @@
                                   IconSize="Size20"
                                   FontSize="20">
                   <icons:FluentIcon.Style>
-                    <Style TargetType="{x:Type icons:FluentIcon}">
+                    <Style TargetType="{x:Type icons:FluentIcon}"
+                           BasedOn="{StaticResource SpinningFluentIconStyle}">
                       <Setter Property="Icon" Value="Info" />
                       <Setter Property="Foreground"
                               Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
@@ -534,7 +535,8 @@
                   </Button.Style>
                   <StackPanel Orientation="Horizontal">
                     <icons:FluentIcon Margin="0,0,7,0"
-                                      Icon="DismissCircle"
+                                      Style="{StaticResource SpinningFluentIconStyle}"
+                                      Icon="ArrowSync"
                                       IconSize="Size20"
                                       FontSize="16" />
                     <TextBlock VerticalAlignment="Center" Text="{localization:Loc Cancel}" />
@@ -552,13 +554,13 @@
                     ResizeDirection="Columns"
                     ShowsPreview="True" />
 
-      <Grid Grid.Column="2" Margin="18,16,18,12">
+      <Grid Grid.Column="2" Margin="14,9,14,9">
         <Grid.RowDefinitions>
           <RowDefinition Height="Auto" />
           <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" Margin="0,0,0,12">
+        <Grid Grid.Row="0" Margin="0,0,0,8">
           <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
@@ -666,7 +668,7 @@
     </Grid>
 
     <Border Grid.Row="2"
-            Padding="18,11,18,13"
+            Padding="14,8,14,9"
             BorderBrush="{DynamicResource {x:Static SystemColors.InactiveBorderBrushKey}}"
             BorderThickness="0,1,0,0">
       <Grid>
@@ -675,7 +677,7 @@
           <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" Margin="0,0,0,8">
+        <Grid Grid.Row="0" Margin="0,0,0,6">
           <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*" />
             <ColumnDefinition Width="*" />
@@ -706,20 +708,43 @@
           </StackPanel>
         </Grid>
 
-        <ProgressBar Grid.Row="1"
-                     Height="6"
-                     Minimum="0"
-                     Maximum="{Binding ProgressMaximum, Mode=OneWay}"
-                     Value="{Binding ProgressValue, Mode=OneWay}">
-          <ProgressBar.ToolTip>
+        <Grid Grid.Row="1">
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+          </Grid.RowDefinitions>
+
+          <Grid.ToolTip>
             <StackPanel MaxWidth="330">
               <TextBlock FontWeight="SemiBold" Text="{localization:Loc GenerationDetails}" />
               <TextBlock Margin="0,5,0,0"
                          Text="{Binding ProgressToolTip}"
                          TextWrapping="Wrap" />
             </StackPanel>
-          </ProgressBar.ToolTip>
-        </ProgressBar>
+          </Grid.ToolTip>
+
+          <ProgressBar Grid.Row="0"
+                       Height="5"
+                       IsIndeterminate="{Binding IsGenerating, Mode=OneWay}">
+            <ProgressBar.Style>
+              <Style TargetType="ProgressBar"
+                     BasedOn="{StaticResource {x:Type ProgressBar}}">
+                <Setter Property="Visibility" Value="Hidden" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding IsGenerating}" Value="True">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </ProgressBar.Style>
+          </ProgressBar>
+
+          <ProgressBar Grid.Row="1"
+                       Height="7"
+                       Minimum="0"
+                       Maximum="{Binding ProgressMaximum, Mode=OneWay}"
+                       Value="{Binding ProgressValue, Mode=OneWay}" />
+        </Grid>
       </Grid>
     </Border>
   </Grid>

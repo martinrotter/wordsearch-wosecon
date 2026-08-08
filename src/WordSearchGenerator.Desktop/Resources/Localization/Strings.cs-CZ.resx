@@ -127,7 +127,7 @@
   <data name="GenerationFailed" xml:space="preserve"><value>Generování selhalo</value></data>
   <data name="WordsCouldNotBePlaced" xml:space="preserve"><value>Slova se do této mřížky nepodařilo umístit. Upravte zadání a zkuste to znovu.</value></data>
   <data name="SearchProgressSummary" xml:space="preserve"><value>{0:N0} aktivních, {1:N0} dokončených; nejlepší hloubka {2:N0} z {3:N0}.</value></data>
-  <data name="ProgressTooltip" xml:space="preserve"><value>Ukazatel znázorňuje největší dosaženou hloubku hledání, nikoli časový průběh.&#xA;Vlákna: {0:N0} aktivních; dokončeno {1:N0} z {2:N0}&#xA;Selhání umístění: {3:N0}&#xA;Odmítnutí kvůli kapacitě tajenky: {4:N0}&#xA;Zrušené pokusy: {5:N0}&#xA;Právě umístěno: {6:N0} z {7:N0}&#xA;Nejvíce umístěno: {8:N0} z {7:N0}&#xA;Otestované pozice: {9:N0}&#xA;Návraty: {10:N0}&#xA;Uplynulo: {11}</value></data>
+  <data name="ProgressTooltip" xml:space="preserve"><value>Horní ukazatel znázorňuje aktivitu hledání. Dolní ukazatel znázorňuje největší dosaženou hloubku umisťování, nikoli časový průběh.&#xA;Vlákna: {0:N0} aktivních; dokončeno {1:N0} z {2:N0}&#xA;Selhání umístění: {3:N0}&#xA;Odmítnutí kvůli kapacitě tajenky: {4:N0}&#xA;Zrušené pokusy: {5:N0}&#xA;Právě umístěno: {6:N0} z {7:N0}&#xA;Nejvíce umístěno: {8:N0} z {7:N0}&#xA;Otestované pozice: {9:N0}&#xA;Návraty: {10:N0}&#xA;Uplynulo: {11}</value></data>
   <data name="AnswerRequired" xml:space="preserve"><value>Odpověď je povinná.</value></data>
   <data name="AnswerMinimumLength" xml:space="preserve"><value>Odpověď musí obsahovat alespoň dva znaky.</value></data>
   <data name="QuestionRequired" xml:space="preserve"><value>Otázka je povinná.</value></data>

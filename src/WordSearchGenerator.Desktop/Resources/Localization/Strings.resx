@@ -127,7 +127,7 @@
   <data name="GenerationFailed" xml:space="preserve"><value>Generation failed</value></data>
   <data name="WordsCouldNotBePlaced" xml:space="preserve"><value>The words could not be placed in this matrix. Adjust the input and try again.</value></data>
   <data name="SearchProgressSummary" xml:space="preserve"><value>{0:N0} active, {1:N0} finished; best depth {2:N0} of {3:N0}.</value></data>
-  <data name="ProgressTooltip" xml:space="preserve"><value>The bar shows the furthest search depth, not elapsed-time completion.&#xA;Workers: {0:N0} active; {1:N0} of {2:N0} finished&#xA;Placement failures: {3:N0}&#xA;Message-capacity rejections: {4:N0}&#xA;Cancelled attempts: {5:N0}&#xA;Currently placed: {6:N0} of {7:N0}&#xA;Furthest placed: {8:N0} of {7:N0}&#xA;Tested positions: {9:N0}&#xA;Backtracks: {10:N0}&#xA;Elapsed: {11}</value></data>
+  <data name="ProgressTooltip" xml:space="preserve"><value>The upper bar shows search activity. The lower bar shows the furthest placement depth, not elapsed-time completion.&#xA;Workers: {0:N0} active; {1:N0} of {2:N0} finished&#xA;Placement failures: {3:N0}&#xA;Message-capacity rejections: {4:N0}&#xA;Cancelled attempts: {5:N0}&#xA;Currently placed: {6:N0} of {7:N0}&#xA;Furthest placed: {8:N0} of {7:N0}&#xA;Tested positions: {9:N0}&#xA;Backtracks: {10:N0}&#xA;Elapsed: {11}</value></data>
   <data name="AnswerRequired" xml:space="preserve"><value>An answer is required.</value></data>
   <data name="AnswerMinimumLength" xml:space="preserve"><value>An answer must contain at least two characters.</value></data>
   <data name="QuestionRequired" xml:space="preserve"><value>A question is required.</value></data>
