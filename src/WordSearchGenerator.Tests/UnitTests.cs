@@ -405,17 +405,17 @@ namespace WordSearchGenerator.Tests
     {
       var sourceWords = new List<WordInfo>
       {
-        new WordInfo
+        new()
         {
           Text = "ABC",
           WordNumber = 1
         },
-        new WordInfo
+        new()
         {
           Text = "DEF",
           WordNumber = 2
         },
-        new WordInfo
+        new()
         {
           Text = "GHI",
           WordNumber = 3
@@ -549,7 +549,7 @@ namespace WordSearchGenerator.Tests
         .ToArray();
       var estimate = WoSeCon.EstimateDifficulty(
         CreateWords(wordTexts),
-        15,
+        16,
         17,
         false,
         MemorialMonteCarloThreadCount);
@@ -609,14 +609,14 @@ namespace WordSearchGenerator.Tests
 
       var board = WriteDiagnostics(
         generator,
-        15,
+        16,
         17,
         $"Memorial word construction succeeded with seed {winner.Seed}.");
 
       Assert.AreEqual(40, generator.Words.Count);
       Assert.AreNotEqual(WoSeCon.EstimatedConstructionTime.LikelyImpossible, estimate);
       Assert.IsTrue(generator.Words.All(word => word.Placement != null));
-      Assert.AreEqual(15, board.RowCount);
+      Assert.AreEqual(16, board.RowCount);
       Assert.AreEqual(17, board.ColumnCount);
       CollectionAssert.AreEquivalent(
         wordTexts,
@@ -679,7 +679,7 @@ namespace WordSearchGenerator.Tests
     {
       var words = new List<WordInfo>
       {
-        new WordInfo
+        new()
         {
           Placement = Location(
             0,
@@ -720,7 +720,7 @@ namespace WordSearchGenerator.Tests
     {
       var words = new List<WordInfo>
       {
-        new WordInfo
+        new()
         {
           Placement = Location(
             0,
@@ -730,7 +730,7 @@ namespace WordSearchGenerator.Tests
           Text = "AAA",
           WordNumber = 1
         },
-        new WordInfo
+        new()
         {
           Placement = Location(
             3,
@@ -758,7 +758,7 @@ namespace WordSearchGenerator.Tests
     {
       var words = new List<WordInfo>
       {
-        new WordInfo
+        new()
         {
           Placement = Location(
             0,
@@ -779,7 +779,7 @@ namespace WordSearchGenerator.Tests
     {
       var words = new List<WordInfo>
       {
-        new WordInfo
+        new()
         {
           Placement = Location(
             0,
@@ -805,7 +805,7 @@ namespace WordSearchGenerator.Tests
     {
       var words = new List<WordInfo>
       {
-        new WordInfo
+        new()
         {
           Placement = Location(
             1,
@@ -819,10 +819,7 @@ namespace WordSearchGenerator.Tests
       var board = new Board(words, 3, 4, false, "CDEF");
       (int Row, int Column, char Character)[] expectedMessageCells =
       {
-        (0, 0, 'C'),
-        (0, 3, 'D'),
-        (2, 0, 'E'),
-        (2, 3, 'F')
+        (0, 0, 'C'), (0, 3, 'D'), (2, 0, 'E'), (2, 3, 'F')
       };
 
       foreach (var expected in expectedMessageCells)
@@ -882,6 +879,189 @@ namespace WordSearchGenerator.Tests
         board.Matrix
           .OfType<Board.Cell>()
           .Count(cell => cell.MessageIndex != null));
+    }
+
+    [TestMethod]
+    public void NormalBoardAcceptsOneIntendedOccurrence()
+    {
+      var word = new WordInfo
+      {
+        Placement = Location(
+          0,
+          0,
+          DirectedLocation.LocationDirection.LeftToRight),
+        Text = "CAT",
+        WordNumber = 1
+      };
+      var board = new Board([word], 2, 3, false);
+
+      Assert.IsTrue(board.HasUniqueWordOccurrences());
+    }
+
+    [TestMethod]
+    public void NormalBoardRejectsOccurrenceMadeFromMessageCells()
+    {
+      var word = new WordInfo
+      {
+        Placement = Location(
+          0,
+          0,
+          DirectedLocation.LocationDirection.LeftToRight),
+        Text = "CAT",
+        WordNumber = 1
+      };
+      var board = new Board([word], 2, 3, false, "CAT");
+
+      Assert.IsFalse(board.HasUniqueWordOccurrences());
+    }
+
+    [TestMethod]
+    public void NormalBoardRejectsOccurrenceMadeFromOtherWords()
+    {
+      List<WordInfo> words =
+      [
+        new()
+        {
+          Placement = Location(
+            0,
+            0,
+            DirectedLocation.LocationDirection.LeftToRight),
+          Text = "CAT",
+          WordNumber = 1
+        },
+        new()
+        {
+          Placement = Location(
+            0,
+            0,
+            DirectedLocation.LocationDirection.TopBottom),
+          Text = "CXC",
+          WordNumber = 2
+        },
+        new()
+        {
+          Placement = Location(
+            0,
+            1,
+            DirectedLocation.LocationDirection.TopBottom),
+          Text = "AYA",
+          WordNumber = 3
+        },
+        new()
+        {
+          Placement = Location(
+            0,
+            2,
+            DirectedLocation.LocationDirection.TopBottom),
+          Text = "TZT",
+          WordNumber = 4
+        }
+      ];
+      var board = new Board(words, 3, 3, false);
+
+      Assert.IsFalse(board.HasUniqueWordOccurrences());
+    }
+
+    [TestMethod]
+    public void NormalBoardBlackCellBreaksPotentialOccurrence()
+    {
+      var word = new WordInfo
+      {
+        Placement = Location(
+          0,
+          0,
+          DirectedLocation.LocationDirection.LeftToRight),
+        Text = "CAT",
+        WordNumber = 1
+      };
+      var board = new Board([word], 2, 3, false, "CT");
+
+      Assert.AreEqual(Board.Cell.CellType.Empty, board.Matrix[1, 1].Type);
+      Assert.IsTrue(board.HasUniqueWordOccurrences());
+    }
+
+    [TestMethod]
+    public void NormalBoardCountsPalindromeOnSameCellsOnce()
+    {
+      var word = new WordInfo
+      {
+        Placement = Location(
+          0,
+          0,
+          DirectedLocation.LocationDirection.LeftToRight),
+        Text = "ABA",
+        WordNumber = 1
+      };
+      var board = new Board([word], 1, 3, false);
+
+      Assert.IsTrue(board.HasUniqueWordOccurrences());
+    }
+
+    [TestMethod]
+    public void NormalBoardOccurrenceMatchingIsCaseSensitive()
+    {
+      var word = new WordInfo
+      {
+        Placement = Location(
+          0,
+          0,
+          DirectedLocation.LocationDirection.LeftToRight),
+        Text = "Cat",
+        WordNumber = 1
+      };
+      var board = new Board([word], 2, 3, false, "CAT");
+
+      Assert.IsTrue(board.HasUniqueWordOccurrences());
+    }
+
+    [TestMethod]
+    public void NormalUniquenessConstraintBacktracksFromAmbiguousBoard()
+    {
+      var ambiguousPlacement = Location(
+        0,
+        0,
+        DirectedLocation.LocationDirection.LeftToRight);
+      var expectedPlacement = Location(
+        0,
+        0,
+        DirectedLocation.LocationDirection.TopBottom);
+      var generator = CreateGenerator(
+        3,
+        new[]
+        {
+          "CAT"
+        },
+        CreatePriorityOrderer([
+          ambiguousPlacement,
+          expectedPlacement
+        ]));
+      var rejectedBoardCount = 0;
+
+      generator.Construct(
+        completionValidator: words =>
+        {
+          var board = new Board(words.ToList(), 3, 3, false, "CATXYZ");
+          var isUnique = board.HasUniqueWordOccurrences();
+
+          if (!isUnique)
+          {
+            rejectedBoardCount++;
+          }
+
+          return isUnique;
+        });
+
+      var completedBoard = new Board(
+        generator.Words,
+        3,
+        3,
+        false,
+        "CATXYZ");
+
+      Assert.IsTrue(rejectedBoardCount >= 1);
+      Assert.IsTrue(generator.Backtrackings >= 1);
+      Assert.AreEqual(expectedPlacement, generator.Words[0].Placement);
+      Assert.IsTrue(completedBoard.HasUniqueWordOccurrences());
     }
 
     [TestMethod]
@@ -1140,7 +1320,7 @@ namespace WordSearchGenerator.Tests
       try
       {
         var generator = CreateGenerator(
-          15,
+          16,
           17,
           wordTexts,
           CreateShuffledOrderer(seed));
@@ -1219,7 +1399,7 @@ namespace WordSearchGenerator.Tests
 
     private static void AssertFillsGrid(WoSeCon generator, int size)
     {
-      Dictionary<(int Row, int Column), char> occupiedCells = new Dictionary<(int Row, int Column), char>();
+      var occupiedCells = new Dictionary<(int Row, int Column), char>();
 
       foreach (var word in generator.Words)
       {

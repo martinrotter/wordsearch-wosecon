@@ -16,6 +16,11 @@ namespace WordSearchGenerator.Desktop.Models
       get;
     }
 
+    public long AmbiguousBoardRejectionCount
+    {
+      get;
+    }
+
     public int BlackBoxCount
     {
       get;
@@ -116,6 +121,7 @@ namespace WordSearchGenerator.Desktop.Models
       int winningAttemptBacktrackings,
       int placementFailureCount,
       int messageRejectedAttemptCount,
+      long ambiguousBoardRejectionCount,
       int cancelledAttemptCount)
     {
       ArgumentNullException.ThrowIfNull(definition);
@@ -134,6 +140,7 @@ namespace WordSearchGenerator.Desktop.Models
       WinningAttemptBacktrackings = winningAttemptBacktrackings;
       PlacementFailureCount = placementFailureCount;
       MessageRejectedAttemptCount = messageRejectedAttemptCount;
+      AmbiguousBoardRejectionCount = ambiguousBoardRejectionCount;
       CancelledAttemptCount = cancelledAttemptCount;
 
       foreach (var cell in board.Matrix.OfType<Board.Cell>())

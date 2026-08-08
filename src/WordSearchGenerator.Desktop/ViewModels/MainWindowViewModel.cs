@@ -19,11 +19,12 @@ namespace WordSearchGenerator.Desktop.ViewModels
     private readonly IPuzzleGenerator _puzzleGenerator;
 
     private int _activeAttemptCount;
+    private long _ambiguousBoardRejectionCount;
     private int _attemptCount;
     private long _backtrackings;
     private BoardRenderModel? _boardRenderModel;
-    private int _cancelledAttemptCount;
     private bool _canGenerate;
+    private int _cancelledAttemptCount;
     private string _columnsText = NewProjectColumnsText;
     private GenerationResult? _currentResult;
     private CancellationTokenSource? _difficultyCancellation;
@@ -286,6 +287,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
         AttemptCount,
         PlacementFailureCount,
         MessageRejectedAttemptCount,
+        AmbiguousBoardRejectionCount,
         CancelledAttemptCount,
         PlacedWordCount,
         TotalWordCount,
@@ -395,10 +397,11 @@ namespace WordSearchGenerator.Desktop.ViewModels
       }
     }
 
-    public string SecretMessageDescription => AppStrings.Get(
-      IsQuizMode
-        ? "SecretMessageQuizDescription"
-        : "SecretMessageDescription");
+    public string SecretMessageDescription =>
+      AppStrings.Get(
+        IsQuizMode
+          ? "SecretMessageQuizDescription"
+          : "SecretMessageDescription");
 
     public string StatusText
     {
@@ -423,8 +426,10 @@ namespace WordSearchGenerator.Desktop.ViewModels
     {
       get
       {
-        if (!int.TryParse(RowsText, out var rows) || rows <= 0 ||
-            !int.TryParse(ColumnsText, out var columns) || columns <= 0)
+        if (!int.TryParse(RowsText, out var rows) ||
+            rows <= 0 ||
+            !int.TryParse(ColumnsText, out var columns) ||
+            columns <= 0)
         {
           return string.Empty;
         }
@@ -496,6 +501,18 @@ namespace WordSearchGenerator.Desktop.ViewModels
       set
       {
         if (SetProperty(ref _furthestPlacedWordCount, value))
+        {
+          OnPropertyChanged(nameof(ProgressToolTip));
+        }
+      }
+    }
+
+    private long AmbiguousBoardRejectionCount
+    {
+      get => _ambiguousBoardRejectionCount;
+      set
+      {
+        if (SetProperty(ref _ambiguousBoardRejectionCount, value))
         {
           OnPropertyChanged(nameof(ProgressToolTip));
         }
@@ -812,6 +829,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
         FinishedAttemptCount = result.AttemptCount;
         PlacementFailureCount = result.PlacementFailureCount;
         MessageRejectedAttemptCount = result.MessageRejectedAttemptCount;
+        AmbiguousBoardRejectionCount = result.AmbiguousBoardRejectionCount;
         CancelledAttemptCount = result.CancelledAttemptCount;
         PlacedWordCount = definition.Entries.Count;
         FurthestPlacedWordCount = definition.Entries.Count;
@@ -851,9 +869,22 @@ namespace WordSearchGenerator.Desktop.ViewModels
         FinishedAttemptCount = exception.AttemptCount;
         PlacementFailureCount = exception.PlacementFailureCount;
         MessageRejectedAttemptCount = exception.MessageRejectedAttemptCount;
+        AmbiguousBoardRejectionCount = exception.AmbiguousBoardRejectionCount;
 
-        if (exception.MessageRejectedAttemptCount > 0 &&
+        if (exception.AmbiguousBoardRejectionCount > 0 &&
+            exception.MessageRejectedAttemptCount == 0 &&
             exception.PlacementFailureCount == 0)
+        {
+          StatusText = AppStrings.Get("AmbiguousBoardsRejected");
+          EditorActionState = EditorActionState.Failed;
+          EditorStatusTitle = AppStrings.Get("AllBoardsAmbiguous");
+          EditorStatusMessage = exception.Message;
+          PreviewTitle = AppStrings.Get("NoUnambiguousBoard");
+          PreviewMessage = AppStrings.Get("AmbiguityAdvice");
+        }
+        else if (exception.MessageRejectedAttemptCount > 0 &&
+                 exception.AmbiguousBoardRejectionCount == 0 &&
+                 exception.PlacementFailureCount == 0)
         {
           StatusText = AppStrings.Get("MessageDidNotFit");
           EditorActionState = EditorActionState.MessageDidNotFit;
@@ -908,6 +939,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
       FinishedAttemptCount = 0;
       PlacementFailureCount = 0;
       MessageRejectedAttemptCount = 0;
+      AmbiguousBoardRejectionCount = 0;
       CancelledAttemptCount = 0;
       TotalWordCount = totalWordCount;
       PlacedWordCount = 0;
@@ -964,6 +996,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
       AttemptCount = progress.TotalAttemptCount;
       PlacementFailureCount = progress.PlacementFailureCount;
       MessageRejectedAttemptCount = progress.MessageRejectedAttemptCount;
+      AmbiguousBoardRejectionCount = progress.AmbiguousBoardRejectionCount;
       CancelledAttemptCount = progress.CancelledAttemptCount;
       PlacedWordCount = progress.PlacedWordCount;
       FurthestPlacedWordCount = progress.FurthestPlacedWordCount;
@@ -1128,13 +1161,26 @@ namespace WordSearchGenerator.Desktop.ViewModels
 
       if (Mode == PuzzleMode.Normal)
       {
-        var shortWord = entries.FirstOrDefault(entry => entry.Answer.Length < 2);
+        var shortWord =
+          entries.FirstOrDefault(entry => entry.Answer.Length < PuzzleInputParser.MinimumWordLength);
 
         if (shortWord != null)
         {
           entryErrors.Add(AppStrings.Format(
             "WordMinimumLength",
             shortWord.Answer));
+        }
+
+        if (shortWord == null &&
+            WordContainmentValidator.TryFindConflict(
+              entries,
+              out var firstConflict,
+              out var secondConflict))
+        {
+          entryErrors.Add(AppStrings.Format(
+            "ContainedWords",
+            firstConflict!.Answer,
+            secondConflict!.Answer));
         }
       }
       else if (QuizEntries.Any(entry => !entry.IsEmpty && entry.HasErrors))

@@ -32,7 +32,7 @@ namespace WordSearchGenerator.Common.WoSeCon.Api
     private List<DirectedLocation> AvailableLocations
     {
       get;
-    } = new List<DirectedLocation>();
+    } = new();
 
     #endregion
 

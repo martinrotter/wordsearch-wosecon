@@ -276,7 +276,8 @@ namespace WordSearchGenerator.Common
 
         var targetPosition = Message.Length == 1
           ? (RowCount * ColumnCount - 1) / 2.0
-          : (double)messageIndex * (RowCount * ColumnCount - 1) /
+          : (double)messageIndex *
+            (RowCount * ColumnCount - 1) /
             (Message.Length - 1);
         var nearestCellIndex = 0;
         var nearestDistance = Math.Abs(
@@ -325,7 +326,8 @@ namespace WordSearchGenerator.Common
         var availableCellIndex = Message.Length == 1
           ? availableCells.Count / 2
           : (int)Math.Round(
-            (double)messageIndex * (availableCells.Count - 1) /
+            (double)messageIndex *
+            (availableCells.Count - 1) /
             (Message.Length - 1),
             MidpointRounding.AwayFromZero);
         var cell = availableCells[availableCellIndex];

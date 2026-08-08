@@ -67,7 +67,8 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
         throw new InvalidDataException(AppStrings.Get("NoWordsInFile"));
       }
 
-      var shortWord = entries.FirstOrDefault(entry => entry.Answer.Length < 2);
+      var shortWord =
+        entries.FirstOrDefault(entry => entry.Answer.Length < PuzzleInputParser.MinimumWordLength);
 
       if (shortWord != null)
       {

@@ -161,8 +161,8 @@
                              Style="{StaticResource FieldLabelTextStyle}"
                              Text="{localization:Loc Mode}" />
                   <ComboBox x:Name="ModeComboBox"
-                             Grid.Row="1"
-                             Grid.ColumnSpan="5"
+                            Grid.Row="1"
+                            Grid.ColumnSpan="5"
                             Margin="0,5,0,9"
                             ItemsSource="{Binding Modes}"
                             SelectedItem="{Binding Mode}">
@@ -370,7 +370,7 @@
                                     Margin="0,0,9,0"
                                     VerticalAlignment="Center"
                                     IconSize="Size20"
-                                    FontSize="18">
+                                    FontSize="20">
                     <icons:FluentIcon.Style>
                       <Style TargetType="{x:Type icons:FluentIcon}">
                         <Setter Property="Icon" Value="QuestionCircle" />
@@ -437,7 +437,7 @@
                 </Grid.ColumnDefinitions>
 
                 <icons:FluentIcon Grid.Column="0"
-                                  Margin="0,1,11,0"
+                                  Margin="0,1,9,0"
                                   VerticalAlignment="Top"
                                   IconSize="Size20"
                                   FontSize="20">

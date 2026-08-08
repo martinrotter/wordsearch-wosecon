@@ -5,6 +5,7 @@ namespace WordSearchGenerator.Desktop.Models
     int FinishedAttemptCount,
     int PlacementFailureCount,
     int MessageRejectedAttemptCount,
+    long AmbiguousBoardRejectionCount,
     int CancelledAttemptCount,
     int TotalAttemptCount,
     int PlacedWordCount,

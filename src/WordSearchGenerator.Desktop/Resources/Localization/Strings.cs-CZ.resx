@@ -123,15 +123,20 @@
   <data name="NoAcceptableBoard" xml:space="preserve"><value>Nebyla nalezena přijatelná mřížka</value></data>
   <data name="NoAttemptProducedBoard" xml:space="preserve"><value>Žádný pokus nevytvořil přijatelnou mřížku</value></data>
   <data name="NoBoardGenerated" xml:space="preserve"><value>Mřížka nebyla vygenerována</value></data>
-  <data name="AttemptsFailedDescription" xml:space="preserve"><value>Některé pokusy nemusely umístit slova, jiné mohly ponechat málo buněk pro tajenku.</value></data>
+  <data name="AttemptsFailedDescription" xml:space="preserve"><value>Některé pokusy nemusely umístit slova, jiné mohly ponechat málo buněk pro tajenku nebo vytvořit nejednoznačnou mřížku.</value></data>
+  <data name="AmbiguousBoardsRejected" xml:space="preserve"><value>Nejednoznačné mřížky odmítnuty</value></data>
+  <data name="AllBoardsAmbiguous" xml:space="preserve"><value>Každá dokončená mřížka byla nejednoznačná</value></data>
+  <data name="NoUnambiguousBoard" xml:space="preserve"><value>Nebyla nalezena jednoznačná mřížka</value></data>
+  <data name="AmbiguityAdvice" xml:space="preserve"><value>Zkuste generování zopakovat, změnit slova či tajenku nebo zvětšit mřížku.</value></data>
   <data name="GenerationFailed" xml:space="preserve"><value>Generování selhalo</value></data>
   <data name="WordsCouldNotBePlaced" xml:space="preserve"><value>Slova se do této mřížky nepodařilo umístit. Upravte zadání a zkuste to znovu.</value></data>
   <data name="SearchProgressSummary" xml:space="preserve"><value>{0:N0} aktivních, {1:N0} dokončených; nejlepší hloubka {2:N0} z {3:N0}.</value></data>
-  <data name="ProgressTooltip" xml:space="preserve"><value>Horní ukazatel znázorňuje aktivitu hledání. Dolní ukazatel znázorňuje největší dosaženou hloubku umisťování, nikoli časový průběh.&#xA;Vlákna: {0:N0} aktivních; dokončeno {1:N0} z {2:N0}&#xA;Selhání umístění: {3:N0}&#xA;Odmítnutí kvůli kapacitě tajenky: {4:N0}&#xA;Zrušené pokusy: {5:N0}&#xA;Právě umístěno: {6:N0} z {7:N0}&#xA;Nejvíce umístěno: {8:N0} z {7:N0}&#xA;Otestované pozice: {9:N0}&#xA;Návraty: {10:N0}&#xA;Uplynulo: {11}</value></data>
+  <data name="ProgressTooltip" xml:space="preserve"><value>Horní ukazatel znázorňuje aktivitu hledání. Dolní ukazatel znázorňuje největší dosaženou hloubku umisťování, nikoli časový průběh.&#xA;Vlákna: {0:N0} aktivních; dokončeno {1:N0} z {2:N0}&#xA;Selhání umístění: {3:N0}&#xA;Odmítnutí kvůli kapacitě tajenky: {4:N0}&#xA;Odmítnuté nejednoznačné mřížky: {5:N0}&#xA;Zrušené pokusy: {6:N0}&#xA;Právě umístěno: {7:N0} z {8:N0}&#xA;Nejvíce umístěno: {9:N0} z {8:N0}&#xA;Otestované pozice: {10:N0}&#xA;Návraty: {11:N0}&#xA;Uplynulo: {12}</value></data>
   <data name="AnswerRequired" xml:space="preserve"><value>Odpověď je povinná.</value></data>
   <data name="AnswerMinimumLength" xml:space="preserve"><value>Odpověď musí obsahovat alespoň dva znaky.</value></data>
   <data name="QuestionRequired" xml:space="preserve"><value>Otázka je povinná.</value></data>
-  <data name="WordMinimumLength" xml:space="preserve"><value>Slovo „{0}“ musí obsahovat alespoň dva znaky.</value></data>
+  <data name="WordMinimumLength" xml:space="preserve"><value>Slovo „{0}“ musí obsahovat alespoň tři znaky.</value></data>
+  <data name="ContainedWords" xml:space="preserve"><value>Slova „{0}“ a „{1}“ činí osmisměrku nejednoznačnou, protože jedno se nachází uvnitř druhého v přímém nebo opačném směru.</value></data>
   <data name="CompleteQuizEntries" xml:space="preserve"><value>Doplňte všechny otázky a odpovědi křížovky.</value></data>
   <data name="EntryTooLong" xml:space="preserve"><value>„{0}“ je pro tuto mřížku příliš dlouhé.</value></data>
   <data name="QuizEntryTooLong" xml:space="preserve"><value>„{0}“ je pro tuto mřížku příliš dlouhé včetně buňky otázky.</value></data>
@@ -232,7 +237,7 @@
   <data name="HtmlMessageCharacterLabel" xml:space="preserve"><value>Znak tajenky {0}, {1}</value></data>
   <data name="HtmlWordCharacter" xml:space="preserve"><value>Znak slova</value></data>
   <data name="HtmlWordLabel" xml:space="preserve"><value>{0} {1}, slova {2}, {3}</value></data>
-  <data name="MonteCarloFailure" xml:space="preserve"><value>Žádný z {0} pokusů nevytvořil přijatelnou mřížku. Selhání umístění: {1}; odmítnutí kvůli kapacitě tajenky: {2}.</value></data>
+  <data name="MonteCarloFailure" xml:space="preserve"><value>Žádný z {0} pokusů nevytvořil přijatelnou mřížku. Selhání umístění: {1}; odmítnutí kvůli kapacitě tajenky: {2}; odmítnuté nejednoznačné mřížky: {3}.</value></data>
   <data name="ProjectFileEmpty" xml:space="preserve"><value>Soubor projektu je prázdný.</value></data>
   <data name="ProjectJsonInvalid" xml:space="preserve"><value>Soubor projektu neobsahuje platný JSON WoSeCon.</value></data>
   <data name="ProjectPathNoParent" xml:space="preserve"><value>Cesta projektu nemá nadřazenou složku.</value></data>
@@ -245,6 +250,7 @@
   <data name="SavedPlacementOutside" xml:space="preserve"><value>Slovo {0} je umístěno mimo mřížku.</value></data>
   <data name="SavedPlacementConflict" xml:space="preserve"><value>Slovo {0} je v konfliktu s jiným uloženým umístěním.</value></data>
   <data name="SavedBoardCannotReconstruct" xml:space="preserve"><value>Z uložených umístění nelze mřížku obnovit.</value></data>
+  <data name="SavedBoardAmbiguous" xml:space="preserve"><value>Uložená osmisměrka obsahuje některé slovo na více místech a je nutné ji vygenerovat znovu.</value></data>
   <data name="UnsupportedProjectVersion" xml:space="preserve"><value>Nepodporovaná verze formátu projektu {0}. Tato aplikace podporuje verzi {1}.</value></data>
   <data name="ProjectModeInvalid" xml:space="preserve"><value>Režim projektu není platný.</value></data>
   <data name="ProjectEntryRequired" xml:space="preserve"><value>Projekt musí obsahovat alespoň jedno slovo nebo kvízovou položku.</value></data>

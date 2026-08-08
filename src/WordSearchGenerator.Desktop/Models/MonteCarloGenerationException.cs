@@ -11,6 +11,11 @@ namespace WordSearchGenerator.Desktop.Models
       get;
     }
 
+    public long AmbiguousBoardRejectionCount
+    {
+      get;
+    }
+
     public int MessageRejectedAttemptCount
     {
       get;
@@ -28,15 +33,18 @@ namespace WordSearchGenerator.Desktop.Models
     public MonteCarloGenerationException(
       int attemptCount,
       int placementFailureCount,
-      int messageRejectedAttemptCount)
+      int messageRejectedAttemptCount,
+      long ambiguousBoardRejectionCount)
       : base(CreateMessage(
         attemptCount,
         placementFailureCount,
-        messageRejectedAttemptCount))
+        messageRejectedAttemptCount,
+        ambiguousBoardRejectionCount))
     {
       AttemptCount = attemptCount;
       PlacementFailureCount = placementFailureCount;
       MessageRejectedAttemptCount = messageRejectedAttemptCount;
+      AmbiguousBoardRejectionCount = ambiguousBoardRejectionCount;
     }
 
     #endregion
@@ -46,13 +54,15 @@ namespace WordSearchGenerator.Desktop.Models
     private static string CreateMessage(
       int attemptCount,
       int placementFailureCount,
-      int messageRejectedAttemptCount)
+      int messageRejectedAttemptCount,
+      long ambiguousBoardRejectionCount)
     {
       return AppStrings.Format(
         "MonteCarloFailure",
         attemptCount,
         placementFailureCount,
-        messageRejectedAttemptCount);
+        messageRejectedAttemptCount,
+        ambiguousBoardRejectionCount);
     }
 
     #endregion

@@ -99,7 +99,8 @@ namespace WordSearchGenerator.Desktop.Services
         throw new MonteCarloGenerationException(
           attemptCount,
           finalProgress.PlacementFailureCount,
-          finalProgress.MessageRejectedAttemptCount);
+          finalProgress.MessageRejectedAttemptCount,
+          finalProgress.AmbiguousBoardRejectionCount);
       }
 
       return new GenerationResult(
@@ -116,6 +117,7 @@ namespace WordSearchGenerator.Desktop.Services
         winner.Backtrackings,
         finalProgress.PlacementFailureCount,
         finalProgress.MessageRejectedAttemptCount,
+        finalProgress.AmbiguousBoardRejectionCount,
         finalProgress.CancelledAttemptCount);
     }
 
@@ -169,7 +171,8 @@ namespace WordSearchGenerator.Desktop.Services
     {
       var stopwatch = Stopwatch.StartNew();
       WoSeCon? generator = null;
-      var completedLayoutRejected = false;
+      var completedLayoutMessageRejected = false;
+      var completedLayoutAmbiguityRejected = false;
 
       try
       {
@@ -184,7 +187,38 @@ namespace WordSearchGenerator.Desktop.Services
           new DelegateProgress<ConstructionProgress>(value => aggregator.Update(attemptIndex, value));
         Func<IReadOnlyList<WordInfo>, bool>? completionValidator = null;
 
-        if (definition.QuizMode && definition.SecretMessage.Length != 0)
+        if (!definition.QuizMode)
+        {
+          completionValidator = placedWords =>
+          {
+            Board board;
+
+            try
+            {
+              board = new Board(
+                placedWords.ToList(),
+                definition.Rows,
+                definition.Columns,
+                false,
+                definition.SecretMessage);
+            }
+            catch (MessageCannotBePlacedException)
+            {
+              completedLayoutMessageRejected = true;
+              return false;
+            }
+
+            if (board.HasUniqueWordOccurrences())
+            {
+              return true;
+            }
+
+            completedLayoutAmbiguityRejected = true;
+            aggregator.RecordAmbiguousBoardRejection();
+            return false;
+          };
+        }
+        else if (definition.SecretMessage.Length != 0)
         {
           completionValidator = placedWords =>
           {
@@ -200,7 +234,7 @@ namespace WordSearchGenerator.Desktop.Services
             }
             catch (MessageCannotBePlacedException)
             {
-              completedLayoutRejected = true;
+              completedLayoutMessageRejected = true;
               return false;
             }
           };
@@ -211,35 +245,6 @@ namespace WordSearchGenerator.Desktop.Services
           cancellationToken,
           completionValidator);
         cancellationToken.ThrowIfCancellationRequested();
-
-        if (!definition.QuizMode)
-        {
-          var boardWithoutMessage = new Board(
-            generator.Words,
-            definition.Rows,
-            definition.Columns,
-            false);
-          var availableCellCount = boardWithoutMessage.Matrix
-            .OfType<Board.Cell>()
-            .Count(cell => cell.Type == Board.Cell.CellType.Empty);
-
-          if (definition.SecretMessage.Length > availableCellCount)
-          {
-            stopwatch.Stop();
-            aggregator.Complete(
-              attemptIndex,
-              AttemptCompletion.MessageRejected,
-              generator.TestedPositions,
-              generator.Backtrackings);
-
-            return AttemptOutcome.Rejected(
-              attemptIndex + 1,
-              seed,
-              stopwatch.Elapsed,
-              generator.TestedPositions,
-              generator.Backtrackings);
-          }
-        }
 
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -283,9 +288,11 @@ namespace WordSearchGenerator.Desktop.Services
         when (exception.Message == NoSolutionMessage)
       {
         stopwatch.Stop();
-        var completion = completedLayoutRejected
-          ? AttemptCompletion.MessageRejected
-          : AttemptCompletion.PlacementFailed;
+        var completion = completedLayoutAmbiguityRejected
+          ? AttemptCompletion.AmbiguityRejected
+          : completedLayoutMessageRejected
+            ? AttemptCompletion.MessageRejected
+            : AttemptCompletion.PlacementFailed;
         aggregator.Complete(
           attemptIndex,
           completion,
@@ -328,6 +335,7 @@ namespace WordSearchGenerator.Desktop.Services
       Succeeded,
       PlacementFailed,
       MessageRejected,
+      AmbiguityRejected,
       Cancelled,
       Faulted
     }
@@ -488,6 +496,7 @@ namespace WordSearchGenerator.Desktop.Services
       private readonly AttemptState[] _states;
       private readonly Stopwatch _stopwatch = Stopwatch.StartNew();
       private readonly int _totalWordCount;
+      private long _ambiguousBoardRejectionCount;
       private long _nextReportAt;
 
       #endregion
@@ -558,6 +567,11 @@ namespace WordSearchGenerator.Desktop.Services
         return snapshot;
       }
 
+      public void RecordAmbiguousBoardRejection()
+      {
+        Interlocked.Increment(ref _ambiguousBoardRejectionCount);
+      }
+
       public void Update(
         int attemptIndex,
         ConstructionProgress progress)
@@ -603,6 +617,7 @@ namespace WordSearchGenerator.Desktop.Services
           finishedAttemptCount,
           placementFailureCount,
           messageRejectedAttemptCount,
+          Interlocked.Read(ref _ambiguousBoardRejectionCount),
           cancelledAttemptCount,
           _states.Length,
           placedWordCount,

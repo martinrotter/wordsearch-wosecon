@@ -2,6 +2,12 @@ namespace WordSearchGenerator.Desktop.Models
 {
   public static class PuzzleInputParser
   {
+    #region Static Fields
+
+    public const int MinimumWordLength = 3;
+
+    #endregion
+
     #region Other Stuff
 
     public static IReadOnlyList<PuzzleEntry> ParseQuizEntries(

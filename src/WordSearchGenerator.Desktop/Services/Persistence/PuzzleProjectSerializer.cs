@@ -121,6 +121,7 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
         : new GeneratedBoardFile
         {
           AttemptCount = result.AttemptCount,
+          AmbiguousBoardRejectionCount = result.AmbiguousBoardRejectionCount,
           Backtrackings = result.Backtrackings,
           CancelledAttemptCount = result.CancelledAttemptCount,
           ElapsedTicks = result.Elapsed.Ticks,
@@ -193,6 +194,9 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
       }
 
       ValidateNonNegative(generated.AttemptCount, nameof(generated.AttemptCount));
+      ValidateNonNegative(
+        generated.AmbiguousBoardRejectionCount,
+        nameof(generated.AmbiguousBoardRejectionCount));
       ValidateNonNegative(generated.Backtrackings, nameof(generated.Backtrackings));
       ValidateNonNegative(
         generated.CancelledAttemptCount,
@@ -301,6 +305,12 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
           exception);
       }
 
+      if (!definition.QuizMode && !board.HasUniqueWordOccurrences())
+      {
+        throw new InvalidDataException(
+          AppStrings.Get("SavedBoardAmbiguous"));
+      }
+
       return new GenerationResult(
         definition,
         board,
@@ -315,6 +325,7 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
         generated.WinningAttemptBacktrackings,
         generated.PlacementFailureCount,
         generated.MessageRejectedAttemptCount,
+        generated.AmbiguousBoardRejectionCount,
         generated.CancelledAttemptCount);
     }
 
@@ -346,8 +357,12 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
           string.Join(Environment.NewLine, rawEntries.Select(entry => entry.Answer)))
         : PuzzleInputParser.ParseQuizEntries(rawEntries);
 
+      var minimumEntryLength = file.Mode == PuzzleMode.Normal
+        ? PuzzleInputParser.MinimumWordLength
+        : 2;
+
       if (entries.Count != file.Entries.Count ||
-          entries.Any(entry => entry.Answer.Length < 2) ||
+          entries.Any(entry => entry.Answer.Length < minimumEntryLength) ||
           (file.Mode == PuzzleMode.Quiz &&
            entries.Any(entry => string.IsNullOrWhiteSpace(entry.Question))))
       {
@@ -419,6 +434,12 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
     private sealed class GeneratedBoardFile
     {
       #region Properties
+
+      public long AmbiguousBoardRejectionCount
+      {
+        get;
+        set;
+      }
 
       public int AttemptCount
       {

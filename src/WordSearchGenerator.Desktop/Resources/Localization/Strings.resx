@@ -123,15 +123,20 @@
   <data name="NoAcceptableBoard" xml:space="preserve"><value>No acceptable board</value></data>
   <data name="NoAttemptProducedBoard" xml:space="preserve"><value>No attempt produced an acceptable board</value></data>
   <data name="NoBoardGenerated" xml:space="preserve"><value>No board generated</value></data>
-  <data name="AttemptsFailedDescription" xml:space="preserve"><value>Some attempts may have failed placement while others left too few message cells.</value></data>
+  <data name="AttemptsFailedDescription" xml:space="preserve"><value>Some attempts may have failed placement while others left too few message cells or produced an ambiguous board.</value></data>
+  <data name="AmbiguousBoardsRejected" xml:space="preserve"><value>Ambiguous boards rejected</value></data>
+  <data name="AllBoardsAmbiguous" xml:space="preserve"><value>Every completed board was ambiguous</value></data>
+  <data name="NoUnambiguousBoard" xml:space="preserve"><value>No unambiguous board found</value></data>
+  <data name="AmbiguityAdvice" xml:space="preserve"><value>Try generating again, changing the words or message, or enlarging the matrix.</value></data>
   <data name="GenerationFailed" xml:space="preserve"><value>Generation failed</value></data>
   <data name="WordsCouldNotBePlaced" xml:space="preserve"><value>The words could not be placed in this matrix. Adjust the input and try again.</value></data>
   <data name="SearchProgressSummary" xml:space="preserve"><value>{0:N0} active, {1:N0} finished; best depth {2:N0} of {3:N0}.</value></data>
-  <data name="ProgressTooltip" xml:space="preserve"><value>The upper bar shows search activity. The lower bar shows the furthest placement depth, not elapsed-time completion.&#xA;Workers: {0:N0} active; {1:N0} of {2:N0} finished&#xA;Placement failures: {3:N0}&#xA;Message-capacity rejections: {4:N0}&#xA;Cancelled attempts: {5:N0}&#xA;Currently placed: {6:N0} of {7:N0}&#xA;Furthest placed: {8:N0} of {7:N0}&#xA;Tested positions: {9:N0}&#xA;Backtracks: {10:N0}&#xA;Elapsed: {11}</value></data>
+  <data name="ProgressTooltip" xml:space="preserve"><value>The upper bar shows search activity. The lower bar shows the furthest placement depth, not elapsed-time completion.&#xA;Workers: {0:N0} active; {1:N0} of {2:N0} finished&#xA;Placement failures: {3:N0}&#xA;Message-capacity rejections: {4:N0}&#xA;Ambiguous boards rejected: {5:N0}&#xA;Cancelled attempts: {6:N0}&#xA;Currently placed: {7:N0} of {8:N0}&#xA;Furthest placed: {9:N0} of {8:N0}&#xA;Tested positions: {10:N0}&#xA;Backtracks: {11:N0}&#xA;Elapsed: {12}</value></data>
   <data name="AnswerRequired" xml:space="preserve"><value>An answer is required.</value></data>
   <data name="AnswerMinimumLength" xml:space="preserve"><value>An answer must contain at least two characters.</value></data>
   <data name="QuestionRequired" xml:space="preserve"><value>A question is required.</value></data>
-  <data name="WordMinimumLength" xml:space="preserve"><value>The word '{0}' must contain at least two characters.</value></data>
+  <data name="WordMinimumLength" xml:space="preserve"><value>The word '{0}' must contain at least three characters.</value></data>
+  <data name="ContainedWords" xml:space="preserve"><value>Words '{0}' and '{1}' make the puzzle ambiguous because one occurs inside the other, forwards or backwards.</value></data>
   <data name="CompleteQuizEntries" xml:space="preserve"><value>Complete every quiz question and answer.</value></data>
   <data name="EntryTooLong" xml:space="preserve"><value>'{0}' is too long for this matrix.</value></data>
   <data name="QuizEntryTooLong" xml:space="preserve"><value>'{0}' is too long for this matrix including its question cell.</value></data>
@@ -232,7 +237,7 @@
   <data name="HtmlMessageCharacterLabel" xml:space="preserve"><value>Secret-message character {0}, {1}</value></data>
   <data name="HtmlWordCharacter" xml:space="preserve"><value>Word character</value></data>
   <data name="HtmlWordLabel" xml:space="preserve"><value>{0} {1}, words {2}, {3}</value></data>
-  <data name="MonteCarloFailure" xml:space="preserve"><value>None of {0} attempts produced an acceptable board. Placement failures: {1}; message-capacity rejections: {2}.</value></data>
+  <data name="MonteCarloFailure" xml:space="preserve"><value>None of {0} attempts produced an acceptable board. Placement failures: {1}; message-capacity rejections: {2}; ambiguous boards rejected: {3}.</value></data>
   <data name="ProjectFileEmpty" xml:space="preserve"><value>The project file is empty.</value></data>
   <data name="ProjectJsonInvalid" xml:space="preserve"><value>The project file does not contain valid WoSeCon JSON.</value></data>
   <data name="ProjectPathNoParent" xml:space="preserve"><value>The project path has no parent directory.</value></data>
@@ -245,6 +250,7 @@
   <data name="SavedPlacementOutside" xml:space="preserve"><value>Word {0} is placed outside the matrix.</value></data>
   <data name="SavedPlacementConflict" xml:space="preserve"><value>Word {0} conflicts with another saved placement.</value></data>
   <data name="SavedBoardCannotReconstruct" xml:space="preserve"><value>The saved placements cannot reconstruct the board.</value></data>
+  <data name="SavedBoardAmbiguous" xml:space="preserve"><value>The saved normal-mode board contains a word in more than one location and must be generated again.</value></data>
   <data name="UnsupportedProjectVersion" xml:space="preserve"><value>Unsupported project format version {0}. This application supports version {1}.</value></data>
   <data name="ProjectModeInvalid" xml:space="preserve"><value>The project mode is invalid.</value></data>
   <data name="ProjectEntryRequired" xml:space="preserve"><value>The project must contain at least one word or quiz entry.</value></data>
