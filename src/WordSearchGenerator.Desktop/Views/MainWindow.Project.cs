@@ -147,20 +147,22 @@ namespace WordSearchGenerator.Desktop.Views
       object? sender,
       CancelEventArgs e)
     {
-      if (_closingAfterConfirmation || !_viewModel.IsDirty)
+      if (!_closingAfterConfirmation && _viewModel.IsDirty)
       {
+        e.Cancel = true;
+
+        if (await ConfirmUnsavedChangesAsync())
+        {
+          _closingAfterConfirmation = true;
+          _ = Dispatcher.BeginInvoke(
+            DispatcherPriority.ApplicationIdle,
+            new Action(Close));
+        }
+
         return;
       }
 
-      e.Cancel = true;
-
-      if (await ConfirmUnsavedChangesAsync())
-      {
-        _closingAfterConfirmation = true;
-        _ = Dispatcher.BeginInvoke(
-          DispatcherPriority.ApplicationIdle,
-          new Action(Close));
-      }
+      SaveLayout();
     }
 
     private async void MainWindowOnPreviewKeyDown(

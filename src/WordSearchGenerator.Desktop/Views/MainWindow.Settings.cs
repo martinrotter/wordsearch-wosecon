@@ -1,7 +1,5 @@
 using System.Windows;
 using WordSearchGenerator.Desktop.Localization;
-using WordSearchGenerator.Desktop.Models.Settings;
-using WordSearchGenerator.Desktop.Services.Settings;
 using WordSearchGenerator.Desktop.Views.Dialogs;
 
 namespace WordSearchGenerator.Desktop.Views
@@ -32,9 +30,10 @@ namespace WordSearchGenerator.Desktop.Views
         return;
       }
 
-      var settings = new ApplicationSettings(
-        JsonApplicationSettingsService.CurrentFormatVersion,
-        selectedCulture);
+      var settings = _applicationSettings with
+      {
+        UiCulture = selectedCulture
+      };
 
       try
       {

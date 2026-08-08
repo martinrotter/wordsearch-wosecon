@@ -41,6 +41,7 @@ namespace WordSearchGenerator.Desktop.Views
       _applicationSettingsService = applicationSettingsService;
       _applicationSettings = applicationSettings;
       DataContext = viewModel;
+      RestoreLayout();
 
       _viewModel.PropertyChanged += ViewModelOnPropertyChanged;
       PreviewBrowser.IsBrowserInitializedChanged +=

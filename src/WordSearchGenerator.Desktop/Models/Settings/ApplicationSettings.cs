@@ -1,6 +1,14 @@
 namespace WordSearchGenerator.Desktop.Models.Settings
 {
   public sealed record ApplicationSettings(
-    int FormatVersion,
-    string UiCulture);
+    string UiCulture,
+    MainWindowPlacement? MainWindowPlacement = null);
+
+  public sealed record MainWindowPlacement(
+    double Left,
+    double Top,
+    double Width,
+    double Height,
+    bool IsMaximized,
+    double EditorPaneWidth);
 }

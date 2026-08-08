@@ -9,8 +9,6 @@ namespace WordSearchGenerator.Desktop.Services.Settings
   {
     #region Static Fields
 
-    public const int CurrentFormatVersion = 1;
-
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
       PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -57,7 +55,6 @@ namespace WordSearchGenerator.Desktop.Services.Settings
           JsonOptions);
 
         if (settings == null ||
-            settings.FormatVersion != CurrentFormatVersion ||
             !ApplicationCulture.IsSupported(settings.UiCulture))
         {
           return defaults;
@@ -97,8 +94,8 @@ namespace WordSearchGenerator.Desktop.Services.Settings
         directory,
         $".{Path.GetFileName(fullPath)}.{Guid.NewGuid():N}.tmp");
       var normalized = new ApplicationSettings(
-        CurrentFormatVersion,
-        ApplicationCulture.Normalize(settings.UiCulture));
+        ApplicationCulture.Normalize(settings.UiCulture),
+        settings.MainWindowPlacement);
 
       try
       {
@@ -123,7 +120,6 @@ namespace WordSearchGenerator.Desktop.Services.Settings
     private static ApplicationSettings CreateDefaultSettings()
     {
       return new ApplicationSettings(
-        CurrentFormatVersion,
         ApplicationCulture.GetInitialCultureName());
     }
 

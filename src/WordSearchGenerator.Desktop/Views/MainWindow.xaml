@@ -106,9 +106,9 @@
 
     <Grid Grid.Row="1">
       <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="400" MinWidth="330" />
-        <ColumnDefinition Width="5" />
-        <ColumnDefinition Width="*" MinWidth="430" />
+        <ColumnDefinition x:Name="EditorPaneColumn" Width="400" MinWidth="330" />
+        <ColumnDefinition x:Name="MainSplitterColumn" Width="5" />
+        <ColumnDefinition x:Name="PreviewPaneColumn" Width="*" MinWidth="430" />
       </Grid.ColumnDefinitions>
 
       <Border Grid.Column="0"
