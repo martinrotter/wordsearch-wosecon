@@ -25,12 +25,18 @@ namespace WordSearchGenerator.Common.WoSeCon
     ///   construction algorithm. The result is a heuristic difficulty band,
     ///   not a guarantee that construction will finish within that time.
     /// </summary>
+    /// <param name="requiredVacantCellCount">
+    ///   Minimum cells that must remain outside all word placements. Pass the
+    ///   normal-mode secret-message length, or zero when no vacant capacity is
+    ///   required.
+    /// </param>
     public static EstimatedConstructionTime EstimateDifficulty(
       IEnumerable<WordInfo> words,
       int rowCount,
       int columnCount,
       bool quizMode,
-      int parallelism = 1)
+      int parallelism = 1,
+      int requiredVacantCellCount = 0)
     {
       ArgumentNullException.ThrowIfNull(words);
 
@@ -58,21 +64,37 @@ namespace WordSearchGenerator.Common.WoSeCon
           "Parallelism must be positive.");
       }
 
+      if (requiredVacantCellCount < 0)
+      {
+        throw new ArgumentOutOfRangeException(
+          nameof(requiredVacantCellCount),
+          requiredVacantCellCount,
+          "Required vacant-cell count cannot be negative.");
+      }
+
       var wordList = words.ToList();
 
       ValidateWords(wordList);
+
+      var cellCount = (long)rowCount * columnCount;
+
+      if (requiredVacantCellCount > cellCount)
+      {
+        return EstimatedConstructionTime.LikelyImpossible;
+      }
 
       if (wordList.Count == 0)
       {
         return EstimatedConstructionTime.FastInSeconds;
       }
 
-      var cellCount = (long)rowCount * columnCount;
+      var availablePlacementCellCount = cellCount - requiredVacantCellCount;
       var questionCellCount = quizMode ? wordList.Count : 0;
       var answerCharacterCount = wordList.Sum(word => (long)word.Text.Length);
       var requiredIntersections = Math.Max(
         0L,
-        answerCharacterCount + questionCellCount - cellCount);
+        answerCharacterCount + questionCellCount -
+        availablePlacementCellCount);
       var placementLengths = wordList
         .Select(word => word.Text.Length + (quizMode ? 1 : 0))
         .ToArray();
@@ -85,12 +107,12 @@ namespace WordSearchGenerator.Common.WoSeCon
         return EstimatedConstructionTime.LikelyImpossible;
       }
 
-      var compatibleWordPairs = CountCompatibleWordPairs(wordList);
+      var crossingStatistics = CalculateCrossingStatistics(wordList);
 
       // Two straight words can cross at most once. If even the number of
       // compatible word pairs cannot provide the minimum required sharing,
       // the input is at least structurally very unlikely to fit.
-      if (requiredIntersections > compatibleWordPairs)
+      if (requiredIntersections > crossingStatistics.CompatiblePairCount)
       {
         return EstimatedConstructionTime.LikelyImpossible;
       }
@@ -99,27 +121,61 @@ namespace WordSearchGenerator.Common.WoSeCon
       var minimumPlacementRatio = legalPlacementCounts.Min() /
                                   (double)maximumPlacementCount;
       var packingRatio = (answerCharacterCount + questionCellCount) /
-                         (double)cellCount;
-      var crossingPressure = requiredIntersections == 0
+                         Math.Max(1.0, availablePlacementCellCount);
+      var crossingScarcity = requiredIntersections == 0
         ? 0
-        : requiredIntersections / (double)Math.Max(1L, compatibleWordPairs);
+        : requiredIntersections /
+          (double)Math.Max(1L, crossingStatistics.MatchingPositionPairCount);
+      var averageWordLength = answerCharacterCount / (double)wordList.Count;
+      var maximumCharacterShare = wordList
+        .SelectMany(word => word.Text)
+        .GroupBy(character => character)
+        .Max(group => group.LongCount()) /
+        (double)answerCharacterCount;
 
-      // These weights intentionally remain simple and visible. They should
-      // be recalibrated later from real construction telemetry.
+      // Calibrated against the repository's Phase 2 and Phase 3 benchmark
+      // corpus. The score deliberately favors conservative warnings because
+      // randomized search has a very long seed-dependent tail.
       var score = 0.0;
-      score += Scale(packingRatio, 0.45, 1.25) * 35;
-      score += Scale(crossingPressure, 0, 0.35) * 25;
-      score += Scale(0.25 - minimumPlacementRatio, 0, 0.25) * 15;
-      score += Scale(wordList.Count, 5, 50) * 15;
+      score += Scale(packingRatio, 0.55, 1.35) * 22;
+      score += Scale(crossingScarcity, 0.035, 0.20) * 50;
+      score += Scale(0.30 - minimumPlacementRatio, 0, 0.30) * 10;
+      score += Scale(wordList.Count, 7, 30) * 24;
+      score += Scale(requiredIntersections, 6, 80) * 16;
+
+      // Many words at high density create a deep search tree even when the
+      // words provide plentiful crossing choices.
+      score += Scale(wordList.Count, 12, 30) *
+               Scale(packingRatio, 0.90, 1.20) *
+               18;
 
       if (quizMode)
       {
-        score += Scale(questionCellCount / (double)cellCount, 0, 0.20) * 10;
+        score += Scale(questionCellCount / (double)cellCount, 0, 0.25) * 5;
+      }
+      else
+      {
+        // The normal-mode completion validator rejects boards containing
+        // additional occurrences. Short, repetitive words and large families
+        // built from almost the same alphabet are especially prone to this.
+        score += Scale(5 - averageWordLength, 0, 2) *
+                 Scale(maximumCharacterShare, 0.20, 0.60) *
+                 Scale(packingRatio, 0.75, 1.00) *
+                 28;
+        score += Scale(
+                   crossingStatistics.MeanCharacterSetSimilarity,
+                   0.35,
+                   0.90) *
+                 Scale(wordList.Count, 6, 12) *
+                 25;
       }
 
       // Independent randomized attempts reduce time to the first solution,
-      // but with diminishing returns as more workers are added.
-      score -= Math.Min(20, Math.Log2(parallelism) * 4);
+      // but only while CPU capacity is available, and with diminishing returns.
+      var effectiveParallelism = Math.Min(
+        parallelism,
+        Math.Max(1, Environment.ProcessorCount));
+      score -= Math.Min(10, Math.Log2(effectiveParallelism) * 3);
       score = Math.Max(0, score);
 
       if (score < 25)
@@ -145,25 +201,60 @@ namespace WordSearchGenerator.Common.WoSeCon
       return EstimatedConstructionTime.CrazySlowHours;
     }
 
-    private static long CountCompatibleWordPairs(IReadOnlyList<WordInfo> words)
+    private static CrossingStatistics CalculateCrossingStatistics(
+      IReadOnlyList<WordInfo> words)
     {
-      var characterSets = words
-        .Select(word => word.Text.ToHashSet())
+      var characterCounts = words
+        .Select(word => word.Text
+          .GroupBy(character => character)
+          .ToDictionary(group => group.Key, group => group.LongCount()))
         .ToArray();
       long compatiblePairs = 0;
+      long matchingPositionPairs = 0;
+      var characterSetSimilaritySum = 0.0;
+      var pairCount = 0L;
 
-      for (var first = 0; first < characterSets.Length - 1; first++)
+      for (var first = 0; first < characterCounts.Length - 1; first++)
       {
-        for (var second = first + 1; second < characterSets.Length; second++)
+        for (var second = first + 1;
+             second < characterCounts.Length;
+             second++)
         {
-          if (characterSets[first].Overlaps(characterSets[second]))
+          var firstCounts = characterCounts[first];
+          var secondCounts = characterCounts[second];
+          var sharedCharacterCount = 0;
+
+          foreach (var characterCount in firstCounts)
+          {
+            if (!secondCounts.TryGetValue(
+                  characterCount.Key,
+                  out var secondCount))
+            {
+              continue;
+            }
+
+            sharedCharacterCount++;
+            matchingPositionPairs += characterCount.Value * secondCount;
+          }
+
+          if (sharedCharacterCount > 0)
           {
             compatiblePairs++;
           }
+
+          var combinedCharacterCount = firstCounts.Count +
+                                       secondCounts.Count -
+                                       sharedCharacterCount;
+          characterSetSimilaritySum += sharedCharacterCount /
+                                       (double)combinedCharacterCount;
+          pairCount++;
         }
       }
 
-      return compatiblePairs;
+      return new CrossingStatistics(
+        compatiblePairs,
+        matchingPositionPairs,
+        pairCount == 0 ? 0 : characterSetSimilaritySum / pairCount);
     }
 
     private static long CountLegalPlacements(
@@ -194,6 +285,11 @@ namespace WordSearchGenerator.Common.WoSeCon
 
       return (value - minimum) / (maximum - minimum);
     }
+
+    private readonly record struct CrossingStatistics(
+      long CompatiblePairCount,
+      long MatchingPositionPairCount,
+      double MeanCharacterSetSimilarity);
 
     #endregion
   }

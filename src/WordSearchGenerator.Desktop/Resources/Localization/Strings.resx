@@ -130,8 +130,8 @@
   <data name="AmbiguityAdvice" xml:space="preserve"><value>Try generating again, changing the words or message, or enlarging the matrix.</value></data>
   <data name="GenerationFailed" xml:space="preserve"><value>Generation failed</value></data>
   <data name="WordsCouldNotBePlaced" xml:space="preserve"><value>The words could not be placed in this matrix. Adjust the input and try again.</value></data>
-  <data name="SearchProgressSummary" xml:space="preserve"><value>{0:N0} active, {1:N0} finished; best depth {2:N0} of {3:N0}.</value></data>
-  <data name="ProgressTooltip" xml:space="preserve"><value>The upper bar shows search activity. The lower bar shows the furthest placement depth, not elapsed-time completion.&#xA;Workers: {0:N0} active; {1:N0} of {2:N0} finished&#xA;Placement failures: {3:N0}&#xA;Message-capacity rejections: {4:N0}&#xA;Ambiguous boards rejected: {5:N0}&#xA;Cancelled attempts: {6:N0}&#xA;Currently placed: {7:N0} of {8:N0}&#xA;Furthest placed: {9:N0} of {8:N0}&#xA;Tested positions: {10:N0}&#xA;Backtracks: {11:N0}&#xA;Elapsed: {12}</value></data>
+  <data name="SearchProgressSummary" xml:space="preserve"><value>{0:N0} active, {1:N0} finished; best active depth {2:N0} of {3:N0}; {4:N0} complete candidates checked.</value></data>
+  <data name="ProgressTooltip" xml:space="preserve"><value>The upper bar shows search activity. The lower bar shows the best current placement depth among active workers and may move backward.&#xA;&#xA;Workers: {0:N0} active; {1:N0} of {2:N0} finished&#xA;Attempts exhausted before a complete layout: {3:N0}&#xA;Complete candidate layouts checked: {4:N0}&#xA;Rejected due to message capacity: {5:N0}&#xA;Rejected as ambiguous: {6:N0}&#xA;Cancelled attempts: {7:N0}&#xA;Best active placement depth: {8:N0} of {9:N0}&#xA;Furthest depth reached: {10:N0} of {9:N0}&#xA;Tested positions: {11:N0}&#xA;Backtracks: {12:N0}&#xA;Elapsed: {13}&#xA;&#xA;Reaching {9:N0}/{9:N0} only produces a candidate layout. Generation finishes after the complete board also passes message-capacity and uniqueness validation.</value></data>
   <data name="AnswerRequired" xml:space="preserve"><value>An answer is required.</value></data>
   <data name="AnswerMinimumLength" xml:space="preserve"><value>An answer must contain at least two characters.</value></data>
   <data name="QuestionRequired" xml:space="preserve"><value>A question is required.</value></data>
@@ -237,7 +237,7 @@
   <data name="HtmlMessageCharacterLabel" xml:space="preserve"><value>Secret-message character {0}, {1}</value></data>
   <data name="HtmlWordCharacter" xml:space="preserve"><value>Word character</value></data>
   <data name="HtmlWordLabel" xml:space="preserve"><value>{0} {1}, words {2}, {3}</value></data>
-  <data name="MonteCarloFailure" xml:space="preserve"><value>None of {0} attempts produced an acceptable board. Placement failures: {1}; message-capacity rejections: {2}; ambiguous boards rejected: {3}.</value></data>
+  <data name="MonteCarloFailure" xml:space="preserve"><value>None of {0} attempts produced an acceptable board. Attempts exhausted before a complete layout: {1}; complete candidates checked: {2}; rejected due to message capacity: {3}; rejected as ambiguous: {4}.</value></data>
   <data name="ProjectFileEmpty" xml:space="preserve"><value>The project file is empty.</value></data>
   <data name="ProjectJsonInvalid" xml:space="preserve"><value>The project file does not contain valid WoSeCon JSON.</value></data>
   <data name="ProjectPathNoParent" xml:space="preserve"><value>The project path has no parent directory.</value></data>

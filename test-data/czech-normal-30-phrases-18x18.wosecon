@@ -1,0 +1,133 @@
+{
+  "formatVersion": 1,
+  "mode": "Normal",
+  "rows": 18,
+  "columns": 18,
+  "entries": [
+    {
+      "answer": "horské údolí",
+      "question": null
+    },
+    {
+      "answer": "kamenný most",
+      "question": null
+    },
+    {
+      "answer": "tichá řeka",
+      "question": null
+    },
+    {
+      "answer": "zelená louka",
+      "question": null
+    },
+    {
+      "answer": "starý mlýn",
+      "question": null
+    },
+    {
+      "answer": "lesní pěšina",
+      "question": null
+    },
+    {
+      "answer": "modrá obloha",
+      "question": null
+    },
+    {
+      "answer": "ranní mlha",
+      "question": null
+    },
+    {
+      "answer": "ptačí zpěv",
+      "question": null
+    },
+    {
+      "answer": "divoký potok",
+      "question": null
+    },
+    {
+      "answer": "dřevěná chata",
+      "question": null
+    },
+    {
+      "answer": "skalní brána",
+      "question": null
+    },
+    {
+      "answer": "hluboký les",
+      "question": null
+    },
+    {
+      "answer": "zlaté kapradí",
+      "question": null
+    },
+    {
+      "answer": "noční hvězdy",
+      "question": null
+    },
+    {
+      "answer": "jarní bouřka",
+      "question": null
+    },
+    {
+      "answer": "zimní krajina",
+      "question": null
+    },
+    {
+      "answer": "letní tábor",
+      "question": null
+    },
+    {
+      "answer": "podzimní listí",
+      "question": null
+    },
+    {
+      "answer": "ohnivý západ",
+      "question": null
+    },
+    {
+      "answer": "sněžná vločka",
+      "question": null
+    },
+    {
+      "answer": "tajemná jeskyně",
+      "question": null
+    },
+    {
+      "answer": "opuštěná věž",
+      "question": null
+    },
+    {
+      "answer": "cesta domů",
+      "question": null
+    },
+    {
+      "answer": "stříbrný měsíc",
+      "question": null
+    },
+    {
+      "answer": "voňavé jehličí",
+      "question": null
+    },
+    {
+      "answer": "mechový kámen",
+      "question": null
+    },
+    {
+      "answer": "rezavá lucerna",
+      "question": null
+    },
+    {
+      "answer": "vzdálený vrchol",
+      "question": null
+    },
+    {
+      "answer": "prastarý dub",
+      "question": null
+    }
+  ],
+  "secretMessage": "dobrodružství čeká",
+  "puzzleHeading": "Výprava do přírody",
+  "entryListHeading": "Výrazy k nalezení",
+  "parallelAttempts": 16,
+  "generatedBoard": null
+}

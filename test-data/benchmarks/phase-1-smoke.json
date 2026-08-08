@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "outputName": "phase-1-smoke",
+  "cases": [
+    {
+      "id": "normal-3x3-one-word",
+      "mode": "Normal",
+      "rows": 3,
+      "columns": 3,
+      "words": [
+        "ABC"
+      ],
+      "secretMessage": "",
+      "parallelism": 1,
+      "repetitions": 1,
+      "timeoutSeconds": 10,
+      "baseSeed": 1001,
+      "notes": "Harness smoke test only."
+    }
+  ]
+}

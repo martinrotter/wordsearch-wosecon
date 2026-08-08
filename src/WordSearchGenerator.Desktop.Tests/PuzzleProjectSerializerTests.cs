@@ -1,0 +1,80 @@
+using WordSearchGenerator.Common;
+using WordSearchGenerator.Common.WoSeCon.Api;
+using WordSearchGenerator.Desktop.Models;
+using WordSearchGenerator.Desktop.Services.Persistence;
+
+namespace WordSearchGenerator.Desktop.Tests
+{
+  [TestClass]
+  public sealed class PuzzleProjectSerializerTests
+  {
+    [TestMethod]
+    public async Task CandidateStatisticsRoundTripWithGeneratedProject()
+    {
+      var definition = new PuzzleDefinition(
+        PuzzleMode.Normal,
+        1,
+        3,
+        [new PuzzleEntry("ABC")],
+        string.Empty,
+        string.Empty,
+        string.Empty,
+        new GenerationOptions(4));
+      var word = new WordInfo
+      {
+        Text = "ABC",
+        WordNumber = 1,
+        Placement = new DirectedLocation
+        {
+          Row = 0,
+          Column = 0,
+          Direction = DirectedLocation.LocationDirection.LeftToRight
+        }
+      };
+      var result = new GenerationResult(
+        definition,
+        new Board([word], 1, 3, false),
+        TimeSpan.FromSeconds(1),
+        100,
+        10,
+        4,
+        1,
+        123,
+        TimeSpan.FromMilliseconds(100),
+        25,
+        2,
+        1,
+        1,
+        1,
+        10,
+        7,
+        2,
+        1);
+      var serializer = new PuzzleProjectSerializer();
+      var path = Path.Combine(
+        Path.GetTempPath(),
+        $"wosecon-statistics-{Guid.NewGuid():N}.wosecon");
+
+      try
+      {
+        await serializer.SaveAsync(path, definition, result);
+        var restored = await serializer.LoadAsync(path);
+
+        Assert.IsNotNull(restored.GeneratedResult);
+        Assert.AreEqual(10, restored.GeneratedResult.CompletedCandidateCount);
+        Assert.AreEqual(7, restored.GeneratedResult.MessageCapacityRejectionCount);
+        Assert.AreEqual(2, restored.GeneratedResult.AmbiguousBoardRejectionCount);
+        Assert.AreEqual(1, restored.GeneratedResult.PlacementFailedAttemptCount);
+        Assert.AreEqual(1, restored.GeneratedResult.MessageCapacityRejectedAttemptCount);
+        Assert.AreEqual(1, restored.GeneratedResult.AmbiguityRejectedAttemptCount);
+      }
+      finally
+      {
+        if (File.Exists(path))
+        {
+          File.Delete(path);
+        }
+      }
+    }
+  }
+}

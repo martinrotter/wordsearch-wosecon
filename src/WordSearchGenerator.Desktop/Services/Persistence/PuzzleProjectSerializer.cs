@@ -122,11 +122,14 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
         {
           AttemptCount = result.AttemptCount,
           AmbiguousBoardRejectionCount = result.AmbiguousBoardRejectionCount,
+          AmbiguityRejectedAttemptCount = result.AmbiguityRejectedAttemptCount,
           Backtrackings = result.Backtrackings,
           CancelledAttemptCount = result.CancelledAttemptCount,
+          CompletedCandidateCount = result.CompletedCandidateCount,
           ElapsedTicks = result.Elapsed.Ticks,
-          MessageRejectedAttemptCount = result.MessageRejectedAttemptCount,
-          PlacementFailureCount = result.PlacementFailureCount,
+          MessageCapacityRejectionCount = result.MessageCapacityRejectionCount,
+          MessageRejectedAttemptCount = result.MessageCapacityRejectedAttemptCount,
+          PlacementFailureCount = result.PlacementFailedAttemptCount,
           Placements = result.Board.Words
             .Select(word => word.Placement == null
               ? throw new InvalidOperationException(AppStrings.Format(
@@ -197,11 +200,20 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
       ValidateNonNegative(
         generated.AmbiguousBoardRejectionCount,
         nameof(generated.AmbiguousBoardRejectionCount));
+      ValidateOptionalNonNegative(
+        generated.AmbiguityRejectedAttemptCount,
+        nameof(generated.AmbiguityRejectedAttemptCount));
       ValidateNonNegative(generated.Backtrackings, nameof(generated.Backtrackings));
       ValidateNonNegative(
         generated.CancelledAttemptCount,
         nameof(generated.CancelledAttemptCount));
       ValidateNonNegative(generated.ElapsedTicks, nameof(generated.ElapsedTicks));
+      ValidateOptionalNonNegative(
+        generated.CompletedCandidateCount,
+        nameof(generated.CompletedCandidateCount));
+      ValidateOptionalNonNegative(
+        generated.MessageCapacityRejectionCount,
+        nameof(generated.MessageCapacityRejectionCount));
       ValidateNonNegative(
         generated.MessageRejectedAttemptCount,
         nameof(generated.MessageRejectedAttemptCount));
@@ -311,6 +323,14 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
           AppStrings.Get("SavedBoardAmbiguous"));
       }
 
+      var messageCapacityRejectionCount =
+        generated.MessageCapacityRejectionCount ??
+        generated.MessageRejectedAttemptCount;
+      var completedCandidateCount = generated.CompletedCandidateCount ??
+                                    messageCapacityRejectionCount +
+                                    generated.AmbiguousBoardRejectionCount +
+                                    1;
+
       return new GenerationResult(
         definition,
         board,
@@ -325,6 +345,9 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
         generated.WinningAttemptBacktrackings,
         generated.PlacementFailureCount,
         generated.MessageRejectedAttemptCount,
+        generated.AmbiguityRejectedAttemptCount ?? 0,
+        completedCandidateCount,
+        messageCapacityRejectionCount,
         generated.AmbiguousBoardRejectionCount,
         generated.CancelledAttemptCount);
     }
@@ -408,6 +431,14 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
       }
     }
 
+    private static void ValidateOptionalNonNegative(long? value, string name)
+    {
+      if (value.HasValue)
+      {
+        ValidateNonNegative(value.Value, name);
+      }
+    }
+
     #endregion
 
     #region Nested Types
@@ -441,6 +472,12 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
         set;
       }
 
+      public int? AmbiguityRejectedAttemptCount
+      {
+        get;
+        set;
+      }
+
       public int AttemptCount
       {
         get;
@@ -459,7 +496,19 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
         set;
       }
 
+      public long? CompletedCandidateCount
+      {
+        get;
+        set;
+      }
+
       public long ElapsedTicks
+      {
+        get;
+        set;
+      }
+
+      public long? MessageCapacityRejectionCount
       {
         get;
         set;

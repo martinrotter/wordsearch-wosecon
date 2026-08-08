@@ -130,8 +130,8 @@
   <data name="AmbiguityAdvice" xml:space="preserve"><value>Zkuste generování zopakovat, změnit slova či tajenku nebo zvětšit mřížku.</value></data>
   <data name="GenerationFailed" xml:space="preserve"><value>Generování selhalo</value></data>
   <data name="WordsCouldNotBePlaced" xml:space="preserve"><value>Slova se do této mřížky nepodařilo umístit. Upravte zadání a zkuste to znovu.</value></data>
-  <data name="SearchProgressSummary" xml:space="preserve"><value>{0:N0} aktivních, {1:N0} dokončených; nejlepší hloubka {2:N0} z {3:N0}.</value></data>
-  <data name="ProgressTooltip" xml:space="preserve"><value>Horní ukazatel znázorňuje aktivitu hledání. Dolní ukazatel znázorňuje největší dosaženou hloubku umisťování, nikoli časový průběh.&#xA;Vlákna: {0:N0} aktivních; dokončeno {1:N0} z {2:N0}&#xA;Selhání umístění: {3:N0}&#xA;Odmítnutí kvůli kapacitě tajenky: {4:N0}&#xA;Odmítnuté nejednoznačné mřížky: {5:N0}&#xA;Zrušené pokusy: {6:N0}&#xA;Právě umístěno: {7:N0} z {8:N0}&#xA;Nejvíce umístěno: {9:N0} z {8:N0}&#xA;Otestované pozice: {10:N0}&#xA;Návraty: {11:N0}&#xA;Uplynulo: {12}</value></data>
+  <data name="SearchProgressSummary" xml:space="preserve"><value>{0:N0} aktivních, {1:N0} dokončených; nejlepší aktivní hloubka {2:N0} z {3:N0}; prověřeno {4:N0} úplných kandidátů.</value></data>
+  <data name="ProgressTooltip" xml:space="preserve"><value>Horní ukazatel znázorňuje aktivitu hledání. Dolní ukazatel ukazuje nejlepší aktuální hloubku mezi aktivními vlákny a při návratu se může snížit.&#xA;&#xA;Vlákna: {0:N0} aktivních; dokončeno {1:N0} z {2:N0}&#xA;Pokusy vyčerpané bez úplného rozložení: {3:N0}&#xA;Prověřené úplné kandidátní mřížky: {4:N0}&#xA;Odmítnutí kvůli kapacitě tajenky: {5:N0}&#xA;Odmítnutí kvůli nejednoznačnosti: {6:N0}&#xA;Zrušené pokusy: {7:N0}&#xA;Nejlepší aktivní hloubka: {8:N0} z {9:N0}&#xA;Největší dosažená hloubka: {10:N0} z {9:N0}&#xA;Otestované pozice: {11:N0}&#xA;Návraty: {12:N0}&#xA;Uplynulo: {13}&#xA;&#xA;Dosažení {9:N0}/{9:N0} vytvoří pouze kandidátní rozložení. Generování skončí až poté, co úplná mřížka projde kontrolou kapacity tajenky a jednoznačnosti.</value></data>
   <data name="AnswerRequired" xml:space="preserve"><value>Odpověď je povinná.</value></data>
   <data name="AnswerMinimumLength" xml:space="preserve"><value>Odpověď musí obsahovat alespoň dva znaky.</value></data>
   <data name="QuestionRequired" xml:space="preserve"><value>Otázka je povinná.</value></data>
@@ -237,7 +237,7 @@
   <data name="HtmlMessageCharacterLabel" xml:space="preserve"><value>Znak tajenky {0}, {1}</value></data>
   <data name="HtmlWordCharacter" xml:space="preserve"><value>Znak slova</value></data>
   <data name="HtmlWordLabel" xml:space="preserve"><value>{0} {1}, slova {2}, {3}</value></data>
-  <data name="MonteCarloFailure" xml:space="preserve"><value>Žádný z {0} pokusů nevytvořil přijatelnou mřížku. Selhání umístění: {1}; odmítnutí kvůli kapacitě tajenky: {2}; odmítnuté nejednoznačné mřížky: {3}.</value></data>
+  <data name="MonteCarloFailure" xml:space="preserve"><value>Žádný z {0} pokusů nevytvořil přijatelnou mřížku. Pokusy vyčerpané bez úplného rozložení: {1}; prověřené úplné kandidátní mřížky: {2}; odmítnutí kvůli kapacitě tajenky: {3}; odmítnutí kvůli nejednoznačnosti: {4}.</value></data>
   <data name="ProjectFileEmpty" xml:space="preserve"><value>Soubor projektu je prázdný.</value></data>
   <data name="ProjectJsonInvalid" xml:space="preserve"><value>Soubor projektu neobsahuje platný JSON WoSeCon.</value></data>
   <data name="ProjectPathNoParent" xml:space="preserve"><value>Cesta projektu nemá nadřazenou složku.</value></data>

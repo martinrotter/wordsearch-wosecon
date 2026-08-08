@@ -166,6 +166,155 @@ namespace WordSearchGenerator.Tests
     }
 
     [TestMethod]
+    public void EstimateDifficultyRecognizesImpossibleMessageCapacity()
+    {
+      var estimate = WoSeCon.EstimateDifficulty(
+        CreateWords(new[]
+        {
+          "ABC"
+        }),
+        3,
+        3,
+        false,
+        requiredVacantCellCount: 7);
+
+      Assert.AreEqual(
+        WoSeCon.EstimatedConstructionTime.LikelyImpossible,
+        estimate);
+    }
+
+    [TestMethod]
+    public void EstimateDifficultyPenalizesNormalMessageCapacityPressure()
+    {
+      var words = CreateWords(new[]
+      {
+        "ABCDE", "AFGHI", "AJKLM", "ANOPQ", "ARSTU"
+      });
+      var withoutMessage = WoSeCon.EstimateDifficulty(
+        words,
+        8,
+        8,
+        false);
+      var withLongMessage = WoSeCon.EstimateDifficulty(
+        words,
+        8,
+        8,
+        false,
+        requiredVacantCellCount: 40);
+
+      Assert.IsTrue(withLongMessage > withoutMessage);
+      Assert.AreNotEqual(
+        WoSeCon.EstimatedConstructionTime.LikelyImpossible,
+        withLongMessage);
+    }
+
+    [TestMethod]
+    public void EstimateDifficultyTracksMeasuredMessagePressureCliff()
+    {
+      var words = CreateWords(new[]
+      {
+        "ALPHA", "BRAVO", "CHIME", "DELTA",
+        "EAGLE", "FJORD", "GHOST", "HOTEL"
+      });
+
+      var underMinute = WoSeCon.EstimateDifficulty(
+        words,
+        10,
+        10,
+        false,
+        4,
+        65);
+      var fewMinutes = WoSeCon.EstimateDifficulty(
+        words,
+        10,
+        10,
+        false,
+        4,
+        66);
+      var manyMinutes = WoSeCon.EstimateDifficulty(
+        words,
+        10,
+        10,
+        false,
+        4,
+        68);
+
+      Assert.AreEqual(
+        WoSeCon.EstimatedConstructionTime.FastUnderMinute,
+        underMinute);
+      Assert.AreEqual(
+        WoSeCon.EstimatedConstructionTime.SlowFewMinutes,
+        fewMinutes);
+      Assert.AreEqual(
+        WoSeCon.EstimatedConstructionTime.SlowerManyMinutes,
+        manyMinutes);
+    }
+
+    [TestMethod]
+    public void EstimateDifficultyAccountsForAmbiguityProneWords()
+    {
+      var estimate = WoSeCon.EstimateDifficulty(
+        CreateWords(new[]
+        {
+          "ABA", "ACA", "ADA", "AEA", "AFA", "AGA"
+        }),
+        6,
+        6,
+        false,
+        4,
+        18);
+
+      Assert.AreEqual(
+        WoSeCon.EstimatedConstructionTime.FastUnderMinute,
+        estimate);
+    }
+
+    [TestMethod]
+    public void EstimateDifficultyAccountsForSimilarWordFamilies()
+    {
+      var estimate = WoSeCon.EstimateDifficulty(
+        CreateWords(new[]
+        {
+          "ABCDEF", "BCDEFA", "CDEFAB", "DEFABC",
+          "EFABCD", "FABCDE", "ACEBDF", "BDFACE",
+          "ADBECF", "BEACFD", "CAFBED", "DABFCE"
+        }),
+        10,
+        10,
+        false,
+        4);
+
+      Assert.AreEqual(
+        WoSeCon.EstimatedConstructionTime.FastUnderMinute,
+        estimate);
+    }
+
+    [TestMethod]
+    public void EstimateDifficultyRecognizesExtremelyDenseSearchTree()
+    {
+      var estimate = WoSeCon.EstimateDifficulty(
+        CreateWords(new[]
+        {
+          "AAAAAAAAAAA", "BBBBBBBBBBB", "CDEFGHIJKLM",
+          "NOPQRSTUVWX", "YZ012345678", "9ABCDEFGHIJ",
+          "KLMNOPQRSTU", "VWXYZ012345", "6789ABCDEFG",
+          "HIJKLMNOPQR", "STUVWXYZ012", "ABCNY9KV6HS",
+          "ABDOZALW7IT", "ABEP0BMX8JU", "ABFQ1CNY9KV",
+          "ABGR2DOZALW", "ABHS3EP0BMX", "ABIT4FQ1CNY",
+          "ABJU5GR2DOZ", "ABKV6HS3EP0", "ABLW7IT4FQ1",
+          "ABMX8JU5GR2"
+        }),
+        11,
+        11,
+        false,
+        4);
+
+      Assert.AreEqual(
+        WoSeCon.EstimatedConstructionTime.CrazySlowHours,
+        estimate);
+    }
+
+    [TestMethod]
     public void ConstructsExpectedCrossing()
     {
       DirectedLocation[] expectedPlacements =

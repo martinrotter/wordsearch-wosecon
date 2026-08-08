@@ -287,8 +287,9 @@ namespace WordSearchGenerator.Desktop.ViewModels
       AttemptCount = result.AttemptCount;
       ActiveAttemptCount = 0;
       FinishedAttemptCount = result.AttemptCount;
-      PlacementFailureCount = result.PlacementFailureCount;
-      MessageRejectedAttemptCount = result.MessageRejectedAttemptCount;
+      PlacementFailedAttemptCount = result.PlacementFailedAttemptCount;
+      CompletedCandidateCount = result.CompletedCandidateCount;
+      MessageCapacityRejectionCount = result.MessageCapacityRejectionCount;
       AmbiguousBoardRejectionCount = result.AmbiguousBoardRejectionCount;
       CancelledAttemptCount = result.CancelledAttemptCount;
       PlacedWordCount = result.Definition.Entries.Count;

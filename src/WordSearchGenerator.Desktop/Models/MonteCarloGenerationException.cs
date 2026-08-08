@@ -16,12 +16,27 @@ namespace WordSearchGenerator.Desktop.Models
       get;
     }
 
-    public int MessageRejectedAttemptCount
+    public int AmbiguityRejectedAttemptCount
     {
       get;
     }
 
-    public int PlacementFailureCount
+    public long CompletedCandidateCount
+    {
+      get;
+    }
+
+    public long MessageCapacityRejectionCount
+    {
+      get;
+    }
+
+    public int MessageCapacityRejectedAttemptCount
+    {
+      get;
+    }
+
+    public int PlacementFailedAttemptCount
     {
       get;
     }
@@ -32,18 +47,25 @@ namespace WordSearchGenerator.Desktop.Models
 
     public MonteCarloGenerationException(
       int attemptCount,
-      int placementFailureCount,
-      int messageRejectedAttemptCount,
+      int placementFailedAttemptCount,
+      int messageCapacityRejectedAttemptCount,
+      int ambiguityRejectedAttemptCount,
+      long completedCandidateCount,
+      long messageCapacityRejectionCount,
       long ambiguousBoardRejectionCount)
       : base(CreateMessage(
         attemptCount,
-        placementFailureCount,
-        messageRejectedAttemptCount,
+        placementFailedAttemptCount,
+        completedCandidateCount,
+        messageCapacityRejectionCount,
         ambiguousBoardRejectionCount))
     {
       AttemptCount = attemptCount;
-      PlacementFailureCount = placementFailureCount;
-      MessageRejectedAttemptCount = messageRejectedAttemptCount;
+      PlacementFailedAttemptCount = placementFailedAttemptCount;
+      MessageCapacityRejectedAttemptCount = messageCapacityRejectedAttemptCount;
+      AmbiguityRejectedAttemptCount = ambiguityRejectedAttemptCount;
+      CompletedCandidateCount = completedCandidateCount;
+      MessageCapacityRejectionCount = messageCapacityRejectionCount;
       AmbiguousBoardRejectionCount = ambiguousBoardRejectionCount;
     }
 
@@ -53,15 +75,17 @@ namespace WordSearchGenerator.Desktop.Models
 
     private static string CreateMessage(
       int attemptCount,
-      int placementFailureCount,
-      int messageRejectedAttemptCount,
+      int placementFailedAttemptCount,
+      long completedCandidateCount,
+      long messageCapacityRejectionCount,
       long ambiguousBoardRejectionCount)
     {
       return AppStrings.Format(
         "MonteCarloFailure",
         attemptCount,
-        placementFailureCount,
-        messageRejectedAttemptCount,
+        placementFailedAttemptCount,
+        completedCandidateCount,
+        messageCapacityRejectionCount,
         ambiguousBoardRejectionCount);
     }
 

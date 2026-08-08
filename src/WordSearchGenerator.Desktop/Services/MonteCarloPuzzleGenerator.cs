@@ -17,6 +17,21 @@ namespace WordSearchGenerator.Desktop.Services
 
     #endregion
 
+    #region Fields
+
+    private readonly Func<int, int[]> _seedFactory;
+
+    #endregion
+
+    #region Constructors
+
+    public MonteCarloPuzzleGenerator(Func<int, int[]>? seedFactory = null)
+    {
+      _seedFactory = seedFactory ?? CreateSeeds;
+    }
+
+    #endregion
+
     #region Interface Implementations
 
     public async Task<GenerationResult> GenerateAsync(
@@ -28,7 +43,17 @@ namespace WordSearchGenerator.Desktop.Services
       cancellationToken.ThrowIfCancellationRequested();
 
       var attemptCount = definition.Generation.ParallelAttempts;
-      var seeds = CreateSeeds(attemptCount);
+      var seeds = _seedFactory(attemptCount);
+
+      if (seeds == null ||
+          seeds.Length != attemptCount ||
+          seeds.Any(seed => seed <= 0) ||
+          seeds.Distinct().Count() != seeds.Length)
+      {
+        throw new InvalidOperationException(
+          "The seed factory must return the requested number of distinct positive seeds.");
+      }
+
       using var linkedCancellation =
         CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
       var aggregator = new ProgressAggregator(
@@ -98,8 +123,11 @@ namespace WordSearchGenerator.Desktop.Services
       {
         throw new MonteCarloGenerationException(
           attemptCount,
-          finalProgress.PlacementFailureCount,
-          finalProgress.MessageRejectedAttemptCount,
+          finalProgress.PlacementFailedAttemptCount,
+          finalProgress.MessageCapacityRejectedAttemptCount,
+          finalProgress.AmbiguityRejectedAttemptCount,
+          finalProgress.CompletedCandidateCount,
+          finalProgress.MessageCapacityRejectionCount,
           finalProgress.AmbiguousBoardRejectionCount);
       }
 
@@ -115,8 +143,11 @@ namespace WordSearchGenerator.Desktop.Services
         winner.Elapsed,
         winner.TestedPositions,
         winner.Backtrackings,
-        finalProgress.PlacementFailureCount,
-        finalProgress.MessageRejectedAttemptCount,
+        finalProgress.PlacementFailedAttemptCount,
+        finalProgress.MessageCapacityRejectedAttemptCount,
+        finalProgress.AmbiguityRejectedAttemptCount,
+        finalProgress.CompletedCandidateCount,
+        finalProgress.MessageCapacityRejectionCount,
         finalProgress.AmbiguousBoardRejectionCount,
         finalProgress.CancelledAttemptCount);
     }
@@ -205,11 +236,13 @@ namespace WordSearchGenerator.Desktop.Services
             catch (MessageCannotBePlacedException)
             {
               completedLayoutMessageRejected = true;
+              aggregator.RecordMessageCapacityRejection();
               return false;
             }
 
             if (board.HasUniqueWordOccurrences())
             {
+              aggregator.RecordAcceptedCandidate();
               return true;
             }
 
@@ -218,7 +251,7 @@ namespace WordSearchGenerator.Desktop.Services
             return false;
           };
         }
-        else if (definition.SecretMessage.Length != 0)
+        else
         {
           completionValidator = placedWords =>
           {
@@ -230,11 +263,13 @@ namespace WordSearchGenerator.Desktop.Services
                 definition.Columns,
                 true,
                 definition.SecretMessage);
+              aggregator.RecordAcceptedCandidate();
               return true;
             }
             catch (MessageCannotBePlacedException)
             {
               completedLayoutMessageRejected = true;
+              aggregator.RecordMessageCapacityRejection();
               return false;
             }
           };
@@ -329,7 +364,7 @@ namespace WordSearchGenerator.Desktop.Services
 
     #region Nested Types
 
-    private enum AttemptCompletion
+    internal enum AttemptCompletion
     {
       Running,
       Succeeded,
@@ -480,7 +515,7 @@ namespace WordSearchGenerator.Desktop.Services
       #endregion
     }
 
-    private sealed class ProgressAggregator
+    internal sealed class ProgressAggregator
     {
       #region Static Fields
 
@@ -497,6 +532,8 @@ namespace WordSearchGenerator.Desktop.Services
       private readonly Stopwatch _stopwatch = Stopwatch.StartNew();
       private readonly int _totalWordCount;
       private long _ambiguousBoardRejectionCount;
+      private long _completedCandidateCount;
+      private long _messageCapacityRejectionCount;
       private long _nextReportAt;
 
       #endregion
@@ -567,9 +604,36 @@ namespace WordSearchGenerator.Desktop.Services
         return snapshot;
       }
 
+      public void RecordAcceptedCandidate()
+      {
+        lock (_gate)
+        {
+          _completedCandidateCount++;
+        }
+
+        Report();
+      }
+
       public void RecordAmbiguousBoardRejection()
       {
-        Interlocked.Increment(ref _ambiguousBoardRejectionCount);
+        lock (_gate)
+        {
+          _completedCandidateCount++;
+          _ambiguousBoardRejectionCount++;
+        }
+
+        Report();
+      }
+
+      public void RecordMessageCapacityRejection()
+      {
+        lock (_gate)
+        {
+          _completedCandidateCount++;
+          _messageCapacityRejectionCount++;
+        }
+
+        Report();
       }
 
       public void Update(
@@ -595,10 +659,12 @@ namespace WordSearchGenerator.Desktop.Services
       {
         var activeAttemptCount = _states.Count(state => state.Completion == AttemptCompletion.Running);
         var finishedAttemptCount = _states.Length - activeAttemptCount;
-        var placementFailureCount =
+        var placementFailedAttemptCount =
           _states.Count(state => state.Completion == AttemptCompletion.PlacementFailed);
-        var messageRejectedAttemptCount =
+        var messageCapacityRejectedAttemptCount =
           _states.Count(state => state.Completion == AttemptCompletion.MessageRejected);
+        var ambiguityRejectedAttemptCount =
+          _states.Count(state => state.Completion == AttemptCompletion.AmbiguityRejected);
         var cancelledAttemptCount = _states.Count(state => state.Completion == AttemptCompletion.Cancelled);
         var placedWordCount = _states
           .Where(state => state.Completion == AttemptCompletion.Running)
@@ -615,9 +681,12 @@ namespace WordSearchGenerator.Desktop.Services
         return new MonteCarloProgress(
           activeAttemptCount,
           finishedAttemptCount,
-          placementFailureCount,
-          messageRejectedAttemptCount,
-          Interlocked.Read(ref _ambiguousBoardRejectionCount),
+          placementFailedAttemptCount,
+          messageCapacityRejectedAttemptCount,
+          ambiguityRejectedAttemptCount,
+          _completedCandidateCount,
+          _messageCapacityRejectionCount,
+          _ambiguousBoardRejectionCount,
           cancelledAttemptCount,
           _states.Length,
           placedWordCount,

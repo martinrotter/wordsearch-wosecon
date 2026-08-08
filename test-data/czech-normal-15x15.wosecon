@@ -1,8 +1,5 @@
 {
-  "formatVersion": 1,
-  "mode": "Normal",
-  "rows": 15,
-  "columns": 15,
+  "columns": 12,
   "entries": [
     {
       "answer": "praha",
@@ -13,7 +10,7 @@
       "question": null
     },
     {
-      "answer": "sněžka",
+      "answer": "sn\u011B\u017Eka",
       "question": null
     },
     {
@@ -29,7 +26,7 @@
       "question": null
     },
     {
-      "answer": "karel čapek",
+      "answer": "karel \u010Dapek",
       "question": null
     },
     {
@@ -37,23 +34,23 @@
       "question": null
     },
     {
-      "answer": "antonín dvořák",
+      "answer": "anton\u00EDn dvo\u0159\u00E1k",
       "question": null
     },
     {
-      "answer": "karlův most",
+      "answer": "karl\u016Fv most",
       "question": null
     },
     {
-      "answer": "pražský hrad",
+      "answer": "pra\u017Esk\u00FD hrad",
       "question": null
     },
     {
-      "answer": "český krumlov",
+      "answer": "\u010Desk\u00FD krumlov",
       "question": null
     },
     {
-      "answer": "moravský kras",
+      "answer": "moravsk\u00FD kras",
       "question": null
     },
     {
@@ -61,7 +58,7 @@
       "question": null
     },
     {
-      "answer": "lípa",
+      "answer": "l\u00EDpa",
       "question": null
     },
     {
@@ -73,7 +70,7 @@
       "question": null
     },
     {
-      "answer": "knedlíky",
+      "answer": "knedl\u00EDky",
       "question": null
     },
     {
@@ -89,21 +86,24 @@
       "question": null
     },
     {
-      "answer": "říp",
+      "answer": "\u0159\u00EDp",
       "question": null
     },
     {
-      "answer": "kutná hora",
+      "answer": "kutn\u00E1 hora",
       "question": null
     },
     {
-      "answer": "zlatá ulička",
+      "answer": "zlat\u00E1 uli\u010Dka",
       "question": null
     }
   ],
-  "secretMessage": "česká republika",
-  "puzzleHeading": "Česká osmisměrka",
-  "entryListHeading": "Slova k nalezení",
+  "entryListHeading": "Slova k nalezen\u00ED",
+  "formatVersion": 1,
+  "generatedBoard": null,
+  "mode": "Normal",
   "parallelAttempts": 8,
-  "generatedBoard": null
+  "puzzleHeading": "\u010Cesk\u00E1 osmism\u011Brka",
+  "rows": 15,
+  "secretMessage": "\u010Desk\u00E1 republika"
 }

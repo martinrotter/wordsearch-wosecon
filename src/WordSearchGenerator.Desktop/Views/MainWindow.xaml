@@ -671,6 +671,15 @@
             Padding="14,8,14,9"
             BorderBrush="{DynamicResource {x:Static SystemColors.InactiveBorderBrushKey}}"
             BorderThickness="0,1,0,0">
+      <Border.ToolTip>
+        <StackPanel MaxWidth="330">
+          <TextBlock FontWeight="SemiBold" Text="{localization:Loc GenerationDetails}" />
+          <TextBlock Margin="0,5,0,0"
+                     Text="{Binding ProgressToolTip}"
+                     TextWrapping="Wrap" />
+        </StackPanel>
+      </Border.ToolTip>
+
       <Grid>
         <Grid.RowDefinitions>
           <RowDefinition Height="Auto" />
@@ -714,17 +723,8 @@
             <RowDefinition Height="Auto" />
           </Grid.RowDefinitions>
 
-          <Grid.ToolTip>
-            <StackPanel MaxWidth="330">
-              <TextBlock FontWeight="SemiBold" Text="{localization:Loc GenerationDetails}" />
-              <TextBlock Margin="0,5,0,0"
-                         Text="{Binding ProgressToolTip}"
-                         TextWrapping="Wrap" />
-            </StackPanel>
-          </Grid.ToolTip>
-
           <ProgressBar Grid.Row="0"
-                       Height="5"
+                       Height="9"
                        IsIndeterminate="{Binding IsGenerating, Mode=OneWay}">
             <ProgressBar.Style>
               <Style TargetType="ProgressBar"
@@ -740,7 +740,7 @@
           </ProgressBar>
 
           <ProgressBar Grid.Row="1"
-                       Height="7"
+                       Height="9"
                        Minimum="0"
                        Maximum="{Binding ProgressMaximum, Mode=OneWay}"
                        Value="{Binding ProgressValue, Mode=OneWay}" />

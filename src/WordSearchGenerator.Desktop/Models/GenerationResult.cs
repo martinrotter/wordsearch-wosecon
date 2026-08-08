@@ -21,6 +21,11 @@ namespace WordSearchGenerator.Desktop.Models
       get;
     }
 
+    public int AmbiguityRejectedAttemptCount
+    {
+      get;
+    }
+
     public int BlackBoxCount
     {
       get;
@@ -32,6 +37,11 @@ namespace WordSearchGenerator.Desktop.Models
     }
 
     public int CancelledAttemptCount
+    {
+      get;
+    }
+
+    public long CompletedCandidateCount
     {
       get;
     }
@@ -53,12 +63,17 @@ namespace WordSearchGenerator.Desktop.Models
       get;
     }
 
-    public int MessageRejectedAttemptCount
+    public long MessageCapacityRejectionCount
     {
       get;
     }
 
-    public int PlacementFailureCount
+    public int MessageCapacityRejectedAttemptCount
+    {
+      get;
+    }
+
+    public int PlacementFailedAttemptCount
     {
       get;
     }
@@ -119,8 +134,11 @@ namespace WordSearchGenerator.Desktop.Models
       TimeSpan winningAttemptElapsed,
       long winningAttemptTestedPositions,
       int winningAttemptBacktrackings,
-      int placementFailureCount,
-      int messageRejectedAttemptCount,
+      int placementFailedAttemptCount,
+      int messageCapacityRejectedAttemptCount,
+      int ambiguityRejectedAttemptCount,
+      long completedCandidateCount,
+      long messageCapacityRejectionCount,
       long ambiguousBoardRejectionCount,
       int cancelledAttemptCount)
     {
@@ -138,8 +156,11 @@ namespace WordSearchGenerator.Desktop.Models
       WinningAttemptElapsed = winningAttemptElapsed;
       WinningAttemptTestedPositions = winningAttemptTestedPositions;
       WinningAttemptBacktrackings = winningAttemptBacktrackings;
-      PlacementFailureCount = placementFailureCount;
-      MessageRejectedAttemptCount = messageRejectedAttemptCount;
+      PlacementFailedAttemptCount = placementFailedAttemptCount;
+      MessageCapacityRejectedAttemptCount = messageCapacityRejectedAttemptCount;
+      AmbiguityRejectedAttemptCount = ambiguityRejectedAttemptCount;
+      CompletedCandidateCount = completedCandidateCount;
+      MessageCapacityRejectionCount = messageCapacityRejectionCount;
       AmbiguousBoardRejectionCount = ambiguousBoardRejectionCount;
       CancelledAttemptCount = cancelledAttemptCount;
 

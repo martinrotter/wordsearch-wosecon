@@ -3,8 +3,11 @@ namespace WordSearchGenerator.Desktop.Models
   public sealed record MonteCarloProgress(
     int ActiveAttemptCount,
     int FinishedAttemptCount,
-    int PlacementFailureCount,
-    int MessageRejectedAttemptCount,
+    int PlacementFailedAttemptCount,
+    int MessageCapacityRejectedAttemptCount,
+    int AmbiguityRejectedAttemptCount,
+    long CompletedCandidateCount,
+    long MessageCapacityRejectionCount,
     long AmbiguousBoardRejectionCount,
     int CancelledAttemptCount,
     int TotalAttemptCount,

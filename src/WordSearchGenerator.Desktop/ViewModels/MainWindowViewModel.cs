@@ -25,6 +25,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
     private BoardRenderModel? _boardRenderModel;
     private bool _canGenerate;
     private int _cancelledAttemptCount;
+    private long _completedCandidateCount;
     private string _columnsText = NewProjectColumnsText;
     private GenerationResult? _currentResult;
     private CancellationTokenSource? _difficultyCancellation;
@@ -42,10 +43,10 @@ namespace WordSearchGenerator.Desktop.ViewModels
     private int _furthestPlacedWordCount;
     private bool _isExporting;
     private bool _isPreviewReady;
-    private int _messageRejectedAttemptCount;
+    private long _messageCapacityRejectionCount;
     private PuzzleMode _mode;
     private int _placedWordCount;
-    private int _placementFailureCount;
+    private int _placementFailedAttemptCount;
     private string _previewHtml = string.Empty;
 
     private string _previewMessage =
@@ -285,8 +286,9 @@ namespace WordSearchGenerator.Desktop.ViewModels
         ActiveAttemptCount,
         FinishedAttemptCount,
         AttemptCount,
-        PlacementFailureCount,
-        MessageRejectedAttemptCount,
+        PlacementFailedAttemptCount,
+        CompletedCandidateCount,
+        MessageCapacityRejectionCount,
         AmbiguousBoardRejectionCount,
         CancelledAttemptCount,
         PlacedWordCount,
@@ -483,6 +485,18 @@ namespace WordSearchGenerator.Desktop.ViewModels
       }
     }
 
+    private long CompletedCandidateCount
+    {
+      get => _completedCandidateCount;
+      set
+      {
+        if (SetProperty(ref _completedCandidateCount, value))
+        {
+          OnPropertyChanged(nameof(ProgressToolTip));
+        }
+      }
+    }
+
     private int FinishedAttemptCount
     {
       get => _finishedAttemptCount;
@@ -531,24 +545,24 @@ namespace WordSearchGenerator.Desktop.ViewModels
       }
     }
 
-    private int MessageRejectedAttemptCount
+    private long MessageCapacityRejectionCount
     {
-      get => _messageRejectedAttemptCount;
+      get => _messageCapacityRejectionCount;
       set
       {
-        if (SetProperty(ref _messageRejectedAttemptCount, value))
+        if (SetProperty(ref _messageCapacityRejectionCount, value))
         {
           OnPropertyChanged(nameof(ProgressToolTip));
         }
       }
     }
 
-    private int PlacementFailureCount
+    private int PlacementFailedAttemptCount
     {
-      get => _placementFailureCount;
+      get => _placementFailedAttemptCount;
       set
       {
-        if (SetProperty(ref _placementFailureCount, value))
+        if (SetProperty(ref _placementFailedAttemptCount, value))
         {
           OnPropertyChanged(nameof(ProgressToolTip));
         }
@@ -827,8 +841,9 @@ namespace WordSearchGenerator.Desktop.ViewModels
         AttemptCount = result.AttemptCount;
         ActiveAttemptCount = 0;
         FinishedAttemptCount = result.AttemptCount;
-        PlacementFailureCount = result.PlacementFailureCount;
-        MessageRejectedAttemptCount = result.MessageRejectedAttemptCount;
+        PlacementFailedAttemptCount = result.PlacementFailedAttemptCount;
+        CompletedCandidateCount = result.CompletedCandidateCount;
+        MessageCapacityRejectionCount = result.MessageCapacityRejectionCount;
         AmbiguousBoardRejectionCount = result.AmbiguousBoardRejectionCount;
         CancelledAttemptCount = result.CancelledAttemptCount;
         PlacedWordCount = definition.Entries.Count;
@@ -867,13 +882,14 @@ namespace WordSearchGenerator.Desktop.ViewModels
       {
         ActiveAttemptCount = 0;
         FinishedAttemptCount = exception.AttemptCount;
-        PlacementFailureCount = exception.PlacementFailureCount;
-        MessageRejectedAttemptCount = exception.MessageRejectedAttemptCount;
+        PlacementFailedAttemptCount = exception.PlacementFailedAttemptCount;
+        CompletedCandidateCount = exception.CompletedCandidateCount;
+        MessageCapacityRejectionCount = exception.MessageCapacityRejectionCount;
         AmbiguousBoardRejectionCount = exception.AmbiguousBoardRejectionCount;
 
         if (exception.AmbiguousBoardRejectionCount > 0 &&
-            exception.MessageRejectedAttemptCount == 0 &&
-            exception.PlacementFailureCount == 0)
+            exception.MessageCapacityRejectionCount == 0 &&
+            exception.PlacementFailedAttemptCount == 0)
         {
           StatusText = AppStrings.Get("AmbiguousBoardsRejected");
           EditorActionState = EditorActionState.Failed;
@@ -882,9 +898,9 @@ namespace WordSearchGenerator.Desktop.ViewModels
           PreviewTitle = AppStrings.Get("NoUnambiguousBoard");
           PreviewMessage = AppStrings.Get("AmbiguityAdvice");
         }
-        else if (exception.MessageRejectedAttemptCount > 0 &&
+        else if (exception.MessageCapacityRejectionCount > 0 &&
                  exception.AmbiguousBoardRejectionCount == 0 &&
-                 exception.PlacementFailureCount == 0)
+                 exception.PlacementFailedAttemptCount == 0)
         {
           StatusText = AppStrings.Get("MessageDidNotFit");
           EditorActionState = EditorActionState.MessageDidNotFit;
@@ -937,8 +953,9 @@ namespace WordSearchGenerator.Desktop.ViewModels
       AttemptCount = attemptCount;
       ActiveAttemptCount = attemptCount;
       FinishedAttemptCount = 0;
-      PlacementFailureCount = 0;
-      MessageRejectedAttemptCount = 0;
+      PlacementFailedAttemptCount = 0;
+      CompletedCandidateCount = 0;
+      MessageCapacityRejectionCount = 0;
       AmbiguousBoardRejectionCount = 0;
       CancelledAttemptCount = 0;
       TotalWordCount = totalWordCount;
@@ -994,8 +1011,9 @@ namespace WordSearchGenerator.Desktop.ViewModels
       ActiveAttemptCount = progress.ActiveAttemptCount;
       FinishedAttemptCount = progress.FinishedAttemptCount;
       AttemptCount = progress.TotalAttemptCount;
-      PlacementFailureCount = progress.PlacementFailureCount;
-      MessageRejectedAttemptCount = progress.MessageRejectedAttemptCount;
+      PlacementFailedAttemptCount = progress.PlacementFailedAttemptCount;
+      CompletedCandidateCount = progress.CompletedCandidateCount;
+      MessageCapacityRejectionCount = progress.MessageCapacityRejectionCount;
       AmbiguousBoardRejectionCount = progress.AmbiguousBoardRejectionCount;
       CancelledAttemptCount = progress.CancelledAttemptCount;
       PlacedWordCount = progress.PlacedWordCount;
@@ -1005,14 +1023,15 @@ namespace WordSearchGenerator.Desktop.ViewModels
       Backtrackings = progress.Backtrackings;
       Elapsed = progress.Elapsed;
       ProgressMaximum = Math.Max(1, progress.TotalWordCount);
-      ProgressValue = progress.FurthestPlacedWordCount;
+      ProgressValue = progress.PlacedWordCount;
       StatusText = AppStrings.Get("Searching");
       EditorStatusMessage = AppStrings.Format(
         "SearchProgressSummary",
         progress.ActiveAttemptCount,
         progress.FinishedAttemptCount,
-        progress.FurthestPlacedWordCount,
-        progress.TotalWordCount);
+        progress.PlacedWordCount,
+        progress.TotalWordCount,
+        progress.CompletedCandidateCount);
     }
 
     private void QuizEntriesOnCollectionChanged(
@@ -1114,7 +1133,8 @@ namespace WordSearchGenerator.Desktop.ViewModels
           definition.Rows,
           definition.Columns,
           definition.QuizMode,
-          definition.Generation.ParallelAttempts);
+          definition.Generation.ParallelAttempts,
+          definition.QuizMode ? 0 : definition.SecretMessage.Length);
 
         cancellation.Token.ThrowIfCancellationRequested();
         DifficultyDisplayState = GetDifficultyDisplayState(estimate);
