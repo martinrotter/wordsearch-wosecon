@@ -1,4 +1,6 @@
 using System.Globalization;
+using System.IO;
+using System.Reflection;
 
 namespace WordSearchGenerator.Desktop.Localization
 {
@@ -6,8 +8,8 @@ namespace WordSearchGenerator.Desktop.Localization
   {
     #region Static Fields
 
-    public const string CzechCultureName = "cs-CZ";
-    public const string EnglishCultureName = "en-US";
+    private static readonly IReadOnlyList<AvailableCulture> AvailableCultures =
+      DiscoverAvailableCultures();
 
     #endregion
 
@@ -16,7 +18,7 @@ namespace WordSearchGenerator.Desktop.Localization
     public static IReadOnlyList<string> SupportedCultureNames
     {
       get;
-    } = [EnglishCultureName, CzechCultureName];
+    } = AvailableCultures.Select(culture => culture.FullName).ToArray();
 
     #endregion
 
@@ -49,21 +51,131 @@ namespace WordSearchGenerator.Desktop.Localization
     {
       if (string.IsNullOrWhiteSpace(cultureName))
       {
-        return EnglishCultureName;
+        return AvailableCultures[0].FullName;
       }
 
-      if (cultureName.StartsWith("cs", StringComparison.OrdinalIgnoreCase))
+      var exactMatch = AvailableCultures.FirstOrDefault(culture =>
+        string.Equals(
+          culture.FullName,
+          cultureName,
+          StringComparison.OrdinalIgnoreCase));
+
+      if (exactMatch != null)
       {
-        return CzechCultureName;
+        return exactMatch.FullName;
       }
 
-      if (cultureName.StartsWith("en", StringComparison.OrdinalIgnoreCase))
-      {
-        return EnglishCultureName;
-      }
+      var languageMatch = AvailableCultures.FirstOrDefault(culture =>
+        string.Equals(
+          culture.ShortName,
+          cultureName,
+          StringComparison.OrdinalIgnoreCase) ||
+        cultureName.StartsWith(
+          $"{culture.ShortName}-",
+          StringComparison.OrdinalIgnoreCase));
 
-      return EnglishCultureName;
+      return languageMatch?.FullName ?? AvailableCultures[0].FullName;
     }
+
+    private static IReadOnlyList<AvailableCulture> DiscoverAvailableCultures()
+    {
+      var cultures = new List<AvailableCulture>();
+
+      AddCultureFromResources(
+        cultures,
+        CultureInfo.InvariantCulture,
+        null);
+
+      var assemblyName = Assembly.GetExecutingAssembly().GetName().Name;
+
+      if (assemblyName != null)
+      {
+        foreach (var directory in Directory.EnumerateDirectories(AppContext.BaseDirectory))
+        {
+          var satellitePath = Path.Combine(
+            directory,
+            $"{assemblyName}.resources.dll");
+
+          if (!File.Exists(satellitePath))
+          {
+            continue;
+          }
+
+          try
+          {
+            var directoryCulture = CultureInfo.GetCultureInfo(
+              Path.GetFileName(directory));
+            AddCultureFromResources(
+              cultures,
+              directoryCulture,
+              directoryCulture.Name);
+          }
+          catch (CultureNotFoundException)
+          {
+            // Not a culture-named satellite-resource directory.
+          }
+        }
+      }
+
+      if (cultures.Count == 0)
+      {
+        throw new InvalidOperationException(
+          "The neutral localization resources do not define valid culture metadata.");
+      }
+
+      return cultures;
+    }
+
+    private static void AddCultureFromResources(
+      ICollection<AvailableCulture> cultures,
+      CultureInfo resourceCulture,
+      string? expectedFullName)
+    {
+      var fullName = AppStrings.GetExact("CultureNameFull", resourceCulture);
+      var shortName = AppStrings.GetExact("CultureNameShort", resourceCulture);
+
+      if (string.IsNullOrWhiteSpace(fullName) ||
+          string.IsNullOrWhiteSpace(shortName) ||
+          (expectedFullName != null &&
+           !string.Equals(
+             fullName,
+             expectedFullName,
+             StringComparison.OrdinalIgnoreCase)) ||
+          cultures.Any(culture => string.Equals(
+            culture.FullName,
+            fullName,
+            StringComparison.OrdinalIgnoreCase)))
+      {
+        return;
+      }
+
+      try
+      {
+        var culture = CultureInfo.GetCultureInfo(fullName);
+
+        if (!string.Equals(
+              culture.TwoLetterISOLanguageName,
+              shortName,
+              StringComparison.OrdinalIgnoreCase))
+        {
+          return;
+        }
+
+        cultures.Add(new AvailableCulture(culture.Name, shortName));
+      }
+      catch (CultureNotFoundException)
+      {
+        // Ignore resource sets with invalid culture metadata.
+      }
+    }
+
+    #endregion
+
+    #region Nested Types
+
+    private sealed record AvailableCulture(
+      string FullName,
+      string ShortName);
 
     #endregion
   }

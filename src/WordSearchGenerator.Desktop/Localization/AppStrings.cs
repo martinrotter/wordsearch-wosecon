@@ -32,6 +32,16 @@ namespace WordSearchGenerator.Desktop.Localization
              $"[{key}]";
     }
 
+    internal static string? GetExact(string key, CultureInfo culture)
+    {
+      ArgumentException.ThrowIfNullOrWhiteSpace(key);
+      ArgumentNullException.ThrowIfNull(culture);
+
+      return ResourceManager
+        .GetResourceSet(culture, true, false)?
+        .GetString(key);
+    }
+
     #endregion
   }
 }

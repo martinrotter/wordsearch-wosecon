@@ -1,3 +1,4 @@
+using System.Globalization;
 using WordSearchGenerator.Desktop.Localization;
 using WordSearchGenerator.Desktop.Models.Settings;
 
@@ -30,15 +31,11 @@ namespace WordSearchGenerator.Desktop.ViewModels
 
     public SettingsWindowViewModel(string cultureName)
     {
-      Languages =
-      [
-        new LanguageOption(
-          ApplicationCulture.EnglishCultureName,
-          AppStrings.Get("LanguageEnglish")),
-        new LanguageOption(
-          ApplicationCulture.CzechCultureName,
-          AppStrings.Get("LanguageCzech"))
-      ];
+      Languages = ApplicationCulture.SupportedCultureNames
+        .Select(name => new LanguageOption(
+          name,
+          CultureInfo.GetCultureInfo(name).NativeName))
+        .ToArray();
 
       _selectedLanguage = Languages.FirstOrDefault(language => string.Equals(
                             language.CultureName,

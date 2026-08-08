@@ -65,6 +65,8 @@
   <data name="SettingsOk" xml:space="preserve"><value>OK</value></data>
   <data name="LanguageEnglish" xml:space="preserve"><value>Angličtina</value></data>
   <data name="LanguageCzech" xml:space="preserve"><value>Čeština</value></data>
+  <data name="CultureNameFull" xml:space="preserve"><value>cs-CZ</value></data>
+  <data name="CultureNameShort" xml:space="preserve"><value>cs</value></data>
   <data name="LanguageRestartMessage" xml:space="preserve"><value>Nastavení jazyka bylo uloženo. Pro jeho použití restartujte WoSeCon.</value></data>
   <data name="LanguageRestartTitle" xml:space="preserve"><value>Je nutný restart</value></data>
   <data name="SettingsSaveFailed" xml:space="preserve"><value>Nastavení se nepodařilo uložit.</value></data>
