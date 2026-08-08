@@ -50,7 +50,7 @@
   <data name="Generation" xml:space="preserve"><value>Generování</value></data>
   <data name="ParallelAttempts" xml:space="preserve"><value>Paralelní pokusy</value></data>
   <data name="DifficultyTooltip" xml:space="preserve"><value>Jde o orientační odhad, nikoli zaručenou dobu dokončení.</value></data>
-  <data name="DifficultyLabel" xml:space="preserve"><value>Obtížnost:</value></data>
+  <data name="DifficultyLabel" xml:space="preserve"><value>Obtížnost</value></data>
   <data name="Cancel" xml:space="preserve"><value>Zrušit</value></data>
   <data name="BoardPreview" xml:space="preserve"><value>Náhled mřížky</value></data>
   <data name="Solution" xml:space="preserve"><value>Řešení</value></data>
@@ -130,7 +130,7 @@
   <data name="AmbiguityAdvice" xml:space="preserve"><value>Zkuste generování zopakovat, změnit slova či tajenku nebo zvětšit mřížku.</value></data>
   <data name="GenerationFailed" xml:space="preserve"><value>Generování selhalo</value></data>
   <data name="WordsCouldNotBePlaced" xml:space="preserve"><value>Slova se do této mřížky nepodařilo umístit. Upravte zadání a zkuste to znovu.</value></data>
-  <data name="SearchProgressSummary" xml:space="preserve"><value>{0:N0} aktivních, {1:N0} dokončených; nejlepší aktivní hloubka {2:N0} z {3:N0}; prověřeno {4:N0} úplných kandidátů.</value></data>
+  <data name="SearchProgressSummary" xml:space="preserve"><value>Hloubka: {0:N0}/{1:N0}; úplné kandidátní mřížky: {2:N0}</value></data>
   <data name="ProgressTooltip" xml:space="preserve"><value>Horní ukazatel znázorňuje aktivitu hledání. Dolní ukazatel ukazuje nejlepší aktuální hloubku mezi aktivními vlákny a při návratu se může snížit.&#xA;&#xA;Vlákna: {0:N0} aktivních; dokončeno {1:N0} z {2:N0}&#xA;Pokusy vyčerpané bez úplného rozložení: {3:N0}&#xA;Prověřené úplné kandidátní mřížky: {4:N0}&#xA;Odmítnutí kvůli kapacitě tajenky: {5:N0}&#xA;Odmítnutí kvůli nejednoznačnosti: {6:N0}&#xA;Zrušené pokusy: {7:N0}&#xA;Nejlepší aktivní hloubka: {8:N0} z {9:N0}&#xA;Největší dosažená hloubka: {10:N0} z {9:N0}&#xA;Otestované pozice: {11:N0}&#xA;Návraty: {12:N0}&#xA;Uplynulo: {13}&#xA;&#xA;Dosažení {9:N0}/{9:N0} vytvoří pouze kandidátní rozložení. Generování skončí až poté, co úplná mřížka projde kontrolou kapacity tajenky a jednoznačnosti.</value></data>
   <data name="AnswerRequired" xml:space="preserve"><value>Odpověď je povinná.</value></data>
   <data name="AnswerMinimumLength" xml:space="preserve"><value>Odpověď musí obsahovat alespoň dva znaky.</value></data>

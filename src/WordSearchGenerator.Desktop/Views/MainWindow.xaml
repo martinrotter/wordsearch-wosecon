@@ -362,13 +362,12 @@
                 <Grid>
                   <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                   </Grid.ColumnDefinitions>
 
                   <icons:FluentIcon Grid.Column="0"
-                                    Margin="0,0,9,0"
-                                    VerticalAlignment="Center"
+                                    Margin="0,1,9,0"
+                                    VerticalAlignment="Top"
                                     IconSize="Size20"
                                     FontSize="20">
                     <icons:FluentIcon.Style>
@@ -418,15 +417,14 @@
                     </icons:FluentIcon.Style>
                   </icons:FluentIcon>
 
-                  <TextBlock Grid.Column="1"
-                             Margin="0,0,7,0"
-                             VerticalAlignment="Center"
-                             FontWeight="SemiBold"
-                             Text="{localization:Loc DifficultyLabel}" />
-                  <TextBlock Grid.Column="2"
-                             VerticalAlignment="Center"
-                             Text="{Binding DifficultyText}"
-                             TextWrapping="Wrap" />
+                  <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock FontWeight="SemiBold"
+                               Text="{localization:Loc DifficultyLabel}"
+                               TextWrapping="Wrap" />
+                    <TextBlock Style="{StaticResource SupportingTextStyle}"
+                               Text="{Binding DifficultyText}"
+                               TextWrapping="Wrap" />
+                  </StackPanel>
                 </Grid>
               </Border>
 

@@ -1027,8 +1027,6 @@ namespace WordSearchGenerator.Desktop.ViewModels
       StatusText = AppStrings.Get("Searching");
       EditorStatusMessage = AppStrings.Format(
         "SearchProgressSummary",
-        progress.ActiveAttemptCount,
-        progress.FinishedAttemptCount,
         progress.PlacedWordCount,
         progress.TotalWordCount,
         progress.CompletedCandidateCount);
