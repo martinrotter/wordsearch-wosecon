@@ -205,6 +205,11 @@
   <data name="HtmlBlackBox" xml:space="preserve"><value>Black box</value></data>
   <data name="HtmlStatistics" xml:space="preserve"><value>{0:N0} puzzle cells, {1:N0} message cells, {2:N0} black boxes and {3:N0} intersections.</value></data>
   <data name="HtmlQuizStatistics" xml:space="preserve"><value>{0:N0} answer and question cells, of which {1:N0} extract the secret message, {2:N0} black boxes and {3:N0} intersections.</value></data>
+  <data name="HtmlTutorialHeading" xml:space="preserve"><value>How to solve</value></data>
+  <data name="HtmlTutorialNormal" xml:space="preserve"><value>Find and cross out every word listed below. Words can run in any of the eight directions.</value></data>
+  <data name="HtmlTutorialNormalWithMessage" xml:space="preserve"><value>Find and cross out every word listed below. Words can run in any of the eight directions. Read the remaining letters from top to bottom and left to right.</value></data>
+  <data name="HtmlTutorialQuiz" xml:space="preserve"><value>Answer each question, then write its answer in the arrow's direction, starting in the next cell.</value></data>
+  <data name="HtmlTutorialQuizWithMessage" xml:space="preserve"><value>Answer each question, then write its answer in the arrow's direction, starting in the next cell. Read the highlighted cells in number order.</value></data>
   <data name="HtmlSecretMessageNormalInstructions" xml:space="preserve"><value>Write the remaining letters here after finding all words.</value></data>
   <data name="HtmlSecretMessageQuizInstructions" xml:space="preserve"><value>Write the letters from the highlighted numbered cells here after solving the answers.</value></data>
   <data name="HtmlSecretMessageSolutionInstructions" xml:space="preserve"><value>Completed secret message.</value></data>

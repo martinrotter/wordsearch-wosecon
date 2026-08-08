@@ -10,7 +10,7 @@
   <data name="MenuSave" xml:space="preserve"><value>_Uložit</value></data>
   <data name="MenuSaveAs" xml:space="preserve"><value>Uložit _jako...</value></data>
   <data name="MenuImport" xml:space="preserve"><value>_Importovat slova nebo otázky...</value></data>
-  <data name="MenuImportTooltip" xml:space="preserve"><value>Normální režim: jedno slovo na řádek. Kvízový režim: odpověď, tabulátor a otázka.</value></data>
+  <data name="MenuImportTooltip" xml:space="preserve"><value>Normální režim: jedno slovo na řádek. Křížovka: odpověď, tabulátor a otázka.</value></data>
   <data name="MenuExportPrint" xml:space="preserve"><value>_Export / tisk</value></data>
   <data name="MenuPrintPreview" xml:space="preserve"><value>_Vytisknout aktuální náhled...</value></data>
   <data name="MenuSavePdf" xml:space="preserve"><value>Uložit aktuální náhled jako _PDF...</value></data>
@@ -57,7 +57,7 @@
   <data name="Backtracks" xml:space="preserve"><value>Návraty</value></data>
   <data name="GenerationDetails" xml:space="preserve"><value>Podrobnosti generování</value></data>
   <data name="ModeNormal" xml:space="preserve"><value>Normální</value></data>
-  <data name="ModeQuiz" xml:space="preserve"><value>Kvíz</value></data>
+  <data name="ModeQuiz" xml:space="preserve"><value>Křížovka</value></data>
   <data name="SettingsTitle" xml:space="preserve"><value>Nastavení</value></data>
   <data name="SettingsLanguage" xml:space="preserve"><value>Jazyk</value></data>
   <data name="SettingsLanguageDescription" xml:space="preserve"><value>Zvolte jazyk uživatelského rozhraní aplikace.</value></data>
@@ -126,17 +126,17 @@
   <data name="AnswerMinimumLength" xml:space="preserve"><value>Odpověď musí obsahovat alespoň dva znaky.</value></data>
   <data name="QuestionRequired" xml:space="preserve"><value>Otázka je povinná.</value></data>
   <data name="WordMinimumLength" xml:space="preserve"><value>Slovo „{0}“ musí obsahovat alespoň dva znaky.</value></data>
-  <data name="CompleteQuizEntries" xml:space="preserve"><value>Doplňte všechny kvízové otázky a odpovědi.</value></data>
+  <data name="CompleteQuizEntries" xml:space="preserve"><value>Doplňte všechny otázky a odpovědi křížovky.</value></data>
   <data name="EntryTooLong" xml:space="preserve"><value>„{0}“ je pro tuto mřížku příliš dlouhé.</value></data>
   <data name="QuizEntryTooLong" xml:space="preserve"><value>„{0}“ je pro tuto mřížku příliš dlouhé včetně buňky otázky.</value></data>
   <data name="SecretMessageTooLong" xml:space="preserve"><value>Tajenka se nevejde ani při maximálním překrytí slov.</value></data>
   <data name="SecretMessageCharacterUnavailable" xml:space="preserve"><value>Znak {0} se v odpovědích vyskytuje {1:N0}×, ale tajenka jej vyžaduje {2:N0}×.</value></data>
   <data name="PositiveWholeNumber" xml:space="preserve"><value>{0} musí být kladné celé číslo.</value></data>
   <data name="WordsImported" xml:space="preserve"><value>Slova importována</value></data>
-  <data name="QuizEntriesImported" xml:space="preserve"><value>Kvízové položky importovány</value></data>
+  <data name="QuizEntriesImported" xml:space="preserve"><value>Položky křížovky importovány</value></data>
   <data name="ImportedCount" xml:space="preserve"><value>Importováno: {0} {1}</value></data>
   <data name="WordsCountNoun" xml:space="preserve"><value>slov</value></data>
-  <data name="QuizEntriesCountNoun" xml:space="preserve"><value>kvízových položek</value></data>
+  <data name="QuizEntriesCountNoun" xml:space="preserve"><value>položek křížovky</value></data>
   <data name="ProjectLoaded" xml:space="preserve"><value>Projekt načten</value></data>
   <data name="ProjectSaved" xml:space="preserve"><value>Projekt uložen</value></data>
   <data name="GenerateProjectBoard" xml:space="preserve"><value>Vygenerujte osmisměrku a vytvořte její mřížku.</value></data>
@@ -149,7 +149,7 @@
   <data name="TextFilesFilter" xml:space="preserve"><value>Textové soubory (*.txt)|*.txt|Všechny soubory (*.*)|*.*</value></data>
   <data name="TabTextFilesFilter" xml:space="preserve"><value>Text oddělený tabulátory (*.txt;*.tsv)|*.txt;*.tsv|Všechny soubory (*.*)|*.*</value></data>
   <data name="ImportWordsTitle" xml:space="preserve"><value>Import slov</value></data>
-  <data name="ImportQuizTitle" xml:space="preserve"><value>Import kvízových odpovědí a otázek</value></data>
+  <data name="ImportQuizTitle" xml:space="preserve"><value>Import odpovědí a otázek křížovky</value></data>
   <data name="ImportingEntries" xml:space="preserve"><value>Import položek</value></data>
   <data name="ImportFailed" xml:space="preserve"><value>Import selhal</value></data>
   <data name="CouldNotImport" xml:space="preserve"><value>Položky nelze importovat</value></data>
@@ -192,7 +192,7 @@
   <data name="BoardFileSuffix" xml:space="preserve"><value>-mřížka</value></data>
   <data name="QuizImportLineFormat" xml:space="preserve"><value>Řádek {0} musí obsahovat odpověď, tabulátor a otázku.</value></data>
   <data name="QuizImportLineInvalid" xml:space="preserve"><value>Řádek {0} musí obsahovat odpověď o alespoň dvou znacích a neprázdnou otázku.</value></data>
-  <data name="NoQuizEntriesInFile" xml:space="preserve"><value>Vybraný soubor neobsahuje žádné úplné kvízové položky.</value></data>
+  <data name="NoQuizEntriesInFile" xml:space="preserve"><value>Vybraný soubor neobsahuje žádné úplné položky křížovky.</value></data>
   <data name="NoWordsInFile" xml:space="preserve"><value>Vybraný soubor neobsahuje žádná slova.</value></data>
   <data name="HtmlPuzzleSolution" xml:space="preserve"><value>Řešení osmisměrky</value></data>
   <data name="HtmlWordSearchPuzzle" xml:space="preserve"><value>Osmisměrka</value></data>
@@ -205,6 +205,11 @@
   <data name="HtmlBlackBox" xml:space="preserve"><value>Černé pole</value></data>
   <data name="HtmlStatistics" xml:space="preserve"><value>{0:N0} buněk osmisměrky, {1:N0} buněk tajenky, {2:N0} černých polí a {3:N0} křížení.</value></data>
   <data name="HtmlQuizStatistics" xml:space="preserve"><value>{0:N0} buněk odpovědí a otázek, z nichž {1:N0} tvoří tajenku, {2:N0} černých polí a {3:N0} křížení.</value></data>
+  <data name="HtmlTutorialHeading" xml:space="preserve"><value>Jak luštit</value></data>
+  <data name="HtmlTutorialNormal" xml:space="preserve"><value>Najděte a vyškrtejte všechna níže uvedená slova. Mohou vést kterýmkoli z osmi směrů.</value></data>
+  <data name="HtmlTutorialNormalWithMessage" xml:space="preserve"><value>Najděte a vyškrtejte všechna níže uvedená slova. Mohou vést kterýmkoli z osmi směrů. Zbývající písmena čtěte shora dolů a zleva doprava.</value></data>
+  <data name="HtmlTutorialQuiz" xml:space="preserve"><value>Odpovězte na každou otázku a odpověď vepište ve směru šipky, počínaje následující buňkou.</value></data>
+  <data name="HtmlTutorialQuizWithMessage" xml:space="preserve"><value>Odpovězte na každou otázku a odpověď vepište ve směru šipky, počínaje následující buňkou. Zvýrazněné buňky potom čtěte v pořadí čísel.</value></data>
   <data name="HtmlSecretMessageNormalInstructions" xml:space="preserve"><value>Po nalezení všech slov sem zapište zbývající písmena.</value></data>
   <data name="HtmlSecretMessageQuizInstructions" xml:space="preserve"><value>Po vyřešení odpovědí sem zapište znaky ze zvýrazněných očíslovaných buněk.</value></data>
   <data name="HtmlSecretMessageSolutionInstructions" xml:space="preserve"><value>Vyplněná tajenka.</value></data>

@@ -716,6 +716,44 @@ namespace WordSearchGenerator.Tests
     }
 
     [TestMethod]
+    public void QuizMessageIsSpreadAcrossMatchingAnswerCells()
+    {
+      var words = new List<WordInfo>
+      {
+        new WordInfo
+        {
+          Placement = Location(
+            0,
+            0,
+            DirectedLocation.LocationDirection.LeftToRight),
+          QuizQuestion = "First question",
+          Text = "AAA",
+          WordNumber = 1
+        },
+        new WordInfo
+        {
+          Placement = Location(
+            3,
+            0,
+            DirectedLocation.LocationDirection.LeftToRight),
+          QuizQuestion = "Second question",
+          Text = "AAA",
+          WordNumber = 2
+        }
+      };
+
+      var board = new Board(words, 4, 4, true, "AA");
+
+      Assert.AreEqual(1, board.Matrix[0, 1].MessageIndex);
+      Assert.AreEqual(2, board.Matrix[3, 3].MessageIndex);
+      Assert.AreEqual(
+        2,
+        board.Matrix
+          .OfType<Board.Cell>()
+          .Count(cell => cell.MessageIndex != null));
+    }
+
+    [TestMethod]
     public void QuizMessageRejectsReusingTheSameAnswerCell()
     {
       var words = new List<WordInfo>
@@ -760,6 +798,46 @@ namespace WordSearchGenerator.Tests
       Assert.AreEqual(Board.Cell.CellType.CharFromMessage, board.Matrix[1, 1].Type);
       Assert.AreEqual('C', board.Matrix[1, 1].Char);
       Assert.IsNull(board.Matrix[1, 1].MessageIndex);
+    }
+
+    [TestMethod]
+    public void NormalMessageIsSpreadUniformlyAcrossEmptyCells()
+    {
+      var words = new List<WordInfo>
+      {
+        new WordInfo
+        {
+          Placement = Location(
+            1,
+            1,
+            DirectedLocation.LocationDirection.LeftToRight),
+          Text = "AB",
+          WordNumber = 1
+        }
+      };
+
+      var board = new Board(words, 3, 4, false, "CDEF");
+      (int Row, int Column, char Character)[] expectedMessageCells =
+      {
+        (0, 0, 'C'),
+        (0, 3, 'D'),
+        (2, 0, 'E'),
+        (2, 3, 'F')
+      };
+
+      foreach (var expected in expectedMessageCells)
+      {
+        var cell = board.Matrix[expected.Row, expected.Column];
+
+        Assert.AreEqual(Board.Cell.CellType.CharFromMessage, cell.Type);
+        Assert.AreEqual(expected.Character, cell.Char);
+      }
+
+      Assert.AreEqual(
+        expectedMessageCells.Length,
+        board.Matrix
+          .OfType<Board.Cell>()
+          .Count(cell => cell.Type == Board.Cell.CellType.CharFromMessage));
     }
 
     [TestMethod]

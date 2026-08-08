@@ -242,7 +242,7 @@ namespace WordSearchGenerator.Common
 
     private void AssignQuizMessageCells()
     {
-      var availableCells = new Dictionary<char, Queue<Cell>>();
+      var availableCells = new Dictionary<char, List<(Cell Cell, int Position)>>();
 
       for (var row = 0; row < RowCount; row++)
       for (var column = 0; column < ColumnCount; column++)
@@ -256,11 +256,11 @@ namespace WordSearchGenerator.Common
 
         if (!availableCells.TryGetValue(cell.Char, out var cellsForCharacter))
         {
-          cellsForCharacter = new Queue<Cell>();
+          cellsForCharacter = [];
           availableCells.Add(cell.Char, cellsForCharacter);
         }
 
-        cellsForCharacter.Enqueue(cell);
+        cellsForCharacter.Add((cell, row * ColumnCount + column));
       }
 
       for (var messageIndex = 0; messageIndex < Message.Length; messageIndex++)
@@ -274,35 +274,64 @@ namespace WordSearchGenerator.Common
             $"message character at index {messageIndex} cannot be assigned to a distinct answer cell");
         }
 
-        matchingCells.Dequeue().MessageIndex = messageIndex + 1;
+        var targetPosition = Message.Length == 1
+          ? (RowCount * ColumnCount - 1) / 2.0
+          : (double)messageIndex * (RowCount * ColumnCount - 1) /
+            (Message.Length - 1);
+        var nearestCellIndex = 0;
+        var nearestDistance = Math.Abs(
+          matchingCells[0].Position - targetPosition);
+
+        for (var candidateIndex = 1;
+             candidateIndex < matchingCells.Count;
+             candidateIndex++)
+        {
+          var distance = Math.Abs(
+            matchingCells[candidateIndex].Position - targetPosition);
+
+          if (distance < nearestDistance)
+          {
+            nearestCellIndex = candidateIndex;
+            nearestDistance = distance;
+          }
+        }
+
+        matchingCells[nearestCellIndex].Cell.MessageIndex = messageIndex + 1;
+        matchingCells.RemoveAt(nearestCellIndex);
       }
     }
 
     private void FillNormalMessageCells()
     {
-      var messageChars = Message.ToCharArray().ToList();
+      var availableCells = new List<Cell>();
 
-      for (var i = 0; i < RowCount; i++)
-      for (var j = 0; j < ColumnCount; j++)
+      for (var row = 0; row < RowCount; row++)
+      for (var column = 0; column < ColumnCount; column++)
       {
-        if (messageChars.Count == 0)
+        if (Matrix[row, column].Type == Cell.CellType.Empty)
         {
-          break;
+          availableCells.Add(Matrix[row, column]);
         }
-
-        if (Matrix[i, j].Type != Cell.CellType.Empty)
-        {
-          continue;
-        }
-
-        Matrix[i, j].Type = Cell.CellType.CharFromMessage;
-        Matrix[i, j].Char = messageChars.TakeFirst();
       }
 
-      if (messageChars.Count > 0)
+      if (Message.Length > availableCells.Count)
       {
         throw new MessageCannotBePlacedException(
-          $"message is too long, {messageChars.Count} characters remain to be placed");
+          $"message is too long, {Message.Length - availableCells.Count} characters remain to be placed");
+      }
+
+      for (var messageIndex = 0; messageIndex < Message.Length; messageIndex++)
+      {
+        var availableCellIndex = Message.Length == 1
+          ? availableCells.Count / 2
+          : (int)Math.Round(
+            (double)messageIndex * (availableCells.Count - 1) /
+            (Message.Length - 1),
+            MidpointRounding.AwayFromZero);
+        var cell = availableCells[availableCellIndex];
+
+        cell.Type = Cell.CellType.CharFromMessage;
+        cell.Char = Message[messageIndex];
       }
     }
 

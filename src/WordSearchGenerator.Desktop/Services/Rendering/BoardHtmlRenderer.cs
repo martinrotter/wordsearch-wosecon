@@ -42,6 +42,11 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
         isSolution);
       AppendMatrix(builder, model, isSolution);
 
+      if (!isSolution)
+      {
+        AppendTutorial(builder, model);
+      }
+
       if (model.SecretMessage.Length != 0)
       {
         AppendSecretMessageSection(builder, model, isSolution);
@@ -200,6 +205,32 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
                                font-size: clamp(7px, 24cqi, 15px);
                                font-weight: 800;
                                line-height: 1;
+                             }
+
+                             .tutorial {
+                               width: min(100%, 900px);
+                               margin: 20px auto 0;
+                               padding: 14px 16px;
+                               border: 1px solid #d5dce2;
+                               border-radius: 8px;
+                               background: #f8fafc;
+                               break-inside: avoid;
+                             }
+
+                             .tutorial h2 {
+                               margin: 0 0 5px;
+                               font-size: 18px;
+                             }
+
+                             .tutorial p {
+                               margin: 0;
+                               color: var(--muted);
+                               font-size: 14px;
+                               line-height: 1.45;
+                             }
+
+                             .tutorial + .secret-message {
+                               margin-top: 14px;
                              }
 
                              .secret-message {
@@ -541,6 +572,28 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
       }
 
       builder.AppendLine("        </div>");
+      builder.AppendLine("      </section>");
+    }
+
+    private static void AppendTutorial(
+      StringBuilder builder,
+      BoardRenderModel model)
+    {
+      var instructionsKey = model.Mode == PuzzleMode.Quiz
+        ? model.SecretMessage.Length == 0
+          ? "HtmlTutorialQuiz"
+          : "HtmlTutorialQuizWithMessage"
+        : model.SecretMessage.Length == 0
+          ? "HtmlTutorialNormal"
+          : "HtmlTutorialNormalWithMessage";
+
+      builder.AppendLine("      <section class=\"tutorial\">");
+      builder.Append("        <h2>");
+      builder.Append(Encode(AppStrings.Get("HtmlTutorialHeading")));
+      builder.AppendLine("</h2>");
+      builder.Append("        <p>");
+      builder.Append(Encode(AppStrings.Get(instructionsKey)));
+      builder.AppendLine("</p>");
       builder.AppendLine("      </section>");
     }
 
