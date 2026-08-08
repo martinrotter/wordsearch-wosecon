@@ -7,7 +7,7 @@
 WoSeCon is a Windows application for creating polished word-search puzzles. Add
 your words, choose the board size, and let WoSeCon find a suitable layout.
 
-**[Download the development build for Windows x64](https://github.com/martinrotter/wordsearch-wosecon/releases/download/dev/wosecon-win64.zip)**
+**[Download the development build for Windows x64](https://github.com/martinrotter/wordsearch-wosecon/releases/tag/dev)**
 
 The development build follows the latest successful build of the `master`
 branch. Extract the ZIP and run the application; installation is not required.

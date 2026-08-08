@@ -51,11 +51,124 @@ jobs:
             -p:DebugSymbols=false `
             --output artifacts/wosecon-win64
 
+      - name: Remove unused Chromium locales
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+
+          $publishDirectory = (Resolve-Path 'artifacts/wosecon-win64').Path
+          $localeDirectory = (Resolve-Path `
+            (Join-Path $publishDirectory 'locales')).Path
+
+          if ((Split-Path $localeDirectory -Parent) -ne $publishDirectory) {
+            throw "Unexpected Chromium locale directory: $localeDirectory"
+          }
+
+          $retainedLocales = @('cs.pak', 'en-US.pak')
+
+          foreach ($locale in $retainedLocales) {
+            $localeFile = Join-Path $localeDirectory $locale
+            if (-not (Test-Path -LiteralPath $localeFile -PathType Leaf)) {
+              throw "Required Chromium locale was not published: $locale"
+            }
+          }
+
+          $unusedLocales = Get-ChildItem -LiteralPath $localeDirectory -File |
+            Where-Object { $_.Name -notin $retainedLocales }
+
+          foreach ($locale in $unusedLocales) {
+            Remove-Item -LiteralPath $locale.FullName
+          }
+
+          $remainingLocales = Get-ChildItem -LiteralPath $localeDirectory -File
+          if ($remainingLocales.Count -ne $retainedLocales.Count) {
+            throw 'Unexpected files remain in the Chromium locale directory.'
+          }
+
+      - name: Bundle Visual C++ runtime
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+
+          $vswhere = Join-Path ${env:ProgramFiles(x86)} `
+            'Microsoft Visual Studio\Installer\vswhere.exe'
+
+          if (-not (Test-Path -LiteralPath $vswhere)) {
+            throw 'vswhere.exe was not found.'
+          }
+
+          $vsInstall = & $vswhere `
+            -latest `
+            -products * `
+            -requires Microsoft.VisualStudio.Component.VC.Redist.14.Latest `
+            -property installationPath
+
+          if (-not $vsInstall) {
+            throw 'Visual Studio installation was not found.'
+          }
+
+          $redistRoot = Join-Path $vsInstall 'VC\Redist\MSVC'
+          if (-not (Test-Path -LiteralPath $redistRoot -PathType Container)) {
+            throw "Visual C++ redistributable directory was not found: $redistRoot"
+          }
+
+          $redistVersion = Get-ChildItem -LiteralPath $redistRoot -Directory |
+            Where-Object { $_.Name -match '^\d+(\.\d+)+$' } |
+            Sort-Object { [version]$_.Name } -Descending |
+            Select-Object -First 1
+
+          if (-not $redistVersion) {
+            throw "No versioned Visual C++ redistributable directory was found in: $redistRoot"
+          }
+
+          $x64RedistRoot = Join-Path $redistVersion.FullName 'x64'
+          $crtDirectory = Get-ChildItem -LiteralPath $x64RedistRoot -Directory |
+            Where-Object { $_.Name -like 'Microsoft.VC*.CRT' } |
+            Select-Object -First 1
+
+          if (-not $crtDirectory) {
+            throw "The x64 Visual C++ runtime directory was not found in: $x64RedistRoot"
+          }
+
+          Copy-Item `
+            -Path (Join-Path $crtDirectory.FullName '*.dll') `
+            -Destination 'artifacts/wosecon-win64' `
+            -Force
+
+          $requiredRuntimeFiles = @(
+            'msvcp140.dll',
+            'vcruntime140.dll',
+            'vcruntime140_1.dll'
+          )
+
+          foreach ($file in $requiredRuntimeFiles) {
+            $publishedFile = Join-Path 'artifacts/wosecon-win64' $file
+            if (-not (Test-Path -LiteralPath $publishedFile -PathType Leaf)) {
+              throw "Required Visual C++ runtime file was not bundled: $file"
+            }
+          }
+
+      - name: Determine archive name
+        id: package
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+
+          $shortHash = (git rev-parse --short=7 $env:GITHUB_SHA).Trim()
+          if ($LASTEXITCODE -ne 0 -or $shortHash -notmatch '^[0-9a-f]+$') {
+            throw 'Could not determine the short Git commit hash.'
+          }
+
+          $archiveName = "wosecon-$shortHash-win64.zip"
+          "archive_name=$archiveName" >> $env:GITHUB_OUTPUT
+
       - name: Create application archive
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
-          $archive = Join-Path $PWD 'artifacts/wosecon-win64.zip'
+          $archive = Join-Path `
+            $PWD `
+            'artifacts/${{ steps.package.outputs.archive_name }}'
 
           Compress-Archive `
             -Path (Join-Path $PWD 'artifacts/wosecon-win64/*') `
@@ -107,8 +220,36 @@ jobs:
             throw 'Could not create or update the development release.'
           }
 
+          $archiveName = '${{ steps.package.outputs.archive_name }}'
+          $oldAssets = @(
+            gh release view dev `
+              --repo $env:GITHUB_REPOSITORY `
+              --json assets `
+              --jq '.assets[].name'
+          )
+
+          if ($LASTEXITCODE -ne 0) {
+            throw 'Could not list existing development release assets.'
+          }
+
+          $oldArchives = $oldAssets | Where-Object {
+            $_ -eq 'wosecon-win64.zip' -or
+            $_ -match '^wosecon-[0-9a-f]+-win64\.zip$'
+          }
+
+          foreach ($oldArchive in $oldArchives) {
+            gh release delete-asset dev $oldArchive `
+              --repo $env:GITHUB_REPOSITORY `
+              --yes
+
+            if ($LASTEXITCODE -ne 0) {
+              throw "Could not delete old development archive: $oldArchive"
+            }
+          }
+
+          $archiveAsset = "artifacts/$archiveName#$archiveName"
           gh release upload dev `
-            'artifacts/wosecon-win64.zip#wosecon-win64.zip' `
+            $archiveAsset `
             --repo $env:GITHUB_REPOSITORY `
             --clobber
 
