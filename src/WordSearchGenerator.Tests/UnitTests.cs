@@ -383,6 +383,55 @@ namespace WordSearchGenerator.Tests
     }
 
     [TestMethod]
+    public void AcceptsOnlyTheLastDeterministicCompleteLayout()
+    {
+      DirectedLocation[] expectedPlacements =
+      {
+        Location(3, 3, DirectedLocation.LocationDirection.RightToLeft),
+        Location(2, 3, DirectedLocation.LocationDirection.RightToLeft),
+        Location(1, 3, DirectedLocation.LocationDirection.RightToLeft),
+        Location(0, 3, DirectedLocation.LocationDirection.RightToLeft)
+      };
+      var generator = CreateGenerator(
+        4,
+        new[]
+        {
+          "ABCD", "EFGH", "IJKL", "MNOP"
+        },
+        locations => locations);
+      var completedLayoutCount = 0;
+
+      bool AcceptExpectedLayout(IReadOnlyList<WordInfo> words)
+      {
+        completedLayoutCount++;
+
+        return words
+          .Select(word => word.Placement)
+          .SequenceEqual(expectedPlacements);
+      }
+
+      generator.Construct(completionValidator: AcceptExpectedLayout);
+
+      WriteDiagnostics(
+        generator,
+        4,
+        "The final deterministic complete layout was accepted.");
+
+      Assert.AreEqual(768, completedLayoutCount);
+      Assert.AreEqual(1_272, generator.Backtrackings);
+      Assert.AreEqual(138_713L, generator.TestedPositions);
+
+      for (var index = 0; index < expectedPlacements.Length; index++)
+      {
+        Assert.AreEqual(
+          expectedPlacements[index],
+          generator.Words[index].Placement);
+      }
+
+      AssertFillsGrid(generator, 4);
+    }
+
+    [TestMethod]
     public void ConstructCanBeCalledRepeatedlyOnTheSameGenerator()
     {
       var blockedPlacement =
