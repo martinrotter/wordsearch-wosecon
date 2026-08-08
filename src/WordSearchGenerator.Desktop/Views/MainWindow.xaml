@@ -357,8 +357,42 @@
               <Border Grid.Row="0"
                       Margin="0,0,0,8"
                       Padding="0,4"
-                      BorderThickness="0"
+                      CornerRadius="4"
                       ToolTip="{localization:Loc DifficultyTooltip}">
+                <Border.Style>
+                  <Style TargetType="Border">
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="BorderBrush" Value="Transparent" />
+                    <Setter Property="BorderThickness" Value="0" />
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding DifficultyDisplayState}"
+                                   Value="{x:Static viewModels:DifficultyDisplayState.SlowFewMinutes}">
+                        <Setter Property="Background" Value="#189D5D00" />
+                        <Setter Property="BorderBrush" Value="#9D5D00" />
+                        <Setter Property="BorderThickness" Value="1" />
+                      </DataTrigger>
+                      <DataTrigger Binding="{Binding DifficultyDisplayState}"
+                                   Value="{x:Static viewModels:DifficultyDisplayState.SlowerManyMinutes}">
+                        <Setter Property="Background" Value="#20CA5010" />
+                        <Setter Property="BorderBrush" Value="#CA5010" />
+                        <Setter Property="BorderThickness" Value="1" />
+                      </DataTrigger>
+                      <DataTrigger Binding="{Binding DifficultyDisplayState}"
+                                   Value="{x:Static viewModels:DifficultyDisplayState.CrazySlowHours}">
+                        <Setter Property="Background" Value="#28C42B1C" />
+                        <Setter Property="BorderBrush" Value="#C42B1C" />
+                        <Setter Property="BorderThickness" Value="1" />
+                      </DataTrigger>
+                      <DataTrigger Binding="{Binding DifficultyDisplayState}"
+                                   Value="{x:Static viewModels:DifficultyDisplayState.LikelyImpossible}">
+                        <Setter Property="Background" Value="#38C42B1C" />
+                        <Setter Property="BorderBrush" Value="#C42B1C" />
+                        <Setter Property="BorderThickness" Value="2" />
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </Border.Style>
+
                 <Grid>
                   <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
