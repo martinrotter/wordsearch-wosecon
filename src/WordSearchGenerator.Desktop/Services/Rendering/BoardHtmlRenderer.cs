@@ -142,15 +142,19 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
                                display: flex;
                                align-items: center;
                                justify-content: center;
+                               container-type: inline-size;
                                aspect-ratio: 1 / 1;
                                min-width: 0;
                                overflow: hidden;
                                border: 0.5px solid var(--line);
                                background: #ffffff;
-                               font-size: clamp(8px, 3.2vmin, 30px);
                                font-weight: 650;
                                line-height: 1;
                                user-select: none;
+                             }
+
+                             .cell-letter {
+                               font-size: clamp(8px, 52cqi, 30px);
                              }
 
                              .cell.black-box {
@@ -162,11 +166,16 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
                                flex-direction: column;
                                gap: 1px;
                                background: var(--quiz);
-                               font-size: clamp(7px, 1.8vmin, 18px);
                                font-weight: 700;
                              }
 
-                             .quiz-arrow { font-size: 1.15em; }
+                             .quiz-number {
+                               font-size: clamp(6px, 30cqi, 18px);
+                             }
+
+                             .quiz-arrow {
+                               font-size: clamp(7px, 40cqi, 24px);
+                             }
 
                              .solution .cell.word { background: var(--word); }
                              .solution .cell.message { background: var(--message); }
@@ -181,15 +190,15 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
                                display: flex;
                                align-items: center;
                                justify-content: center;
-                               min-width: 30%;
-                               min-height: 30%;
-                               padding: 1px;
+                               min-width: 38cqi;
+                               min-height: 32cqi;
+                               padding: 1cqi 4cqi;
                                border: 1px solid #9a6700;
-                               border-radius: 999px;
+                               border-radius: 4px;
                                background: #fbbf24;
                                color: #3f2d00;
-                               font-size: clamp(6px, 1.25vmin, 13px);
-                               font-weight: 750;
+                               font-size: clamp(7px, 24cqi, 15px);
+                               font-weight: 800;
                                line-height: 1;
                              }
 
@@ -470,9 +479,11 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
 
       if (!hideAnswer && cell.Character != null)
       {
+        builder.Append("<span class=\"cell-letter\">");
         builder.Append(cell.Character == ' '
           ? "&#160;"
           : Encode(cell.Character.Value.ToString()));
+        builder.Append("</span>");
       }
 
       if (cell.MessageIndex != null)
