@@ -32,6 +32,8 @@
   <data name="ColumnsTooltip" xml:space="preserve"><value>Počet sloupců v generované mřížce</value></data>
   <data name="CellCount" xml:space="preserve"><value>Počet buněk</value></data>
   <data name="Dimensions" xml:space="preserve"><value>Rozměry</value></data>
+  <data name="WordsAndSecretTab" xml:space="preserve"><value>Slova a tajenka</value></data>
+  <data name="AdditionalOptionsTab" xml:space="preserve"><value>Další možnosti</value></data>
   <data name="WordsOrQuestions" xml:space="preserve"><value>Slova nebo otázky</value></data>
   <data name="WordsInstructions" xml:space="preserve"><value>Zadejte jedno slovo na řádek. Rozlišují se malá a velká písmena; mezery na začátku a konci se odstraní.</value></data>
   <data name="WordsTooltip" xml:space="preserve"><value>Prázdné řádky a duplicitní slova se stejnou velikostí písmen budou ignorovány</value></data>

@@ -184,13 +184,17 @@
                      Style="{StaticResource PaneTitleTextStyle}"
                      Text="{localization:Loc PuzzleEditor}" />
 
-          <ScrollViewer Grid.Row="1"
-                        Margin="14,4,9,6"
-                        HorizontalScrollBarVisibility="Disabled"
-                        IsEnabled="{Binding IsEditorEnabled}"
-                        VerticalScrollBarVisibility="Auto">
-            <StackPanel Margin="0,0,6,0">
-              <GroupBox Header="{localization:Loc Puzzle}">
+          <Grid Grid.Row="1"
+                Margin="14,4,14,6"
+                IsEnabled="{Binding IsEditorEnabled}">
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <GroupBox Grid.Row="0"
+                      Margin="0,0,0,8"
+                      Header="{localization:Loc Puzzle}">
                 <Grid>
                   <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -240,151 +244,194 @@
                                        UpdateSourceTrigger=PropertyChanged,
                                        ValidatesOnNotifyDataErrors=True}" />
                 </Grid>
-              </GroupBox>
+            </GroupBox>
 
-              <GroupBox Header="{localization:Loc WordsOrQuestions}">
-                <StackPanel>
-                  <Grid>
-                    <StackPanel>
-                      <StackPanel.Style>
-                        <Style TargetType="StackPanel">
-                          <Setter Property="Visibility" Value="Collapsed" />
-                          <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsNormalMode}" Value="True">
-                              <Setter Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                          </Style.Triggers>
-                        </Style>
-                      </StackPanel.Style>
-                      <TextBlock Style="{StaticResource SupportingTextStyle}"
-                                 Text="{localization:Loc WordsInstructions}"
-                                 TextWrapping="Wrap" />
-                      <TextBox x:Name="WordsTextBox"
-                               Height="210"
-                               Margin="0,7,0,0"
-                               AcceptsReturn="True"
-                               AcceptsTab="False"
-                               HorizontalScrollBarVisibility="Auto"
-                               Text="{Binding WordsText,
-                                                                UpdateSourceTrigger=PropertyChanged,
-                                                                ValidatesOnNotifyDataErrors=True}"
-                               VerticalScrollBarVisibility="Auto"
-                               TextWrapping="NoWrap"
-                               ToolTip="{localization:Loc WordsTooltip}" />
-                    </StackPanel>
-
-                    <StackPanel>
-                      <StackPanel.Style>
-                        <Style TargetType="StackPanel">
-                          <Setter Property="Visibility" Value="Collapsed" />
-                          <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsQuizMode}" Value="True">
-                              <Setter Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                          </Style.Triggers>
-                        </Style>
-                      </StackPanel.Style>
-                      <TextBlock Style="{StaticResource SupportingTextStyle}"
-                                 Text="{localization:Loc QuizInstructions}"
-                                 TextWrapping="Wrap" />
-                      <DataGrid Height="240"
-                                Margin="0,7,0,0"
-                                AutoGenerateColumns="False"
-                                CanUserAddRows="True"
-                                CanUserDeleteRows="True"
-                                HeadersVisibility="Column"
-                                ItemsSource="{Binding QuizEntries}"
-                                SelectionMode="Single">
-                        <DataGrid.Columns>
-                          <DataGridTextColumn Width="2*"
-                                              Header="{localization:Loc Answer}"
-                                              Binding="{Binding Answer,
-                                                                                      UpdateSourceTrigger=PropertyChanged,
-                                                                                      ValidatesOnNotifyDataErrors=True}" />
-                          <DataGridTextColumn Width="3*"
-                                              Header="{localization:Loc Question}"
-                                              Binding="{Binding Question,
-                                                                                      UpdateSourceTrigger=PropertyChanged,
-                                                                                      ValidatesOnNotifyDataErrors=True}" />
-                        </DataGrid.Columns>
-                      </DataGrid>
-                    </StackPanel>
-                  </Grid>
-
-                  <Button Margin="0,8,0,0"
-                          Padding="10,5"
-                          HorizontalAlignment="Left"
-                          Command="{Binding ConvertToUppercaseCommand}">
-                    <StackPanel Orientation="Horizontal">
-                      <icons:FluentIcon Margin="0,0,6,0"
-                                        Icon="TextCaseUppercase"
-                                        IconSize="Size20"
-                                        FontSize="16" />
-                      <TextBlock VerticalAlignment="Center"
-                                 Text="{localization:Loc ConvertToUppercase}" />
-                    </StackPanel>
-                  </Button>
-                </StackPanel>
-              </GroupBox>
-
-              <GroupBox Header="{localization:Loc SecretMessage}">
-                <StackPanel>
-                  <TextBlock Style="{StaticResource SupportingTextStyle}"
-                             Text="{Binding SecretMessageDescription}"
-                             TextWrapping="Wrap" />
-                  <TextBox x:Name="SecretMessageTextBox"
-                           Margin="0,7,0,0"
-                           Text="{Binding SecretMessage,
-                                                            UpdateSourceTrigger=PropertyChanged,
-                                                            ValidatesOnNotifyDataErrors=True}"
-                           ToolTip="{localization:Loc SecretMessageTooltip}" />
-                </StackPanel>
-              </GroupBox>
-
-              <GroupBox Header="{localization:Loc PreviewText}">
-                <StackPanel>
-                  <TextBlock Style="{StaticResource SupportingTextStyle}"
-                             Text="{localization:Loc PreviewTextDescription}"
-                             TextWrapping="Wrap" />
-
-                  <TextBlock Margin="0,8,0,0"
-                             Style="{StaticResource FieldLabelTextStyle}"
-                             Text="{localization:Loc PuzzleHeadingOptional}" />
-                  <TextBox Margin="0,5,0,0"
-                           Text="{Binding PuzzleHeading,
-                                                            UpdateSourceTrigger=PropertyChanged}"
-                           ToolTip="{localization:Loc OmitHeadingTooltip}" />
-
-                  <TextBlock Margin="0,8,0,0"
-                             Style="{StaticResource FieldLabelTextStyle}"
-                             Text="{localization:Loc EntryListHeading}" />
-                  <TextBox Margin="0,5,0,0"
-                           Text="{Binding EntryListHeading,
-                                                            UpdateSourceTrigger=PropertyChanged}"
-                           ToolTip="{localization:Loc OmitListHeadingTooltip}" />
-                </StackPanel>
-              </GroupBox>
-
-              <GroupBox Header="{localization:Loc Generation}">
-                <Grid>
+            <TabControl Grid.Row="1"
+                        HorizontalContentAlignment="Stretch"
+                        VerticalContentAlignment="Stretch">
+              <TabItem Header="{localization:Loc WordsAndSecretTab}">
+                <Grid Margin="0,10,0,0">
                   <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
                   </Grid.RowDefinitions>
 
-                  <TextBlock Grid.Row="0"
-                             Style="{StaticResource FieldLabelTextStyle}"
-                             Text="{localization:Loc ParallelAttempts}" />
+                  <GroupBox Grid.Row="0"
+                            Margin="0,0,0,8"
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"
+                            Header="{localization:Loc WordsOrQuestions}">
+                    <Grid>
+                      <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                      </Grid.RowDefinitions>
 
-                  <ComboBox Grid.Row="1"
-                            Margin="0,5,0,0"
-                            DisplayMemberPath="Label"
-                            ItemsSource="{Binding ParallelismOptions}"
-                            SelectedItem="{Binding SelectedParallelismOption}" />
+                      <Grid Grid.Row="0">
+                        <Grid>
+                          <Grid.Style>
+                            <Style TargetType="Grid">
+                              <Setter Property="Visibility" Value="Collapsed" />
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsNormalMode}" Value="True">
+                                  <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </Grid.Style>
+                          <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                          </Grid.RowDefinitions>
+
+                          <TextBlock Grid.Row="0"
+                                     Style="{StaticResource SupportingTextStyle}"
+                                     Text="{localization:Loc WordsInstructions}"
+                                     TextWrapping="Wrap" />
+                          <TextBox x:Name="WordsTextBox"
+                                   Grid.Row="1"
+                                   MinHeight="90"
+                                   Margin="0,7,0,0"
+                                   AcceptsReturn="True"
+                                   AcceptsTab="False"
+                                   HorizontalScrollBarVisibility="Auto"
+                                   Text="{Binding WordsText,
+                                                  UpdateSourceTrigger=PropertyChanged,
+                                                  ValidatesOnNotifyDataErrors=True}"
+                                   TextWrapping="NoWrap"
+                                   ToolTip="{localization:Loc WordsTooltip}"
+                                   VerticalScrollBarVisibility="Auto" />
+                        </Grid>
+
+                        <Grid>
+                          <Grid.Style>
+                            <Style TargetType="Grid">
+                              <Setter Property="Visibility" Value="Collapsed" />
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsQuizMode}" Value="True">
+                                  <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </Grid.Style>
+                          <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                          </Grid.RowDefinitions>
+
+                          <TextBlock Grid.Row="0"
+                                     Style="{StaticResource SupportingTextStyle}"
+                                     Text="{localization:Loc QuizInstructions}"
+                                     TextWrapping="Wrap" />
+                          <DataGrid Grid.Row="1"
+                                    MinHeight="90"
+                                    Margin="0,7,0,0"
+                                    AutoGenerateColumns="False"
+                                    CanUserAddRows="True"
+                                    CanUserDeleteRows="True"
+                                    HeadersVisibility="Column"
+                                    ItemsSource="{Binding QuizEntries}"
+                                    SelectionMode="Single">
+                            <DataGrid.Columns>
+                              <DataGridTextColumn Width="2*"
+                                                  Header="{localization:Loc Answer}"
+                                                  Binding="{Binding Answer,
+                                                                  UpdateSourceTrigger=PropertyChanged,
+                                                                  ValidatesOnNotifyDataErrors=True}" />
+                              <DataGridTextColumn Width="3*"
+                                                  Header="{localization:Loc Question}"
+                                                  Binding="{Binding Question,
+                                                                  UpdateSourceTrigger=PropertyChanged,
+                                                                  ValidatesOnNotifyDataErrors=True}" />
+                            </DataGrid.Columns>
+                          </DataGrid>
+                        </Grid>
+                      </Grid>
+
+                      <Button Grid.Row="1"
+                              Margin="0,8,0,0"
+                              Padding="10,5"
+                              HorizontalAlignment="Left"
+                              Command="{Binding ConvertToUppercaseCommand}">
+                        <StackPanel Orientation="Horizontal">
+                          <icons:FluentIcon Margin="0,0,6,0"
+                                            Icon="TextCaseUppercase"
+                                            IconSize="Size20"
+                                            FontSize="16" />
+                          <TextBlock VerticalAlignment="Center"
+                                     Text="{localization:Loc ConvertToUppercase}" />
+                        </StackPanel>
+                      </Button>
+                    </Grid>
+                  </GroupBox>
+
+                  <GroupBox Grid.Row="1"
+                            Margin="0"
+                            Header="{localization:Loc SecretMessage}">
+                    <StackPanel>
+                      <TextBlock Style="{StaticResource SupportingTextStyle}"
+                                 Text="{Binding SecretMessageDescription}"
+                                 TextWrapping="Wrap" />
+                      <TextBox x:Name="SecretMessageTextBox"
+                               Margin="0,7,0,0"
+                               Text="{Binding SecretMessage,
+                                              UpdateSourceTrigger=PropertyChanged,
+                                              ValidatesOnNotifyDataErrors=True}"
+                               ToolTip="{localization:Loc SecretMessageTooltip}" />
+                    </StackPanel>
+                  </GroupBox>
                 </Grid>
-              </GroupBox>
-            </StackPanel>
-          </ScrollViewer>
+              </TabItem>
+
+              <TabItem Header="{localization:Loc AdditionalOptionsTab}">
+                <StackPanel Margin="0,10,0,0">
+                  <GroupBox Header="{localization:Loc PreviewText}">
+                    <StackPanel>
+                      <TextBlock Style="{StaticResource SupportingTextStyle}"
+                                 Text="{localization:Loc PreviewTextDescription}"
+                                 TextWrapping="Wrap" />
+
+                      <TextBlock Margin="0,8,0,0"
+                                 Style="{StaticResource FieldLabelTextStyle}"
+                                 Text="{localization:Loc PuzzleHeadingOptional}" />
+                      <TextBox Margin="0,5,0,0"
+                               Text="{Binding PuzzleHeading,
+                                              UpdateSourceTrigger=PropertyChanged}"
+                               ToolTip="{localization:Loc OmitHeadingTooltip}" />
+
+                      <TextBlock Margin="0,8,0,0"
+                                 Style="{StaticResource FieldLabelTextStyle}"
+                                 Text="{localization:Loc EntryListHeading}" />
+                      <TextBox Margin="0,5,0,0"
+                               Text="{Binding EntryListHeading,
+                                              UpdateSourceTrigger=PropertyChanged}"
+                               ToolTip="{localization:Loc OmitListHeadingTooltip}" />
+                    </StackPanel>
+                  </GroupBox>
+
+                  <GroupBox Margin="0"
+                            Header="{localization:Loc Generation}">
+                    <Grid>
+                      <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                      </Grid.RowDefinitions>
+
+                      <TextBlock Grid.Row="0"
+                                 Style="{StaticResource FieldLabelTextStyle}"
+                                 Text="{localization:Loc ParallelAttempts}" />
+
+                      <ComboBox Grid.Row="1"
+                                Margin="0,5,0,0"
+                                DisplayMemberPath="Label"
+                                ItemsSource="{Binding ParallelismOptions}"
+                                SelectedItem="{Binding SelectedParallelismOption}" />
+                    </Grid>
+                  </GroupBox>
+                </StackPanel>
+              </TabItem>
+            </TabControl>
+          </Grid>
 
           <Border Grid.Row="2"
                   MinHeight="136"

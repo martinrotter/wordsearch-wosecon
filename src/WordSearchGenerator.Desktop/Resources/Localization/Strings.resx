@@ -32,6 +32,8 @@
   <data name="ColumnsTooltip" xml:space="preserve"><value>Number of columns in the generated matrix</value></data>
   <data name="CellCount" xml:space="preserve"><value>Cell count</value></data>
   <data name="Dimensions" xml:space="preserve"><value>Dimensions</value></data>
+  <data name="WordsAndSecretTab" xml:space="preserve"><value>Words &amp; secret</value></data>
+  <data name="AdditionalOptionsTab" xml:space="preserve"><value>Additional options</value></data>
   <data name="WordsOrQuestions" xml:space="preserve"><value>Words or questions</value></data>
   <data name="WordsInstructions" xml:space="preserve"><value>Enter one word per line. Words are case-sensitive; surrounding spaces are trimmed.</value></data>
   <data name="WordsTooltip" xml:space="preserve"><value>Empty lines and case-sensitive duplicates are ignored</value></data>
