@@ -16,7 +16,6 @@ namespace WordSearchGenerator.Desktop.Views
     #region Fields
 
     private readonly IApplicationSettingsService _applicationSettingsService;
-    private readonly IBoardPngRenderer _boardPngRenderer;
     private readonly IDocxPuzzleExporter _docxPuzzleExporter;
     private readonly IPuzzleProjectSerializer _projectSerializer;
     private readonly MainWindowViewModel _viewModel;
@@ -31,14 +30,12 @@ namespace WordSearchGenerator.Desktop.Views
     public MainWindow(
       MainWindowViewModel viewModel,
       IPuzzleProjectSerializer projectSerializer,
-      IBoardPngRenderer boardPngRenderer,
       IDocxPuzzleExporter docxPuzzleExporter,
       IApplicationSettingsService applicationSettingsService,
       ApplicationSettings applicationSettings)
     {
       ArgumentNullException.ThrowIfNull(viewModel);
       ArgumentNullException.ThrowIfNull(projectSerializer);
-      ArgumentNullException.ThrowIfNull(boardPngRenderer);
       ArgumentNullException.ThrowIfNull(docxPuzzleExporter);
       ArgumentNullException.ThrowIfNull(applicationSettingsService);
       ArgumentNullException.ThrowIfNull(applicationSettings);
@@ -46,7 +43,6 @@ namespace WordSearchGenerator.Desktop.Views
       InitializeComponent();
       _viewModel = viewModel;
       _projectSerializer = projectSerializer;
-      _boardPngRenderer = boardPngRenderer;
       _docxPuzzleExporter = docxPuzzleExporter;
       _applicationSettingsService = applicationSettingsService;
       _applicationSettings = applicationSettings;

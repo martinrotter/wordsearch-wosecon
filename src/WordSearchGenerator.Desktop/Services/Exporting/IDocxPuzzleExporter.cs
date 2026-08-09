@@ -10,6 +10,7 @@ namespace WordSearchGenerator.Desktop.Services.Exporting
       string path,
       BoardRenderModel model,
       BoardPreviewMode previewMode,
+      byte[] boardPng,
       CancellationToken cancellationToken = default);
 
     #endregion

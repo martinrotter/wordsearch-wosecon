@@ -22,29 +22,11 @@ namespace WordSearchGenerator.Desktop.Services.Exporting
     private const uint PageHeightTwips = 16838;
     private const uint PageMarginTwips = 1021;
     private const long EmusPerTwip = 635;
-    private const int BoardPngLongSide = 3600;
     private const int MaximumMessageColumns = 18;
     private const int QuizNumberingId = 1;
     private const string BodyStyleId = "PuzzleBody";
     private const string HeadingStyleId = "PuzzleHeading";
     private const string TitleStyleId = "PuzzleTitle";
-
-    #endregion
-
-    #region Fields
-
-    private readonly IBoardPngRenderer _boardPngRenderer;
-
-    #endregion
-
-    #region Constructors
-
-    public DocxPuzzleExporter(IBoardPngRenderer boardPngRenderer)
-    {
-      ArgumentNullException.ThrowIfNull(boardPngRenderer);
-
-      _boardPngRenderer = boardPngRenderer;
-    }
 
     #endregion
 
@@ -54,11 +36,20 @@ namespace WordSearchGenerator.Desktop.Services.Exporting
       string path,
       BoardRenderModel model,
       BoardPreviewMode previewMode,
+      byte[] boardPng,
       CancellationToken cancellationToken = default)
     {
       ArgumentException.ThrowIfNullOrWhiteSpace(path);
       ArgumentNullException.ThrowIfNull(model);
+      ArgumentNullException.ThrowIfNull(boardPng);
       cancellationToken.ThrowIfCancellationRequested();
+
+      if (boardPng.Length == 0)
+      {
+        throw new ArgumentException(
+          "The board PNG must not be empty.",
+          nameof(boardPng));
+      }
 
       var fullPath = Path.GetFullPath(path);
       var directory = Path.GetDirectoryName(fullPath) ??
@@ -72,10 +63,6 @@ namespace WordSearchGenerator.Desktop.Services.Exporting
           directory));
       }
 
-      var boardPng = _boardPngRenderer.Render(
-        model,
-        previewMode,
-        BoardPngLongSide);
       var temporaryPath = Path.Combine(
         directory,
         $".{Path.GetFileName(fullPath)}.{Guid.NewGuid():N}.tmp");

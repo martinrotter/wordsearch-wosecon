@@ -25,8 +25,7 @@ namespace WordSearchGenerator.Desktop
 
       var puzzleGenerator = new MonteCarloPuzzleGenerator();
       var boardHtmlRenderer = new BoardHtmlRenderer();
-      var boardPngRenderer = new BoardPngRenderer();
-      var docxPuzzleExporter = new DocxPuzzleExporter(boardPngRenderer);
+      var docxPuzzleExporter = new DocxPuzzleExporter();
       var projectSerializer = new PuzzleProjectSerializer();
       var mainWindowViewModel = new MainWindowViewModel(
         puzzleGenerator,
@@ -34,7 +33,6 @@ namespace WordSearchGenerator.Desktop
       var mainWindow = new MainWindow(
         mainWindowViewModel,
         projectSerializer,
-        boardPngRenderer,
         docxPuzzleExporter,
         settingsService,
         settings);

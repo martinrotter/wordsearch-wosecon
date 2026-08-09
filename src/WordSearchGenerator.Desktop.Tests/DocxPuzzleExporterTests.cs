@@ -5,7 +5,6 @@ using WordSearchGenerator.Common.WoSeCon.Api;
 using WordSearchGenerator.Desktop.Models;
 using WordSearchGenerator.Desktop.Models.Rendering;
 using WordSearchGenerator.Desktop.Services.Exporting;
-using WordSearchGenerator.Desktop.Services.Rendering;
 using W = DocumentFormat.OpenXml.Wordprocessing;
 
 namespace WordSearchGenerator.Desktop.Tests
@@ -13,13 +12,19 @@ namespace WordSearchGenerator.Desktop.Tests
   [TestClass]
   public sealed class DocxPuzzleExporterTests
   {
+    #region Static Fields
+
+    private static readonly byte[] Png = Convert.FromBase64String(
+      "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=");
+
+    #endregion
+
     #region Other Stuff
 
     [TestMethod]
     public async Task NormalPuzzleCreatesValidDocumentWithExpectedContent()
     {
-      var renderer = new StubBoardPngRenderer();
-      var exporter = new DocxPuzzleExporter(renderer);
+      var exporter = new DocxPuzzleExporter();
       var model = CreateModel(
         PuzzleMode.Normal,
         "Village puzzle",
@@ -31,7 +36,11 @@ namespace WordSearchGenerator.Desktop.Tests
 
       try
       {
-        await exporter.ExportAsync(path, model, BoardPreviewMode.Puzzle);
+        await exporter.ExportAsync(
+          path,
+          model,
+          BoardPreviewMode.Puzzle,
+          Png);
 
         using var document = WordprocessingDocument.Open(path, false);
         var mainPart = document.MainDocumentPart ??
@@ -72,8 +81,6 @@ namespace WordSearchGenerator.Desktop.Tests
             "apple", "banana", "pear"
           },
           wordCells);
-        Assert.AreEqual(BoardPreviewMode.Puzzle, renderer.PreviewMode);
-        Assert.AreEqual(3600, renderer.TargetLongSide);
       }
       finally
       {
@@ -84,7 +91,7 @@ namespace WordSearchGenerator.Desktop.Tests
     [TestMethod]
     public async Task QuizPuzzleContainsQuestionsButNotAnswers()
     {
-      var exporter = new DocxPuzzleExporter(new StubBoardPngRenderer());
+      var exporter = new DocxPuzzleExporter();
       const string answer = "hiddenanswer";
       const string question = "What should remain editable?";
       var model = CreateModel(
@@ -96,7 +103,11 @@ namespace WordSearchGenerator.Desktop.Tests
 
       try
       {
-        await exporter.ExportAsync(path, model, BoardPreviewMode.Puzzle);
+        await exporter.ExportAsync(
+          path,
+          model,
+          BoardPreviewMode.Puzzle,
+          Png);
 
         using var document = WordprocessingDocument.Open(path, false);
         var mainPart = document.MainDocumentPart ??
@@ -119,7 +130,7 @@ namespace WordSearchGenerator.Desktop.Tests
     [TestMethod]
     public async Task QuizSolutionContainsAnswers()
     {
-      var exporter = new DocxPuzzleExporter(new StubBoardPngRenderer());
+      var exporter = new DocxPuzzleExporter();
       const string answer = "visibleanswer";
       var model = CreateModel(
         PuzzleMode.Quiz,
@@ -130,7 +141,11 @@ namespace WordSearchGenerator.Desktop.Tests
 
       try
       {
-        await exporter.ExportAsync(path, model, BoardPreviewMode.Solution);
+        await exporter.ExportAsync(
+          path,
+          model,
+          BoardPreviewMode.Solution,
+          Png);
 
         using var document = WordprocessingDocument.Open(path, false);
         var text = document.MainDocumentPart?.Document?.Body?.InnerText ??
@@ -216,50 +231,6 @@ namespace WordSearchGenerator.Desktop.Tests
       {
         File.Delete(path);
       }
-    }
-
-    #endregion
-
-    #region Nested Types
-
-    private sealed class StubBoardPngRenderer : IBoardPngRenderer
-    {
-      #region Static Fields
-
-      private static readonly byte[] Png = Convert.FromBase64String(
-        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=");
-
-      #endregion
-
-      #region Properties
-
-      public BoardPreviewMode PreviewMode
-      {
-        get;
-        private set;
-      }
-
-      public int TargetLongSide
-      {
-        get;
-        private set;
-      }
-
-      #endregion
-
-      #region Interface Implementations
-
-      public byte[] Render(
-        BoardRenderModel model,
-        BoardPreviewMode previewMode,
-        int targetLongSide = 2400)
-      {
-        PreviewMode = previewMode;
-        TargetLongSide = targetLongSide;
-        return Png;
-      }
-
-      #endregion
     }
 
     #endregion
