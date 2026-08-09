@@ -122,6 +122,13 @@ namespace WordSearchGenerator.Common.WoSeCon
     {
       ArgumentNullException.ThrowIfNull(words);
 
+      if (!words.Any())
+      {
+        throw new ArgumentException(
+          "At least one word is required.",
+          nameof(words));
+      }
+
       if (words.Any(word => word?.Text == null || word.Text.Length < 2))
       {
         throw new ArgumentException(
@@ -149,6 +156,10 @@ namespace WordSearchGenerator.Common.WoSeCon
     /// <exception cref="OperationCanceledException">
     ///   The cancellation token was cancelled. Partial construction state is
     ///   cleared before the exception is rethrown.
+    /// </exception>
+    /// <exception cref="ConstructionExhaustedException">
+    ///   Every possible placement was exhausted without finding an accepted
+    ///   construction.
     /// </exception>
     /// <param name="completionValidator">
     ///   Optional validator invoked after every complete word placement. When
@@ -263,7 +274,7 @@ namespace WordSearchGenerator.Common.WoSeCon
           {
             if (wordIndex == 0)
             {
-              throw new Exception("given words cannot fit into the grid");
+              throw new ConstructionExhaustedException();
             }
 
             word.ClearTestedLocations();
@@ -338,11 +349,6 @@ namespace WordSearchGenerator.Common.WoSeCon
       }
 
       return true;
-    }
-
-    public bool PlaceWord(WordInfo word)
-    {
-      return PlaceWord(word, CancellationToken.None, null);
     }
 
     private bool PlaceWord(

@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using WordSearchGenerator.Common;
 
 namespace WordSearchGenerator.Desktop.Models.Rendering
 {
@@ -23,9 +24,7 @@ namespace WordSearchGenerator.Desktop.Models.Rendering
 
     public bool IsIntersection => WordNumbers.Count > 1;
 
-    public bool IsMessageExtraction => MessageIndex != null;
-
-    public BoardRenderCellKind Kind
+    public Board.Cell.CellType Kind
     {
       get;
     }
@@ -57,7 +56,7 @@ namespace WordSearchGenerator.Desktop.Models.Rendering
     public BoardRenderCell(
       int row,
       int column,
-      BoardRenderCellKind kind,
+      Board.Cell.CellType kind,
       char? character,
       int? messageIndex,
       int quizQuestionNumber,

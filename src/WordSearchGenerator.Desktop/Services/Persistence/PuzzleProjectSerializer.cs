@@ -167,13 +167,7 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
       return new ProjectFile
       {
         Columns = definition.Columns,
-        Entries = definition.Entries
-          .Select(entry => new EntryFile
-          {
-            Answer = entry.Answer,
-            Question = entry.Question
-          })
-          .ToList(),
+        Entries = definition.Entries.ToList(),
         EntryListHeading = definition.EntryListHeading,
         GeneratedBoard = generated,
         Mode = definition.Mode,
@@ -378,13 +372,12 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
           file.StyleId));
       }
 
-      var rawEntries = file.Entries.Select(entry => new PuzzleEntry(
-        entry.Answer,
-        entry.Question));
       var entries = file.Mode == PuzzleMode.Normal
         ? PuzzleInputParser.ParseWords(
-          string.Join(Environment.NewLine, rawEntries.Select(entry => entry.Answer)))
-        : PuzzleInputParser.ParseQuizEntries(rawEntries);
+          string.Join(
+            Environment.NewLine,
+            file.Entries.Select(entry => entry.Answer)))
+        : PuzzleInputParser.ParseQuizEntries(file.Entries);
 
       var minimumEntryLength = file.Mode == PuzzleMode.Normal
         ? PuzzleInputParser.MinimumWordLength
@@ -443,25 +436,6 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
     #endregion
 
     #region Nested Types
-
-    private sealed class EntryFile
-    {
-      #region Properties
-
-      public required string Answer
-      {
-        get;
-        set;
-      }
-
-      public required string? Question
-      {
-        get;
-        set;
-      }
-
-      #endregion
-    }
 
     private sealed class GeneratedBoardFile
     {
@@ -613,7 +587,7 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
         set;
       }
 
-      public required List<EntryFile> Entries
+      public required List<PuzzleEntry> Entries
       {
         get;
         set;

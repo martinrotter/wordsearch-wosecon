@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Text;
 using System.Text.Encodings.Web;
+using WordSearchGenerator.Common;
 using WordSearchGenerator.Desktop.Localization;
 using WordSearchGenerator.Desktop.Models;
 using WordSearchGenerator.Desktop.Models.Rendering;
@@ -232,7 +233,7 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
       PuzzleMode mode,
       bool isSolution)
     {
-      if (cell.Kind == BoardRenderCellKind.QuizQuestion)
+      if (cell.Kind == Board.Cell.CellType.QuizQuestion)
       {
         builder.Append("<span class=\"quiz-number\">");
         builder.Append(
@@ -245,7 +246,7 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
 
       var hideAnswer = mode == PuzzleMode.Quiz &&
                        !isSolution &&
-                       cell.Kind == BoardRenderCellKind.Word;
+                       cell.Kind == Board.Cell.CellType.CharFromText;
 
       if (!hideAnswer && cell.Character != null)
       {
@@ -388,12 +389,12 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
         cell.Row + 1,
         cell.Column + 1);
 
-      if (cell.Kind == BoardRenderCellKind.Empty)
+      if (cell.Kind == Board.Cell.CellType.Empty)
       {
         return AppStrings.Format("HtmlBlackBoxLabel", position);
       }
 
-      if (cell.Kind == BoardRenderCellKind.QuizQuestion)
+      if (cell.Kind == Board.Cell.CellType.QuizQuestion)
       {
         return AppStrings.Format(
           "HtmlQuestionLabel",
@@ -421,7 +422,7 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
         return AppStrings.Format("HtmlLetterLabel", character, position);
       }
 
-      if (cell.Kind == BoardRenderCellKind.Message)
+      if (cell.Kind == Board.Cell.CellType.CharFromMessage)
       {
         return AppStrings.Format(
           "HtmlMessageCharacterLabel",
@@ -457,19 +458,19 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
     {
       var builder = new StringBuilder("cell");
 
-      if (cell.Kind == BoardRenderCellKind.Empty)
+      if (cell.Kind == Board.Cell.CellType.Empty)
       {
         builder.Append(" black-box");
       }
-      else if (cell.Kind == BoardRenderCellKind.QuizQuestion)
+      else if (cell.Kind == Board.Cell.CellType.QuizQuestion)
       {
         builder.Append(" quiz-question");
       }
-      else if (isSolution && cell.Kind == BoardRenderCellKind.Message)
+      else if (isSolution && cell.Kind == Board.Cell.CellType.CharFromMessage)
       {
         builder.Append(" message");
       }
-      else if (isSolution && cell.Kind == BoardRenderCellKind.Word)
+      else if (isSolution && cell.Kind == Board.Cell.CellType.CharFromText)
       {
         builder.Append(" word");
 

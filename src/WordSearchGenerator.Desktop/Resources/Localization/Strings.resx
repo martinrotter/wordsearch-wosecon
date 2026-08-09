@@ -28,14 +28,11 @@
   <data name="Mode" xml:space="preserve"><value>Mode</value></data>
   <data name="Rows" xml:space="preserve"><value>Rows</value></data>
   <data name="Columns" xml:space="preserve"><value>Columns</value></data>
-  <data name="RowsTooltip" xml:space="preserve"><value>Number of rows in the generated matrix</value></data>
-  <data name="ColumnsTooltip" xml:space="preserve"><value>Number of columns in the generated matrix</value></data>
   <data name="CellCount" xml:space="preserve"><value>Cell count</value></data>
   <data name="Dimensions" xml:space="preserve"><value>Dimensions</value></data>
   <data name="ContentTab" xml:space="preserve"><value>Content</value></data>
   <data name="AppearanceTab" xml:space="preserve"><value>Appearance</value></data>
   <data name="GenerationTab" xml:space="preserve"><value>Generation</value></data>
-  <data name="Appearance" xml:space="preserve"><value>Appearance</value></data>
   <data name="PuzzleStyle" xml:space="preserve"><value>Puzzle style</value></data>
   <data name="PuzzleStyleDescription" xml:space="preserve"><value>The selected style is used in the preview, printing, and exports.</value></data>
   <data name="WordsOrQuestions" xml:space="preserve"><value>Words or questions</value></data>
@@ -78,8 +75,6 @@
   <data name="SettingsLanguageDescription" xml:space="preserve"><value>Choose the language used by the application interface.</value></data>
   <data name="SettingsRestartNotice" xml:space="preserve"><value>A restart is required after changing the language.</value></data>
   <data name="SettingsOk" xml:space="preserve"><value>OK</value></data>
-  <data name="LanguageEnglish" xml:space="preserve"><value>English</value></data>
-  <data name="LanguageCzech" xml:space="preserve"><value>Czech</value></data>
   <data name="CultureNameFull" xml:space="preserve"><value>en-US</value></data>
   <data name="CultureNameShort" xml:space="preserve"><value>en</value></data>
   <data name="LanguageRestartMessage" xml:space="preserve"><value>The language setting was saved. Restart WoSeCon to apply it.</value></data>
@@ -272,7 +267,6 @@
   <data name="ProjectSettingsInvalid" xml:space="preserve"><value>The project settings are invalid.</value></data>
   <data name="SavedStatisticNegative" xml:space="preserve"><value>Saved statistic '{0}' is negative.</value></data>
   <data name="RenderCellCountInvalid" xml:space="preserve"><value>The render model must contain exactly one cell per matrix position.</value></data>
-  <data name="BoardDimensionsPositive" xml:space="preserve"><value>The board dimensions must be positive.</value></data>
   <data name="UiCultureUnsupported" xml:space="preserve"><value>The selected UI culture is not supported.</value></data>
   <data name="SettingsPathNoParent" xml:space="preserve"><value>The settings path has no parent directory.</value></data>
   <data name="ParallelAttemptsPositive" xml:space="preserve"><value>Parallel attempts must be positive.</value></data>

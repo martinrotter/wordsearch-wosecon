@@ -95,11 +95,6 @@
       return d1 == d2 || (int)d1 + (int)d2 == 11;
     }
 
-    public static bool IsSameCell(DirectedLocation d1, DirectedLocation d2)
-    {
-      return d1.Row == d2.Row && d1.Column == d2.Column;
-    }
-
     public static char GetArrowForDirection(LocationDirection dir)
     {
       switch (dir)

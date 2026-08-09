@@ -10,13 +10,6 @@ namespace WordSearchGenerator.Desktop.Services
 {
   public sealed class MonteCarloPuzzleGenerator : IPuzzleGenerator
   {
-    #region Static Fields
-
-    private const string NoSolutionMessage =
-      "given words cannot fit into the grid";
-
-    #endregion
-
     #region Fields
 
     private readonly Func<TimeSpan, CancellationTokenSource>
@@ -380,8 +373,6 @@ namespace WordSearchGenerator.Desktop.Services
           completionValidator);
         cancellationToken.ThrowIfCancellationRequested();
 
-        cancellationToken.ThrowIfCancellationRequested();
-
         var board = new Board(
           generator.Words,
           definition.Rows,
@@ -414,8 +405,7 @@ namespace WordSearchGenerator.Desktop.Services
           generator?.TestedPositions ?? 0,
           generator?.Backtrackings ?? 0);
       }
-      catch (Exception exception)
-        when (exception.Message == NoSolutionMessage)
+      catch (ConstructionExhaustedException)
       {
         stopwatch.Stop();
         var completion = completedLayoutAmbiguityRejected
@@ -535,21 +525,6 @@ namespace WordSearchGenerator.Desktop.Services
           backtrackings,
           false,
           error);
-      }
-
-      public static AttemptOutcome Rejected(
-        int attemptNumber,
-        int seed,
-        TimeSpan elapsed,
-        long testedPositions,
-        int backtrackings)
-      {
-        return Failed(
-          attemptNumber,
-          seed,
-          elapsed,
-          testedPositions,
-          backtrackings);
       }
 
       public static AttemptOutcome Succeeded(

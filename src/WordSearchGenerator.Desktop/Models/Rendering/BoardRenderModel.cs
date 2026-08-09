@@ -118,12 +118,12 @@ namespace WordSearchGenerator.Desktop.Models.Rendering
       for (var column = 0; column < board.ColumnCount; column++)
       {
         var sourceCell = board.Matrix[row, column];
-        var kind = GetCellKind(sourceCell.Type);
-        char? character = kind is BoardRenderCellKind.Word or
-          BoardRenderCellKind.Message
+        var kind = sourceCell.Type;
+        char? character = kind is Board.Cell.CellType.CharFromText or
+          Board.Cell.CellType.CharFromMessage
           ? sourceCell.Char
           : null;
-        var directionArrow = kind == BoardRenderCellKind.QuizQuestion
+        var directionArrow = kind == Board.Cell.CellType.QuizQuestion
           ? DirectedLocation.GetArrowForDirection(
             sourceCell.QuizWordDirection).ToString()
           : string.Empty;
@@ -158,19 +158,6 @@ namespace WordSearchGenerator.Desktop.Models.Rendering
         result.MessageCellCount,
         result.BlackBoxCount,
         result.IntersectionCount);
-    }
-
-    private static BoardRenderCellKind GetCellKind(Board.Cell.CellType type)
-    {
-      return type switch
-      {
-        Board.Cell.CellType.Empty => BoardRenderCellKind.Empty,
-        Board.Cell.CellType.CharFromText => BoardRenderCellKind.Word,
-        Board.Cell.CellType.CharFromMessage => BoardRenderCellKind.Message,
-        Board.Cell.CellType.QuizQuestion =>
-          BoardRenderCellKind.QuizQuestion,
-        _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
-      };
     }
 
     #endregion

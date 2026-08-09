@@ -65,9 +65,20 @@ namespace WordSearchGenerator.Tests
         },
         locations => locations);
 
-      var exception = Assert.ThrowsExactly<Exception>(() => generator.Construct());
+      var exception = Assert.ThrowsExactly<ConstructionExhaustedException>(
+        () => generator.Construct());
 
       WriteDiagnostics(generator, size, $"Expected failure: {exception.Message}");
+    }
+
+    [TestMethod]
+    public void RejectsEmptyWordList()
+    {
+      var exception = Assert.ThrowsExactly<ArgumentException>(() =>
+        new WoSeCon([], 1, 1, false));
+
+      Assert.AreEqual("words", exception.ParamName);
+      StringAssert.Contains(exception.Message, "At least one word");
     }
 
     [TestMethod]
