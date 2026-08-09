@@ -45,6 +45,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
     private bool _isExporting;
     private bool _isPreviewReady;
     private long _messageCapacityRejectionCount;
+    private string _maximumAttemptTimeSecondsText = "0";
     private PuzzleMode _mode;
     private int _placedWordCount;
     private int _placementFailedAttemptCount;
@@ -380,6 +381,21 @@ namespace WordSearchGenerator.Desktop.ViewModels
         if (SetProperty(ref _rowsText, value ?? string.Empty))
         {
           MarkDocumentChanged(true);
+          RefreshEditorState();
+        }
+      }
+    }
+
+    public string MaximumAttemptTimeSecondsText
+    {
+      get => _maximumAttemptTimeSecondsText;
+      set
+      {
+        if (SetProperty(
+              ref _maximumAttemptTimeSecondsText,
+              value ?? string.Empty))
+        {
+          MarkDocumentChanged(false);
           RefreshEditorState();
         }
       }
@@ -747,7 +763,8 @@ namespace WordSearchGenerator.Desktop.ViewModels
         PuzzleHeading,
         EntryListHeading,
         new GenerationOptions(
-          SelectedParallelismOption.ParallelAttempts));
+          SelectedParallelismOption.ParallelAttempts,
+          int.Parse(MaximumAttemptTimeSecondsText)));
     }
 
     private static string FormatDifficulty(
@@ -1194,6 +1211,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
 
     private void ValidateEditor()
     {
+      ValidateMaximumAttemptTime();
       var rowsValid = ValidateDimension(
         RowsText,
         nameof(RowsText),
@@ -1312,6 +1330,23 @@ namespace WordSearchGenerator.Desktop.ViewModels
       }
 
       SetErrors(nameof(SecretMessage), messageErrors);
+    }
+
+    private void ValidateMaximumAttemptTime()
+    {
+      var errors = new List<string>();
+
+      if (!int.TryParse(
+            MaximumAttemptTimeSecondsText,
+            out var maximumAttemptTimeSeconds) ||
+          maximumAttemptTimeSeconds < 0 ||
+          maximumAttemptTimeSeconds >
+          GenerationOptions.MaximumAttemptTimeSecondsLimit)
+      {
+        errors.Add(AppStrings.Get("MaximumAttemptTimeRange"));
+      }
+
+      SetErrors(nameof(MaximumAttemptTimeSecondsText), errors);
     }
 
     private bool ValidateDimension(

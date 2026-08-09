@@ -92,7 +92,7 @@ namespace WordSearchGenerator.Desktop.Tests
         secretMessage,
         string.Empty,
         string.Empty,
-        new GenerationOptions(1));
+        new GenerationOptions(1, 0));
       var words = definition.CreateWordInfos();
 
       for (var index = 0; index < words.Count; index++)

@@ -21,7 +21,7 @@ namespace WordSearchGenerator.Desktop.Tests
         string.Empty,
         string.Empty,
         string.Empty,
-        new GenerationOptions(1));
+        new GenerationOptions(1, 0));
       var serializer = new PuzzleProjectSerializer();
       var path = Path.Combine(
         Path.GetTempPath(),
@@ -62,7 +62,7 @@ namespace WordSearchGenerator.Desktop.Tests
         string.Empty,
         string.Empty,
         string.Empty,
-        new GenerationOptions(4));
+        new GenerationOptions(4, 17));
       var word = new WordInfo
       {
         Text = "ABC",
@@ -104,6 +104,9 @@ namespace WordSearchGenerator.Desktop.Tests
         var restored = await serializer.LoadAsync(path);
 
         Assert.IsNotNull(restored.GeneratedResult);
+        Assert.AreEqual(
+          17,
+          restored.Definition.Generation.MaximumAttemptTimeSeconds);
         Assert.AreEqual(10, restored.GeneratedResult.CompletedCandidateCount);
         Assert.AreEqual(7, restored.GeneratedResult.MessageCapacityRejectionCount);
         Assert.AreEqual(2, restored.GeneratedResult.AmbiguousBoardRejectionCount);

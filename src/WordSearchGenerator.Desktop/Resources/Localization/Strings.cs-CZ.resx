@@ -54,6 +54,8 @@
   <data name="OmitListHeadingTooltip" xml:space="preserve"><value>Ponechte prázdné, pokud nadpis seznamu nechcete zobrazit</value></data>
   <data name="Generation" xml:space="preserve"><value>Generování</value></data>
   <data name="ParallelAttempts" xml:space="preserve"><value>Paralelní pokusy</value></data>
+  <data name="MaximumAttemptTime" xml:space="preserve"><value>Maximální čas jednoho pokusu (sekundy)</value></data>
+  <data name="MaximumAttemptTimeTooltip" xml:space="preserve"><value>Hodnota 0 vypne automatické restartování pokusů.</value></data>
   <data name="DifficultyTooltip" xml:space="preserve"><value>Jde o orientační odhad, nikoli zaručenou dobu dokončení.</value></data>
   <data name="DifficultyLabel" xml:space="preserve"><value>Orientační odhad obtížnosti</value></data>
   <data name="Cancel" xml:space="preserve"><value>Zrušit</value></data>
@@ -270,6 +272,7 @@
   <data name="UiCultureUnsupported" xml:space="preserve"><value>Vybraný jazyk uživatelského rozhraní není podporován.</value></data>
   <data name="SettingsPathNoParent" xml:space="preserve"><value>Cesta k nastavení nemá nadřazenou složku.</value></data>
   <data name="ParallelAttemptsPositive" xml:space="preserve"><value>Počet paralelních pokusů musí být kladný.</value></data>
+  <data name="MaximumAttemptTimeRange" xml:space="preserve"><value>Maximální čas jednoho pokusu musí být celé číslo od 0 do 86 400 sekund.</value></data>
   <data name="PuzzleEntryRequired" xml:space="preserve"><value>Je nutná alespoň jedna položka osmisměrky.</value></data>
   <data name="PuzzleEntriesNoNull" xml:space="preserve"><value>Položky osmisměrky nesmí obsahovat hodnoty null.</value></data>
   <data name="GenerationAttemptUnexpected" xml:space="preserve"><value>Pokus o generování {0} neočekávaně selhal.</value></data>

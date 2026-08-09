@@ -117,6 +117,8 @@ namespace WordSearchGenerator.Desktop.ViewModels
         EntryListHeading = definition.EntryListHeading;
         SelectedParallelismOption = GetOrAddParallelismOption(
           definition.Generation.ParallelAttempts);
+        MaximumAttemptTimeSecondsText =
+          definition.Generation.MaximumAttemptTimeSeconds.ToString();
 
         if (definition.Mode == PuzzleMode.Normal)
         {
@@ -188,6 +190,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
         PuzzleHeading = string.Empty;
         EntryListHeading = GetDefaultEntryListHeading(PuzzleMode.Normal);
         SelectedParallelismOption = ParallelismOptions[0];
+        MaximumAttemptTimeSecondsText = "0";
         QuizEntries.Clear();
         QuizEntries.Add(new QuizEntryViewModel());
         ResetGenerationProgress(GetNormalizedEntries().Count, 0);

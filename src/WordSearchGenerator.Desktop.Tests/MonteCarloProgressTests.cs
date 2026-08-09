@@ -95,6 +95,32 @@ namespace WordSearchGenerator.Desktop.Tests
       Assert.AreEqual(1, snapshot.AmbiguousBoardRejectionCount);
     }
 
+    [TestMethod]
+    public void RestartKeepsWorkerActiveAndAccumulatesItsWork()
+    {
+      var aggregator = new MonteCarloPuzzleGenerator.ProgressAggregator(
+        1,
+        4,
+        null);
+      aggregator.Update(
+        0,
+        new ConstructionProgress(3, 3, 4, 4, 100, 5, TimeSpan.Zero));
+      aggregator.Restart(0, 100, 5);
+      aggregator.Update(
+        0,
+        new ConstructionProgress(1, 1, 4, 2, 10, 1, TimeSpan.Zero));
+
+      var snapshot = aggregator.Report(true);
+
+      Assert.AreEqual(1, snapshot.ActiveAttemptCount);
+      Assert.AreEqual(0, snapshot.FinishedAttemptCount);
+      Assert.AreEqual(0, snapshot.CancelledAttemptCount);
+      Assert.AreEqual(1, snapshot.PlacedWordCount);
+      Assert.AreEqual(3, snapshot.FurthestPlacedWordCount);
+      Assert.AreEqual(110, snapshot.TestedPositions);
+      Assert.AreEqual(6, snapshot.Backtrackings);
+    }
+
     #endregion
   }
 }

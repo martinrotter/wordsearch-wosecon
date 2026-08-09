@@ -19,6 +19,8 @@ namespace WordSearchGenerator.Desktop.Services
 
     #region Fields
 
+    private readonly Func<TimeSpan, CancellationTokenSource>
+      _attemptTimeoutFactory;
     private readonly Func<int, int[]> _seedFactory;
 
     #endregion
@@ -26,8 +28,20 @@ namespace WordSearchGenerator.Desktop.Services
     #region Constructors
 
     public MonteCarloPuzzleGenerator(Func<int, int[]>? seedFactory = null)
+      : this(
+        seedFactory,
+        timeout => new CancellationTokenSource(timeout))
+    {
+    }
+
+    internal MonteCarloPuzzleGenerator(
+      Func<int, int[]>? seedFactory,
+      Func<TimeSpan, CancellationTokenSource> attemptTimeoutFactory)
     {
       _seedFactory = seedFactory ?? CreateSeeds;
+      _attemptTimeoutFactory = attemptTimeoutFactory ??
+                               throw new ArgumentNullException(
+                                 nameof(attemptTimeoutFactory));
     }
 
     #endregion
@@ -45,17 +59,11 @@ namespace WordSearchGenerator.Desktop.Services
       var attemptCount = definition.Generation.ParallelAttempts;
       var seeds = _seedFactory(attemptCount);
 
-      if (seeds == null ||
-          seeds.Length != attemptCount ||
-          seeds.Any(seed => seed <= 0) ||
-          seeds.Distinct().Count() != seeds.Length)
-      {
-        throw new InvalidOperationException(
-          "The seed factory must return the requested number of distinct positive seeds.");
-      }
+      ValidateSeeds(seeds, attemptCount);
 
       using var linkedCancellation =
         CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+      var seedPool = new SeedPool(_seedFactory, seeds);
       var aggregator = new ProgressAggregator(
         attemptCount,
         definition.Entries.Count,
@@ -63,11 +71,13 @@ namespace WordSearchGenerator.Desktop.Services
       var remainingTasks = Enumerable
         .Range(0, attemptCount)
         .Select(index => Task.Run(
-          () => RunAttempt(
+          () => RunWorker(
             definition,
             index,
             seeds[index],
+            seedPool,
             aggregator,
+            _attemptTimeoutFactory,
             linkedCancellation.Token),
           CancellationToken.None))
         .ToList();
@@ -193,6 +203,95 @@ namespace WordSearchGenerator.Desktop.Services
       return shuffled;
     }
 
+    private static void ValidateSeeds(int[]? seeds, int expectedCount)
+    {
+      if (seeds == null ||
+          seeds.Length != expectedCount ||
+          seeds.Any(seed => seed <= 0) ||
+          seeds.Distinct().Count() != seeds.Length)
+      {
+        throw new InvalidOperationException(
+          "The seed factory must return the requested number of distinct positive seeds.");
+      }
+    }
+
+    private static AttemptOutcome RunWorker(
+      PuzzleDefinition definition,
+      int attemptIndex,
+      int initialSeed,
+      SeedPool seedPool,
+      ProgressAggregator aggregator,
+      Func<TimeSpan, CancellationTokenSource> attemptTimeoutFactory,
+      CancellationToken cancellationToken)
+    {
+      var seed = initialSeed;
+
+      while (true)
+      {
+        var maximumAttemptTimeSeconds =
+          definition.Generation.MaximumAttemptTimeSeconds;
+        using var timeoutCancellation = maximumAttemptTimeSeconds > 0
+          ? attemptTimeoutFactory(TimeSpan.FromSeconds(
+              maximumAttemptTimeSeconds)) ??
+            throw new InvalidOperationException(
+              "The attempt timeout factory returned null.")
+          : null;
+        using var attemptCancellation = timeoutCancellation == null
+          ? CancellationTokenSource.CreateLinkedTokenSource(cancellationToken)
+          : CancellationTokenSource.CreateLinkedTokenSource(
+            cancellationToken,
+            timeoutCancellation.Token);
+
+        var outcome = RunAttempt(
+          definition,
+          attemptIndex,
+          seed,
+          aggregator,
+          attemptCancellation.Token);
+
+        if (!outcome.WasCancelled)
+        {
+          return outcome;
+        }
+
+        if (cancellationToken.IsCancellationRequested ||
+            maximumAttemptTimeSeconds == 0)
+        {
+          aggregator.Complete(
+            attemptIndex,
+            AttemptCompletion.Cancelled,
+            outcome.TestedPositions,
+            outcome.Backtrackings);
+          return outcome;
+        }
+
+        aggregator.Restart(
+          attemptIndex,
+          outcome.TestedPositions,
+          outcome.Backtrackings);
+
+        try
+        {
+          seed = seedPool.Next();
+        }
+        catch (Exception exception)
+        {
+          aggregator.Complete(
+            attemptIndex,
+            AttemptCompletion.Faulted,
+            0,
+            0);
+          return AttemptOutcome.Faulted(
+            attemptIndex + 1,
+            seed,
+            TimeSpan.Zero,
+            0,
+            0,
+            exception);
+        }
+      }
+    }
+
     private static AttemptOutcome RunAttempt(
       PuzzleDefinition definition,
       int attemptIndex,
@@ -308,16 +407,12 @@ namespace WordSearchGenerator.Desktop.Services
       catch (OperationCanceledException)
       {
         stopwatch.Stop();
-        aggregator.Complete(
-          attemptIndex,
-          AttemptCompletion.Cancelled,
-          generator?.TestedPositions ?? 0,
-          generator?.Backtrackings ?? 0);
-
         return AttemptOutcome.Cancelled(
           attemptIndex + 1,
           seed,
-          stopwatch.Elapsed);
+          stopwatch.Elapsed,
+          generator?.TestedPositions ?? 0,
+          generator?.Backtrackings ?? 0);
       }
       catch (Exception exception)
         when (exception.Message == NoSolutionMessage)
@@ -382,6 +477,7 @@ namespace WordSearchGenerator.Desktop.Services
       TimeSpan Elapsed,
       long TestedPositions,
       int Backtrackings,
+      bool WasCancelled,
       Exception? Error)
     {
       #region Other Stuff
@@ -389,15 +485,18 @@ namespace WordSearchGenerator.Desktop.Services
       public static AttemptOutcome Cancelled(
         int attemptNumber,
         int seed,
-        TimeSpan elapsed)
+        TimeSpan elapsed,
+        long testedPositions,
+        int backtrackings)
       {
         return new AttemptOutcome(
           attemptNumber,
           seed,
           null,
           elapsed,
-          0,
-          0,
+          testedPositions,
+          backtrackings,
+          true,
           null);
       }
 
@@ -415,6 +514,7 @@ namespace WordSearchGenerator.Desktop.Services
           elapsed,
           testedPositions,
           backtrackings,
+          false,
           null);
       }
 
@@ -433,6 +533,7 @@ namespace WordSearchGenerator.Desktop.Services
           elapsed,
           testedPositions,
           backtrackings,
+          false,
           error);
       }
 
@@ -466,7 +567,55 @@ namespace WordSearchGenerator.Desktop.Services
           elapsed,
           testedPositions,
           backtrackings,
+          false,
           null);
+      }
+
+      #endregion
+    }
+
+    private sealed class SeedPool
+    {
+      #region Fields
+
+      private readonly Func<int, int[]> _seedFactory;
+      private readonly object _gate = new();
+      private readonly HashSet<int> _usedSeeds;
+
+      #endregion
+
+      #region Constructors
+
+      public SeedPool(
+        Func<int, int[]> seedFactory,
+        IEnumerable<int> initialSeeds)
+      {
+        _seedFactory = seedFactory;
+        _usedSeeds = initialSeeds.ToHashSet();
+      }
+
+      #endregion
+
+      #region Other Stuff
+
+      public int Next()
+      {
+        lock (_gate)
+        {
+          for (var attempt = 0; attempt < 1024; attempt++)
+          {
+            var seeds = _seedFactory(1);
+            ValidateSeeds(seeds, 1);
+
+            if (_usedSeeds.Add(seeds[0]))
+            {
+              return seeds[0];
+            }
+          }
+        }
+
+        throw new InvalidOperationException(
+          "The seed factory repeatedly returned seeds that were already used.");
       }
 
       #endregion
@@ -483,6 +632,12 @@ namespace WordSearchGenerator.Desktop.Services
       }
 
       public ConstructionProgress? Progress
+      {
+        get;
+        set;
+      }
+
+      public int FurthestPlacedWordCount
       {
         get;
         set;
@@ -535,6 +690,8 @@ namespace WordSearchGenerator.Desktop.Services
       private long _completedCandidateCount;
       private long _messageCapacityRejectionCount;
       private long _nextReportAt;
+      private long _restartedAttemptBacktrackings;
+      private long _restartedAttemptTestedPositions;
 
       #endregion
 
@@ -636,6 +793,29 @@ namespace WordSearchGenerator.Desktop.Services
         Report();
       }
 
+      public void Restart(
+        int attemptIndex,
+        long testedPositions,
+        int backtrackings)
+      {
+        lock (_gate)
+        {
+          var state = _states[attemptIndex];
+          _restartedAttemptTestedPositions += Math.Max(
+            state.TestedPositions,
+            testedPositions);
+          _restartedAttemptBacktrackings += Math.Max(
+            state.Backtrackings,
+            backtrackings);
+          state.Completion = AttemptCompletion.Running;
+          state.Progress = null;
+          state.TestedPositions = 0;
+          state.Backtrackings = 0;
+        }
+
+        Report();
+      }
+
       public void Update(
         int attemptIndex,
         ConstructionProgress progress)
@@ -644,6 +824,9 @@ namespace WordSearchGenerator.Desktop.Services
         {
           var state = _states[attemptIndex];
           state.Progress = progress;
+          state.FurthestPlacedWordCount = Math.Max(
+            state.FurthestPlacedWordCount,
+            progress.FurthestPlacedWordCount);
           state.TestedPositions = Math.Max(
             state.TestedPositions,
             progress.TestedPositions);
@@ -672,11 +855,13 @@ namespace WordSearchGenerator.Desktop.Services
           .DefaultIfEmpty()
           .Max();
         var furthestPlacedWordCount = _states
-          .Select(state => state.Progress?.FurthestPlacedWordCount ?? 0)
+          .Select(state => state.FurthestPlacedWordCount)
           .DefaultIfEmpty()
           .Max();
-        var testedPositions = _states.Sum(state => state.TestedPositions);
-        var backtrackings = _states.Sum(state => (long)state.Backtrackings);
+        var testedPositions = _restartedAttemptTestedPositions +
+                              _states.Sum(state => state.TestedPositions);
+        var backtrackings = _restartedAttemptBacktrackings +
+                            _states.Sum(state => (long)state.Backtrackings);
 
         return new MonteCarloProgress(
           activeAttemptCount,

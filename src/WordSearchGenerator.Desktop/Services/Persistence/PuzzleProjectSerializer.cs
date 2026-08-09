@@ -163,6 +163,8 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
         EntryListHeading = definition.EntryListHeading,
         GeneratedBoard = generated,
         Mode = definition.Mode,
+        MaximumAttemptTimeSeconds =
+          definition.Generation.MaximumAttemptTimeSeconds,
         ParallelAttempts = definition.Generation.ParallelAttempts,
         PuzzleHeading = definition.PuzzleHeading,
         Rows = definition.Rows,
@@ -386,7 +388,9 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
           file.SecretMessage,
           file.PuzzleHeading,
           file.EntryListHeading,
-          new GenerationOptions(file.ParallelAttempts));
+          new GenerationOptions(
+            file.ParallelAttempts,
+            file.MaximumAttemptTimeSeconds));
       }
       catch (Exception exception)
         when (exception is ArgumentException)
@@ -605,6 +609,12 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
       }
 
       public required PuzzleMode Mode
+      {
+        get;
+        set;
+      }
+
+      public required int MaximumAttemptTimeSeconds
       {
         get;
         set;

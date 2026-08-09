@@ -104,5 +104,6 @@
   "puzzleHeading": "České zajímavosti",
   "entryListHeading": "Otázky",
   "parallelAttempts": 8,
+  "maximumAttemptTimeSeconds": 0,
   "generatedBoard": null
 }

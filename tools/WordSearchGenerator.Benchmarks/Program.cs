@@ -145,7 +145,7 @@ namespace WordSearchGenerator.Benchmarks
         benchmarkCase.SecretMessage,
         string.Empty,
         string.Empty,
-        new GenerationOptions(benchmarkCase.Parallelism));
+        new GenerationOptions(benchmarkCase.Parallelism, 0));
       var estimate = WoSeCon.EstimateDifficulty(
         definition.CreateWordInfos(),
         definition.Rows,

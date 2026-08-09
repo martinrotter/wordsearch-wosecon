@@ -54,6 +54,8 @@
   <data name="OmitListHeadingTooltip" xml:space="preserve"><value>Leave empty to omit the list heading</value></data>
   <data name="Generation" xml:space="preserve"><value>Generation</value></data>
   <data name="ParallelAttempts" xml:space="preserve"><value>Parallel attempts</value></data>
+  <data name="MaximumAttemptTime" xml:space="preserve"><value>Maximum time per attempt (seconds)</value></data>
+  <data name="MaximumAttemptTimeTooltip" xml:space="preserve"><value>0 disables automatic worker restarts.</value></data>
   <data name="DifficultyTooltip" xml:space="preserve"><value>This is a heuristic estimate, not a guaranteed completion time.</value></data>
   <data name="DifficultyLabel" xml:space="preserve"><value>Rough difficulty estimation</value></data>
   <data name="Cancel" xml:space="preserve"><value>Cancel</value></data>
@@ -270,6 +272,7 @@
   <data name="UiCultureUnsupported" xml:space="preserve"><value>The selected UI culture is not supported.</value></data>
   <data name="SettingsPathNoParent" xml:space="preserve"><value>The settings path has no parent directory.</value></data>
   <data name="ParallelAttemptsPositive" xml:space="preserve"><value>Parallel attempts must be positive.</value></data>
+  <data name="MaximumAttemptTimeRange" xml:space="preserve"><value>Maximum time per attempt must be a whole number from 0 to 86,400 seconds.</value></data>
   <data name="PuzzleEntryRequired" xml:space="preserve"><value>At least one puzzle entry is required.</value></data>
   <data name="PuzzleEntriesNoNull" xml:space="preserve"><value>Puzzle entries cannot contain null values.</value></data>
   <data name="GenerationAttemptUnexpected" xml:space="preserve"><value>Generation attempt {0} failed unexpectedly.</value></data>
