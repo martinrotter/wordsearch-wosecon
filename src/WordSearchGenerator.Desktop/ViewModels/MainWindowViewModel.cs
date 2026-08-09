@@ -45,7 +45,8 @@ namespace WordSearchGenerator.Desktop.ViewModels
     private bool _isExporting;
     private bool _isPreviewReady;
     private long _messageCapacityRejectionCount;
-    private string _maximumAttemptTimeSecondsText = "0";
+    private string _maximumAttemptTimeSecondsText =
+      NewProjectMaximumAttemptTimeSecondsText;
     private PuzzleMode _mode;
     private int _placedWordCount;
     private int _placementFailedAttemptCount;

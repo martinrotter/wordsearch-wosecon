@@ -11,6 +11,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
     #region Static Fields
 
     private const string NewProjectColumnsText = "5";
+    private const string NewProjectMaximumAttemptTimeSecondsText = "10";
     private const string NewProjectRowsText = "4";
     private const string NewProjectSecretMessage = "hello";
     private const string NewProjectWordsText = "cat\r\ndog\r\nsun\r\nmap";
@@ -190,7 +191,8 @@ namespace WordSearchGenerator.Desktop.ViewModels
         PuzzleHeading = string.Empty;
         EntryListHeading = GetDefaultEntryListHeading(PuzzleMode.Normal);
         SelectedParallelismOption = ParallelismOptions[0];
-        MaximumAttemptTimeSecondsText = "0";
+        MaximumAttemptTimeSecondsText =
+          NewProjectMaximumAttemptTimeSecondsText;
         QuizEntries.Clear();
         QuizEntries.Add(new QuizEntryViewModel());
         ResetGenerationProgress(GetNormalizedEntries().Count, 0);
