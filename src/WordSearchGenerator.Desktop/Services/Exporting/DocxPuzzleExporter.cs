@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
+using WordSearchGenerator.Common;
 using WordSearchGenerator.Desktop.Localization;
 using WordSearchGenerator.Desktop.Models;
 using WordSearchGenerator.Desktop.Models.Rendering;

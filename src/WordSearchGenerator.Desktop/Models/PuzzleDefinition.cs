@@ -1,17 +1,13 @@
 using System.Collections.ObjectModel;
+using WordSearchGenerator.Common;
 using WordSearchGenerator.Common.WoSeCon.Api;
 using WordSearchGenerator.Desktop.Localization;
 
 namespace WordSearchGenerator.Desktop.Models
 {
-  public sealed class PuzzleDefinition
+  public sealed class PuzzleDefinition : PuzzleGrid
   {
     #region Properties
-
-    public int Columns
-    {
-      get;
-    }
 
     public IReadOnlyList<PuzzleEntry> Entries
     {
@@ -28,17 +24,7 @@ namespace WordSearchGenerator.Desktop.Models
       get;
     }
 
-    public PuzzleMode Mode
-    {
-      get;
-    }
-
     public string PuzzleHeading
-    {
-      get;
-    }
-
-    public int Rows
     {
       get;
     }
@@ -53,8 +39,6 @@ namespace WordSearchGenerator.Desktop.Models
       get;
     }
 
-    public bool QuizMode => Mode == PuzzleMode.Quiz;
-
     #endregion
 
     #region Constructors
@@ -68,10 +52,8 @@ namespace WordSearchGenerator.Desktop.Models
       string puzzleHeading,
       string entryListHeading,
       string styleId,
-      GenerationOptions generation)
+      GenerationOptions generation) : base(mode, rows, columns)
     {
-      ArgumentOutOfRangeException.ThrowIfNegativeOrZero(rows);
-      ArgumentOutOfRangeException.ThrowIfNegativeOrZero(columns);
       ArgumentNullException.ThrowIfNull(entries);
       ArgumentNullException.ThrowIfNull(secretMessage);
       ArgumentNullException.ThrowIfNull(puzzleHeading);
@@ -95,9 +77,6 @@ namespace WordSearchGenerator.Desktop.Models
           nameof(entries));
       }
 
-      Mode = mode;
-      Rows = rows;
-      Columns = columns;
       Entries = new ReadOnlyCollection<PuzzleEntry>(entryArray);
       SecretMessage = secretMessage;
       PuzzleHeading = puzzleHeading.Trim();
@@ -116,7 +95,6 @@ namespace WordSearchGenerator.Desktop.Models
         .Select((entry, index) => new WordInfo
         {
           Text = entry.Answer,
-          QuizQuestion = entry.Question,
           WordNumber = index + 1
         })
         .ToList();

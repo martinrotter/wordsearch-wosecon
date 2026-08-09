@@ -1,4 +1,5 @@
 using System.IO;
+using WordSearchGenerator.Common;
 using WordSearchGenerator.Desktop.Localization;
 using WordSearchGenerator.Desktop.Models;
 using WordSearchGenerator.Desktop.Models.Persistence;
@@ -317,8 +318,8 @@ namespace WordSearchGenerator.Desktop.ViewModels
       PreviewTitle = AppStrings.Get("BoardGenerated");
       PreviewMessage = AppStrings.Format(
         "BoardSummary",
-        result.Board.RowCount,
-        result.Board.ColumnCount,
+        result.Board.Rows,
+        result.Board.Columns,
         result.Definition.Entries.Count,
         result.PuzzleOccupancyPercentage,
         result.MessageCellCount,

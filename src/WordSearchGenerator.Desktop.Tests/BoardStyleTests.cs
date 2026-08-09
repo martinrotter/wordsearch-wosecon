@@ -90,7 +90,7 @@ namespace WordSearchGenerator.Desktop.Tests
       };
       var result = new GenerationResult(
         definition,
-        new Board([word], 1, 3, false),
+        new Board([word], definition),
         TimeSpan.Zero,
         0,
         0,

@@ -1,3 +1,4 @@
+using WordSearchGenerator.Common;
 using WordSearchGenerator.Desktop.Localization;
 using WordSearchGenerator.Desktop.Models;
 using WordSearchGenerator.Desktop.Models.Rendering;

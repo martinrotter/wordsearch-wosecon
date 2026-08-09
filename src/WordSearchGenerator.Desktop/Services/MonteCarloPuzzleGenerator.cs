@@ -320,9 +320,7 @@ namespace WordSearchGenerator.Desktop.Services
             {
               board = new Board(
                 placedWords.ToList(),
-                definition.Rows,
-                definition.Columns,
-                false,
+                definition,
                 definition.SecretMessage);
             }
             catch (MessageCannotBePlacedException)
@@ -351,9 +349,7 @@ namespace WordSearchGenerator.Desktop.Services
             {
               _ = new Board(
                 placedWords.ToList(),
-                definition.Rows,
-                definition.Columns,
-                true,
+                definition,
                 definition.SecretMessage);
               aggregator.RecordAcceptedCandidate();
               return true;
@@ -375,9 +371,7 @@ namespace WordSearchGenerator.Desktop.Services
 
         var board = new Board(
           generator.Words,
-          definition.Rows,
-          definition.Columns,
-          definition.QuizMode,
+          definition,
           definition.SecretMessage);
 
         stopwatch.Stop();

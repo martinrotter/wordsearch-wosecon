@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using WordSearchGenerator.Common;
 using WordSearchGenerator.Desktop.Models;
 using WordSearchGenerator.Desktop.Services;
 using WordSearchGenerator.Desktop.Services.Rendering;

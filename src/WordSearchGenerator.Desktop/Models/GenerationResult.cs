@@ -84,9 +84,7 @@ namespace WordSearchGenerator.Desktop.Models
     }
 
     public double PuzzleOccupancyPercentage =>
-      Board.RowCount == 0 || Board.ColumnCount == 0
-        ? 0
-        : 100.0 * PuzzleCellCount / (Board.RowCount * Board.ColumnCount);
+      100.0 * PuzzleCellCount / (Board.Rows * Board.Columns);
 
     public long TestedPositions
     {

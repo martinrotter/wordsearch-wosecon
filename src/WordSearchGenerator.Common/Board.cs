@@ -1,21 +1,11 @@
-﻿using System.Text;
+using System.Text;
 using WordSearchGenerator.Common.WoSeCon.Api;
 
 namespace WordSearchGenerator.Common
 {
-  public class Board
+  public class Board : PuzzleGrid
   {
     #region Properties
-
-    public int ColumnCount
-    {
-      get;
-    }
-
-    public bool QuizMode
-    {
-      get;
-    }
 
     public Cell[,] Matrix
     {
@@ -25,19 +15,11 @@ namespace WordSearchGenerator.Common
 
     public int CharCellCount => Matrix.OfType<Cell>().Count(cell => cell.Words.Count > 0);
 
-    public double PercentageOccupied =>
-      RowCount == 0 || ColumnCount == 0
-        ? 0
-        : 100 * (double)CharCellCount / (RowCount * ColumnCount);
+    public double PercentageOccupied => 100 * (double)CharCellCount / (Rows * Columns);
 
     public int IntersectionCount => Matrix.OfType<Cell>().Count(cl => cl.Intersections >= 2);
 
     public string Message
-    {
-      get;
-    }
-
-    public int RowCount
     {
       get;
     }
@@ -53,18 +35,27 @@ namespace WordSearchGenerator.Common
 
     public Board(
       List<WordInfo> words,
-      int rowCount,
-      int columnCount,
-      bool quizMode,
-      string message = null)
+      int rows,
+      int columns,
+      PuzzleMode mode,
+      string message = null) : base(mode, rows, columns)
     {
       Words = words;
-      RowCount = rowCount;
-      ColumnCount = columnCount;
-      QuizMode = quizMode;
       Message = message ?? string.Empty;
 
       FillBoard();
+    }
+
+    public Board(
+      List<WordInfo> words,
+      PuzzleGrid grid,
+      string message = null) : this(
+      words,
+      (grid ?? throw new ArgumentNullException(nameof(grid))).Rows,
+      grid.Columns,
+      grid.Mode,
+      message)
+    {
     }
 
     #endregion
@@ -77,20 +68,20 @@ namespace WordSearchGenerator.Common
 
       bldr.Append("    ");
 
-      for (var column = 0; column < ColumnCount; column++)
+      for (var column = 0; column < Columns; column++)
       {
         bldr.Append($"{column,3}");
       }
 
       bldr.AppendLine();
       bldr.Append("   +");
-      bldr.AppendLine(new string('-', ColumnCount * 3));
+      bldr.AppendLine(new string('-', Columns * 3));
 
-      for (var row = 0; row < RowCount; row++)
+      for (var row = 0; row < Rows; row++)
       {
         bldr.Append($"{row,2} | ");
 
-        for (var column = 0; column < ColumnCount; column++)
+        for (var column = 0; column < Columns; column++)
         {
           var cell = Matrix[row, column];
 
@@ -113,14 +104,14 @@ namespace WordSearchGenerator.Common
     {
       var bldr = new StringBuilder();
 
-      bldr.AppendLine($"Board: {RowCount}x{ColumnCount}");
+      bldr.AppendLine($"Board: {Rows}x{Columns}");
       bldr.Append(PrintBoard());
       bldr.AppendLine($"Words ({Words.Count}):");
       bldr.Append(PrintWords(true));
       bldr.AppendLine($"Intersections: {IntersectionCount}");
       bldr.Append(PrintIntersections());
       bldr.AppendLine(
-        $"Occupied: {CharCellCount}/{RowCount * ColumnCount} ({PercentageOccupied:F2}%)");
+        $"Occupied: {CharCellCount}/{Rows * Columns} ({PercentageOccupied:F2}%)");
 
       return bldr.ToString();
     }
@@ -129,9 +120,9 @@ namespace WordSearchGenerator.Common
     {
       var bldr = new StringBuilder();
 
-      for (var i = 0; i < RowCount; i++)
+      for (var i = 0; i < Rows; i++)
       {
-        for (var j = 0; j < ColumnCount; j++)
+        for (var j = 0; j < Columns; j++)
         {
           if (Matrix[i, j].Intersections >= 2)
           {
@@ -188,13 +179,13 @@ namespace WordSearchGenerator.Common
 
     private void FillBoard()
     {
-      Matrix = new Cell[RowCount, ColumnCount];
+      Matrix = new Cell[Rows, Columns];
 
-      for (var i = 0; i < RowCount; i++)
-      for (var j = 0; j < ColumnCount; j++)
-      {
-        Matrix[i, j] = new Cell();
-      }
+      for (var i = 0; i < Rows; i++)
+        for (var j = 0; j < Columns; j++)
+        {
+          Matrix[i, j] = new Cell();
+        }
 
       foreach (var word in Words)
       {
@@ -244,24 +235,24 @@ namespace WordSearchGenerator.Common
     {
       var availableCells = new Dictionary<char, List<(Cell Cell, int Position)>>();
 
-      for (var row = 0; row < RowCount; row++)
-      for (var column = 0; column < ColumnCount; column++)
-      {
-        var cell = Matrix[row, column];
-
-        if (cell.Type != Cell.CellType.CharFromText)
+      for (var row = 0; row < Rows; row++)
+        for (var column = 0; column < Columns; column++)
         {
-          continue;
-        }
+          var cell = Matrix[row, column];
 
-        if (!availableCells.TryGetValue(cell.Char, out var cellsForCharacter))
-        {
-          cellsForCharacter = [];
-          availableCells.Add(cell.Char, cellsForCharacter);
-        }
+          if (cell.Type != Cell.CellType.CharFromText)
+          {
+            continue;
+          }
 
-        cellsForCharacter.Add((cell, row * ColumnCount + column));
-      }
+          if (!availableCells.TryGetValue(cell.Char, out var cellsForCharacter))
+          {
+            cellsForCharacter = [];
+            availableCells.Add(cell.Char, cellsForCharacter);
+          }
+
+          cellsForCharacter.Add((cell, row * Columns + column));
+        }
 
       for (var messageIndex = 0; messageIndex < Message.Length; messageIndex++)
       {
@@ -275,9 +266,9 @@ namespace WordSearchGenerator.Common
         }
 
         var targetPosition = Message.Length == 1
-          ? (RowCount * ColumnCount - 1) / 2.0
+          ? (Rows * Columns - 1) / 2.0
           : (double)messageIndex *
-            (RowCount * ColumnCount - 1) /
+            (Rows * Columns - 1) /
             (Message.Length - 1);
         var nearestCellIndex = 0;
         var nearestDistance = Math.Abs(
@@ -306,14 +297,14 @@ namespace WordSearchGenerator.Common
     {
       var availableCells = new List<Cell>();
 
-      for (var row = 0; row < RowCount; row++)
-      for (var column = 0; column < ColumnCount; column++)
-      {
-        if (Matrix[row, column].Type == Cell.CellType.Empty)
+      for (var row = 0; row < Rows; row++)
+        for (var column = 0; column < Columns; column++)
         {
-          availableCells.Add(Matrix[row, column]);
+          if (Matrix[row, column].Type == Cell.CellType.Empty)
+          {
+            availableCells.Add(Matrix[row, column]);
+          }
         }
-      }
 
       if (Message.Length > availableCells.Count)
       {
@@ -380,7 +371,7 @@ namespace WordSearchGenerator.Common
 
       /// <summary>
       ///   One-based position of this answer cell in a quiz-mode secret
-      ///   message, or <see langword="null" /> when it is not an extraction
+      ///   message, or when it is not an extraction
       ///   cell.
       /// </summary>
       public int? MessageIndex

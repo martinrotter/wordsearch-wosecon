@@ -49,7 +49,7 @@ namespace WordSearchGenerator.Common
         }
 
         var intendedPath = CreatePath(
-          board.ColumnCount,
+          board.Columns,
           intendedLocations[0].Row,
           intendedLocations[0].Column,
           intendedLocations[^1].Row,
@@ -83,8 +83,8 @@ namespace WordSearchGenerator.Common
     {
       (int FirstCell, int LastCell)? occurrence = null;
 
-      for (var row = 0; row < board.RowCount; row++)
-      for (var column = 0; column < board.ColumnCount; column++)
+      for (var row = 0; row < board.Rows; row++)
+      for (var column = 0; column < board.Columns; column++)
       {
         foreach (var (rowStep, columnStep) in SearchDirections)
         {
@@ -92,9 +92,9 @@ namespace WordSearchGenerator.Common
           var endColumn = column + columnStep * (word.Length - 1);
 
           if (endRow < 0 ||
-              endRow >= board.RowCount ||
+              endRow >= board.Rows ||
               endColumn < 0 ||
-              endColumn >= board.ColumnCount)
+              endColumn >= board.Columns)
           {
             continue;
           }
@@ -124,7 +124,7 @@ namespace WordSearchGenerator.Common
           }
 
           var path = CreatePath(
-            board.ColumnCount,
+            board.Columns,
             row,
             column,
             endRow,

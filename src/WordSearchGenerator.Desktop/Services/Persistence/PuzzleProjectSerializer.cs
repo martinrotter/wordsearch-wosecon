@@ -314,9 +314,7 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
       {
         board = new Board(
           words,
-          definition.Rows,
-          definition.Columns,
-          definition.QuizMode,
+          definition,
           definition.SecretMessage);
       }
       catch (Exception exception)

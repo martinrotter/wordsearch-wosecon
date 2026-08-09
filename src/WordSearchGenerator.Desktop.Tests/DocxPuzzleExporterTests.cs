@@ -193,9 +193,7 @@ namespace WordSearchGenerator.Desktop.Tests
 
       var board = new Board(
         words,
-        rows,
-        columns,
-        mode == PuzzleMode.Quiz,
+        definition,
         secretMessage);
       var result = new GenerationResult(
         definition,

@@ -112,10 +112,10 @@ namespace WordSearchGenerator.Desktop.Models.Rendering
       ArgumentNullException.ThrowIfNull(result);
 
       var board = result.Board;
-      var cells = new List<BoardRenderCell>(board.RowCount * board.ColumnCount);
+      var cells = new List<BoardRenderCell>(board.Rows * board.Columns);
 
-      for (var row = 0; row < board.RowCount; row++)
-      for (var column = 0; column < board.ColumnCount; column++)
+      for (var row = 0; row < board.Rows; row++)
+      for (var column = 0; column < board.Columns; column++)
       {
         var sourceCell = board.Matrix[row, column];
         var kind = sourceCell.Type;
@@ -147,8 +147,8 @@ namespace WordSearchGenerator.Desktop.Models.Rendering
 
       return new BoardRenderModel(
         result.Definition.Mode,
-        board.RowCount,
-        board.ColumnCount,
+        board.Rows,
+        board.Columns,
         cells,
         entries,
         (puzzleHeading ?? result.Definition.PuzzleHeading).Trim(),

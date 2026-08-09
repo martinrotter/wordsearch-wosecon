@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
+using WordSearchGenerator.Common;
 using WordSearchGenerator.Common.WoSeCon;
 using WordSearchGenerator.Desktop.Commands;
 using WordSearchGenerator.Desktop.Localization;
@@ -944,8 +945,8 @@ namespace WordSearchGenerator.Desktop.ViewModels
         PreviewTitle = AppStrings.Get("BoardGenerated");
         PreviewMessage = AppStrings.Format(
           "BoardSummary",
-          result.Board.RowCount,
-          result.Board.ColumnCount,
+          result.Board.Rows,
+          result.Board.Columns,
           definition.Entries.Count,
           result.PuzzleOccupancyPercentage,
           result.MessageCellCount,

@@ -80,7 +80,7 @@ namespace WordSearchGenerator.Desktop.Tests
       };
       var result = new GenerationResult(
         definition,
-        new Board([word], 1, 3, false),
+        new Board([word], definition),
         TimeSpan.FromSeconds(1),
         100,
         10,

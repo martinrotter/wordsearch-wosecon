@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Windows.Data;
+using WordSearchGenerator.Common;
 using WordSearchGenerator.Desktop.Localization;
-using WordSearchGenerator.Desktop.Models;
 
 namespace WordSearchGenerator.Desktop.Converters
 {

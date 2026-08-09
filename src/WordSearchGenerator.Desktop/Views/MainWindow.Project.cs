@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Microsoft.Win32;
+using WordSearchGenerator.Common;
 using WordSearchGenerator.Desktop.Localization;
 using WordSearchGenerator.Desktop.Models;
 using WordSearchGenerator.Desktop.Services.Persistence;

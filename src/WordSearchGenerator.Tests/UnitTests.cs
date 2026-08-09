@@ -819,8 +819,8 @@ namespace WordSearchGenerator.Tests
       Assert.AreEqual(40, generator.Words.Count);
       Assert.AreNotEqual(WoSeCon.EstimatedConstructionTime.LikelyImpossible, estimate);
       Assert.IsTrue(generator.Words.All(word => word.Placement != null));
-      Assert.AreEqual(16, board.RowCount);
-      Assert.AreEqual(17, board.ColumnCount);
+      Assert.AreEqual(16, board.Rows);
+      Assert.AreEqual(17, board.Columns);
       CollectionAssert.AreEquivalent(
         wordTexts,
         generator.Words.Select(word => word.Text).ToArray());
@@ -888,13 +888,12 @@ namespace WordSearchGenerator.Tests
             0,
             0,
             DirectedLocation.LocationDirection.LeftToRight),
-          QuizQuestion = "Example question",
           Text = "A A",
           WordNumber = 1
         }
       };
 
-      var board = new Board(words, 2, 4, true, "A A");
+      var board = new Board(words, 2, 4, PuzzleMode.Quiz, "A A");
 
       Assert.AreEqual(Board.Cell.CellType.QuizQuestion, board.Matrix[0, 0].Type);
 
@@ -929,7 +928,6 @@ namespace WordSearchGenerator.Tests
             0,
             0,
             DirectedLocation.LocationDirection.LeftToRight),
-          QuizQuestion = "First question",
           Text = "AAA",
           WordNumber = 1
         },
@@ -939,13 +937,12 @@ namespace WordSearchGenerator.Tests
             3,
             0,
             DirectedLocation.LocationDirection.LeftToRight),
-          QuizQuestion = "Second question",
           Text = "AAA",
           WordNumber = 2
         }
       };
 
-      var board = new Board(words, 4, 4, true, "AA");
+      var board = new Board(words, 4, 4, PuzzleMode.Quiz, "AA");
 
       Assert.AreEqual(1, board.Matrix[0, 1].MessageIndex);
       Assert.AreEqual(2, board.Matrix[3, 3].MessageIndex);
@@ -967,14 +964,13 @@ namespace WordSearchGenerator.Tests
             0,
             0,
             DirectedLocation.LocationDirection.LeftToRight),
-          QuizQuestion = "Example question",
           Text = "AB",
           WordNumber = 1
         }
       };
 
       Assert.ThrowsExactly<MessageCannotBePlacedException>(() =>
-        new Board(words, 1, 3, true, "AA"));
+        new Board(words, 1, 3, PuzzleMode.Quiz, "AA"));
     }
 
     [TestMethod]
@@ -993,7 +989,7 @@ namespace WordSearchGenerator.Tests
         }
       };
 
-      var board = new Board(words, 2, 2, false, " C");
+      var board = new Board(words, 2, 2, PuzzleMode.Normal, " C");
 
       Assert.AreEqual(Board.Cell.CellType.CharFromMessage, board.Matrix[1, 0].Type);
       Assert.AreEqual(' ', board.Matrix[1, 0].Char);
@@ -1019,7 +1015,7 @@ namespace WordSearchGenerator.Tests
         }
       };
 
-      var board = new Board(words, 3, 4, false, "CDEF");
+      var board = new Board(words, 3, 4, PuzzleMode.Normal, "CDEF");
       (int Row, int Column, char Character)[] expectedMessageCells =
       {
         (0, 0, 'C'), (0, 3, 'D'), (2, 0, 'E'), (2, 3, 'F')
@@ -1063,7 +1059,7 @@ namespace WordSearchGenerator.Tests
         {
           try
           {
-            _ = new Board(words.ToList(), 3, 3, true, "AAAA");
+            _ = new Board(words.ToList(), 3, 3, PuzzleMode.Quiz, "AAAA");
             return true;
           }
           catch (MessageCannotBePlacedException)
@@ -1073,7 +1069,12 @@ namespace WordSearchGenerator.Tests
           }
         });
 
-      var board = new Board(generator.Words, 3, 3, true, "AAAA");
+      var board = new Board(
+        generator.Words,
+        3,
+        3,
+        PuzzleMode.Quiz,
+        "AAAA");
 
       Assert.IsTrue(rejectedLayoutCount >= 1);
       Assert.IsTrue(generator.Backtrackings >= 1);
@@ -1096,7 +1097,7 @@ namespace WordSearchGenerator.Tests
         Text = "CAT",
         WordNumber = 1
       };
-      var board = new Board([word], 2, 3, false);
+      var board = new Board([word], 2, 3, PuzzleMode.Normal);
 
       Assert.IsTrue(board.HasUniqueWordOccurrences());
     }
@@ -1113,7 +1114,7 @@ namespace WordSearchGenerator.Tests
         Text = "CAT",
         WordNumber = 1
       };
-      var board = new Board([word], 2, 3, false, "CAT");
+      var board = new Board([word], 2, 3, PuzzleMode.Normal, "CAT");
 
       Assert.IsFalse(board.HasUniqueWordOccurrences());
     }
@@ -1160,7 +1161,7 @@ namespace WordSearchGenerator.Tests
           WordNumber = 4
         }
       ];
-      var board = new Board(words, 3, 3, false);
+      var board = new Board(words, 3, 3, PuzzleMode.Normal);
 
       Assert.IsFalse(board.HasUniqueWordOccurrences());
     }
@@ -1177,7 +1178,7 @@ namespace WordSearchGenerator.Tests
         Text = "CAT",
         WordNumber = 1
       };
-      var board = new Board([word], 2, 3, false, "CT");
+      var board = new Board([word], 2, 3, PuzzleMode.Normal, "CT");
 
       Assert.AreEqual(Board.Cell.CellType.Empty, board.Matrix[1, 1].Type);
       Assert.IsTrue(board.HasUniqueWordOccurrences());
@@ -1195,7 +1196,7 @@ namespace WordSearchGenerator.Tests
         Text = "ABA",
         WordNumber = 1
       };
-      var board = new Board([word], 1, 3, false);
+      var board = new Board([word], 1, 3, PuzzleMode.Normal);
 
       Assert.IsTrue(board.HasUniqueWordOccurrences());
     }
@@ -1212,7 +1213,7 @@ namespace WordSearchGenerator.Tests
         Text = "Cat",
         WordNumber = 1
       };
-      var board = new Board([word], 2, 3, false, "CAT");
+      var board = new Board([word], 2, 3, PuzzleMode.Normal, "CAT");
 
       Assert.IsTrue(board.HasUniqueWordOccurrences());
     }
@@ -1243,7 +1244,12 @@ namespace WordSearchGenerator.Tests
       generator.Construct(
         completionValidator: words =>
         {
-          var board = new Board(words.ToList(), 3, 3, false, "CATXYZ");
+          var board = new Board(
+            words.ToList(),
+            3,
+            3,
+            PuzzleMode.Normal,
+            "CATXYZ");
           var isUnique = board.HasUniqueWordOccurrences();
 
           if (!isUnique)
@@ -1258,7 +1264,7 @@ namespace WordSearchGenerator.Tests
         generator.Words,
         3,
         3,
-        false,
+        PuzzleMode.Normal,
         "CATXYZ");
 
       Assert.IsTrue(rejectedBoardCount >= 1);
@@ -1590,7 +1596,7 @@ namespace WordSearchGenerator.Tests
         generator.Words,
         rowCount,
         columnCount,
-        quizMode);
+        quizMode ? PuzzleMode.Quiz : PuzzleMode.Normal);
 
       TestContext.WriteLine(outcome);
       TestContext.WriteLine(board.PrintDiagnostics());

@@ -1,4 +1,4 @@
-﻿namespace WordSearchGenerator.Common.WoSeCon.Api
+namespace WordSearchGenerator.Common.WoSeCon.Api
 {
   public class WordInfo : IEquatable<WordInfo>, ICloneable
   {
@@ -17,12 +17,6 @@
     } = [];
 
     public string Text
-    {
-      get;
-      set;
-    }
-
-    public string QuizQuestion
     {
       get;
       set;
@@ -47,8 +41,6 @@
 
       wrd.Text = (string)Text.Clone();
       wrd.WordNumber = WordNumber;
-      wrd.QuizQuestion = QuizQuestion?.Clone() as string;
-
       if (Placement != null)
       {
         wrd.Placement = (DirectedLocation)Placement.Clone();

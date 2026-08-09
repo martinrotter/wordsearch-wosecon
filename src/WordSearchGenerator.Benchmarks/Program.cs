@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using WordSearchGenerator.Common;
 using WordSearchGenerator.Common.WoSeCon;
 using WordSearchGenerator.Desktop.Models;
 using WordSearchGenerator.Desktop.Services;

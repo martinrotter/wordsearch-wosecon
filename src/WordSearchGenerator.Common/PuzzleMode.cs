@@ -1,4 +1,4 @@
-namespace WordSearchGenerator.Desktop.Models
+namespace WordSearchGenerator.Common
 {
   public enum PuzzleMode
   {
