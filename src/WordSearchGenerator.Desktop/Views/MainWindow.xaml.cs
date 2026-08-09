@@ -3,7 +3,9 @@ using System.Windows;
 using System.Windows.Threading;
 using CefSharp;
 using WordSearchGenerator.Desktop.Models.Settings;
+using WordSearchGenerator.Desktop.Services.Exporting;
 using WordSearchGenerator.Desktop.Services.Persistence;
+using WordSearchGenerator.Desktop.Services.Rendering;
 using WordSearchGenerator.Desktop.Services.Settings;
 using WordSearchGenerator.Desktop.ViewModels;
 
@@ -14,6 +16,8 @@ namespace WordSearchGenerator.Desktop.Views
     #region Fields
 
     private readonly IApplicationSettingsService _applicationSettingsService;
+    private readonly IBoardPngRenderer _boardPngRenderer;
+    private readonly IDocxPuzzleExporter _docxPuzzleExporter;
     private readonly IPuzzleProjectSerializer _projectSerializer;
     private readonly MainWindowViewModel _viewModel;
     private ApplicationSettings _applicationSettings;
@@ -27,17 +31,23 @@ namespace WordSearchGenerator.Desktop.Views
     public MainWindow(
       MainWindowViewModel viewModel,
       IPuzzleProjectSerializer projectSerializer,
+      IBoardPngRenderer boardPngRenderer,
+      IDocxPuzzleExporter docxPuzzleExporter,
       IApplicationSettingsService applicationSettingsService,
       ApplicationSettings applicationSettings)
     {
       ArgumentNullException.ThrowIfNull(viewModel);
       ArgumentNullException.ThrowIfNull(projectSerializer);
+      ArgumentNullException.ThrowIfNull(boardPngRenderer);
+      ArgumentNullException.ThrowIfNull(docxPuzzleExporter);
       ArgumentNullException.ThrowIfNull(applicationSettingsService);
       ArgumentNullException.ThrowIfNull(applicationSettings);
 
       InitializeComponent();
       _viewModel = viewModel;
       _projectSerializer = projectSerializer;
+      _boardPngRenderer = boardPngRenderer;
+      _docxPuzzleExporter = docxPuzzleExporter;
       _applicationSettingsService = applicationSettingsService;
       _applicationSettings = applicationSettings;
       DataContext = viewModel;

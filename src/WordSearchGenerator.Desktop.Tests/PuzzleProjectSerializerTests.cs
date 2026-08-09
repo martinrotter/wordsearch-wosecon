@@ -8,6 +8,8 @@ namespace WordSearchGenerator.Desktop.Tests
   [TestClass]
   public sealed class PuzzleProjectSerializerTests
   {
+    #region Other Stuff
+
     [TestMethod]
     public async Task VersionedProjectIsRejected()
     {
@@ -38,8 +40,7 @@ namespace WordSearchGenerator.Desktop.Tests
           path,
           json.Insert(1, "\n  \"formatVersion\": 1,"));
 
-        await Assert.ThrowsExactlyAsync<InvalidDataException>(
-          () => serializer.LoadAsync(path));
+        await Assert.ThrowsExactlyAsync<InvalidDataException>(() => serializer.LoadAsync(path));
       }
       finally
       {
@@ -118,5 +119,7 @@ namespace WordSearchGenerator.Desktop.Tests
         }
       }
     }
+
+    #endregion
   }
 }

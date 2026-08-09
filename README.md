@@ -4,8 +4,8 @@
 
 # WoSeCon Word Search Generator
 
-WoSeCon is a Windows application for creating polished word-search puzzles. Add
-your words, choose the board size, and let WoSeCon find a suitable layout.
+WoSeCon is a Windows application for creating word searches and question-based
+crosswords. Enter the content, choose a board size, and generate.
 
 **[Download the development build for Windows x64](https://github.com/martinrotter/wordsearch-wosecon/releases/tag/dev)**
 
@@ -14,17 +14,17 @@ branch. Extract the ZIP and run the application; installation is not required.
 
 ## What it can do
 
-- Create ordinary word searches and question-based quizzes.
-- Hide a secret message in the unused letters.
-- Leave remaining unused cells as black boxes.
-- Preview both the puzzle and its solution.
-- Print puzzles or export them as PDF, HTML, or PNG.
-- Save projects and import word or question lists.
-- Display the application in English or Czech.
+- Create word searches or question-based crosswords.
+- Hide a secret message in unused cells or numbered answer cells.
+- Set the board size, headings, content, and black boxes.
+- Preview the printable puzzle and its solution.
+- Print or export as Word, PDF, HTML, or PNG.
+- Save projects and import word or question lists from text files.
+- Work in English or Czech.
 
-Generation can be almost instant for simple puzzles, while very dense or
-difficult puzzles may take considerably longer. Progress is shown while the
-application searches, and generation can be cancelled at any time.
+Simple puzzles can generate instantly, while dense layouts may take much longer.
+WoSeCon estimates difficulty, shows progress, runs parallel searches, and lets
+you cancel generation at any time.
 
 ## For developers
 

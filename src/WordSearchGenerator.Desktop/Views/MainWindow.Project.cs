@@ -179,6 +179,7 @@ namespace WordSearchGenerator.Desktop.Views
           {
             await NewProjectAsync();
           }
+
           break;
         case (Key.O, ModifierKeys.Control):
           e.Handled = true;
@@ -186,6 +187,7 @@ namespace WordSearchGenerator.Desktop.Views
           {
             await OpenProjectAsync();
           }
+
           break;
         case (Key.S, ModifierKeys.Control):
           e.Handled = true;
@@ -193,6 +195,7 @@ namespace WordSearchGenerator.Desktop.Views
           {
             await SaveProjectAsync(false);
           }
+
           break;
         case (Key.S, ModifierKeys.Control | ModifierKeys.Shift):
           e.Handled = true;
@@ -200,6 +203,7 @@ namespace WordSearchGenerator.Desktop.Views
           {
             await SaveProjectAsync(true);
           }
+
           break;
         case (Key.I, ModifierKeys.Control):
           e.Handled = true;
@@ -207,20 +211,23 @@ namespace WordSearchGenerator.Desktop.Views
           {
             await ImportEntriesAsync();
           }
+
           break;
         case (Key.P, ModifierKeys.Control):
           e.Handled = true;
-          if (_viewModel.CanExport)
+          if (_viewModel.CanExportBrowserPreview)
           {
             PrintCurrentPreviewOnClick(sender, e);
           }
+
           break;
         case (Key.P, ModifierKeys.Control | ModifierKeys.Shift):
           e.Handled = true;
-          if (_viewModel.CanExport)
+          if (_viewModel.CanExportBrowserPreview)
           {
             SaveCurrentPreviewAsPdfOnClick(sender, e);
           }
+
           break;
         case (Key.H, ModifierKeys.Control | ModifierKeys.Shift):
           e.Handled = true;
@@ -228,6 +235,15 @@ namespace WordSearchGenerator.Desktop.Views
           {
             SaveCurrentPreviewAsHtmlOnClick(sender, e);
           }
+
+          break;
+        case (Key.W, ModifierKeys.Control | ModifierKeys.Shift):
+          e.Handled = true;
+          if (_viewModel.CanExport)
+          {
+            SaveCurrentPreviewAsDocxOnClick(sender, e);
+          }
+
           break;
         case (Key.G, ModifierKeys.Control | ModifierKeys.Shift):
           e.Handled = true;
@@ -235,6 +251,7 @@ namespace WordSearchGenerator.Desktop.Views
           {
             SaveCurrentBoardAsPngOnClick(sender, e);
           }
+
           break;
         case (Key.OemComma, ModifierKeys.Control):
           e.Handled = true;
@@ -242,6 +259,7 @@ namespace WordSearchGenerator.Desktop.Views
           {
             SettingsOnClick(sender, e);
           }
+
           break;
         case (Key.F1, ModifierKeys.None):
           e.Handled = true;

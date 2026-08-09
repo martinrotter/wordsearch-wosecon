@@ -7,6 +7,8 @@ namespace WordSearchGenerator.Desktop.Tests
   [TestClass]
   public sealed class MonteCarloPuzzleGeneratorTests
   {
+    #region Other Stuff
+
     [TestMethod]
     public async Task CapacityRejectedCandidatesArePreservedWhenAttemptExhausts()
     {
@@ -14,8 +16,8 @@ namespace WordSearchGenerator.Desktop.Tests
       var generator = new MonteCarloPuzzleGenerator(_ => [1]);
       var updates = new ConcurrentQueue<MonteCarloProgress>();
 
-      var exception = await Assert.ThrowsExactlyAsync<MonteCarloGenerationException>(
-        () => generator.GenerateAsync(
+      var exception = await Assert.ThrowsExactlyAsync<MonteCarloGenerationException>(() =>
+        generator.GenerateAsync(
           definition,
           new InlineProgress<MonteCarloProgress>(updates.Enqueue),
           CancellationToken.None));
@@ -36,8 +38,8 @@ namespace WordSearchGenerator.Desktop.Tests
       var definition = CreateDefinition(2, 3, "CAT", "CAT");
       var generator = new MonteCarloPuzzleGenerator(_ => [1]);
 
-      var exception = await Assert.ThrowsExactlyAsync<MonteCarloGenerationException>(
-        () => generator.GenerateAsync(
+      var exception = await Assert.ThrowsExactlyAsync<MonteCarloGenerationException>(() =>
+        generator.GenerateAsync(
           definition,
           null,
           CancellationToken.None));
@@ -66,12 +68,22 @@ namespace WordSearchGenerator.Desktop.Tests
         new GenerationOptions(1));
     }
 
+    #endregion
+
+    #region Nested Types
+
     private sealed class InlineProgress<T>(Action<T> report) : IProgress<T>
     {
+      #region Interface Implementations
+
       public void Report(T value)
       {
         report(value);
       }
+
+      #endregion
     }
+
+    #endregion
   }
 }

@@ -5,7 +5,6 @@ using CefSharp;
 using Microsoft.Win32;
 using WordSearchGenerator.Desktop.Localization;
 using WordSearchGenerator.Desktop.Models.Rendering;
-using WordSearchGenerator.Desktop.Services.Rendering;
 
 namespace WordSearchGenerator.Desktop.Views
 {
@@ -13,7 +12,6 @@ namespace WordSearchGenerator.Desktop.Views
   {
     #region Fields
 
-    private readonly BoardPngRenderer _boardPngRenderer = new();
     private string? _lastExportDirectory;
 
     #endregion
@@ -111,7 +109,6 @@ namespace WordSearchGenerator.Desktop.Views
       try
       {
         _viewModel.ReportExportStarted(AppStrings.Get("SavingPng"));
-        await EnsurePreviewIsReadyAsync();
         var model = _viewModel.GetCurrentBoardRenderModel() ??
                     throw new InvalidOperationException(
                       AppStrings.Get("NoBoardToExport"));
@@ -144,7 +141,6 @@ namespace WordSearchGenerator.Desktop.Views
       try
       {
         _viewModel.ReportExportStarted(AppStrings.Get("SavingHtml"));
-        await EnsurePreviewIsReadyAsync();
         await File.WriteAllTextAsync(
           path,
           _viewModel.PreviewHtml,
@@ -154,6 +150,38 @@ namespace WordSearchGenerator.Desktop.Views
       catch (Exception exception)
       {
         HandleExportError(AppStrings.Get("HtmlExport"), exception);
+      }
+    }
+
+    private async void SaveCurrentPreviewAsDocxOnClick(
+      object sender,
+      RoutedEventArgs e)
+    {
+      var path = ShowExportSaveDialog(
+        ".docx",
+        AppStrings.Get("DocxFilter"));
+
+      if (path == null)
+      {
+        return;
+      }
+
+      try
+      {
+        _viewModel.ReportExportStarted(AppStrings.Get("SavingDocx"));
+        var model = _viewModel.GetCurrentBoardRenderModel() ??
+                    throw new InvalidOperationException(
+                      AppStrings.Get("NoBoardToExport"));
+
+        await _docxPuzzleExporter.ExportAsync(
+          path,
+          model,
+          _viewModel.PreviewMode);
+        _viewModel.ReportExportCompleted(AppStrings.Get("DocxSaved"));
+      }
+      catch (Exception exception)
+      {
+        HandleExportError(AppStrings.Get("DocxExport"), exception);
       }
     }
 

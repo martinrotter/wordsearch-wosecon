@@ -7,6 +7,7 @@
         xmlns:icons="clr-namespace:FluentIcons.Wpf;assembly=FluentIcons.Wpf"
         xmlns:localization="clr-namespace:WordSearchGenerator.Desktop.Localization"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewControls="clr-namespace:WordSearchGenerator.Desktop.Views.Controls"
         xmlns:viewModels="clr-namespace:WordSearchGenerator.Desktop.ViewModels"
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
@@ -32,97 +33,132 @@
             BorderBrush="{DynamicResource {x:Static SystemColors.InactiveBorderBrushKey}}"
             BorderThickness="0,0,0,1">
       <Menu Background="Transparent">
-      <MenuItem Header="{localization:Loc MenuFile}">
-        <MenuItem Header="{localization:Loc MenuNew}"
-                  Click="NewProjectOnClick"
-                  InputGestureText="Ctrl+N"
-                  IsEnabled="{Binding IsEditorEnabled}">
-          <MenuItem.Icon>
-            <icons:FluentIcon Icon="DocumentAdd" IconSize="Size20" FontSize="16" />
-          </MenuItem.Icon>
-        </MenuItem>
-        <MenuItem Header="{localization:Loc MenuOpen}"
-                  Click="OpenProjectOnClick"
-                  InputGestureText="Ctrl+O"
-                  IsEnabled="{Binding IsEditorEnabled}">
-          <MenuItem.Icon>
-            <icons:FluentIcon Icon="FolderOpen" IconSize="Size20" FontSize="16" />
-          </MenuItem.Icon>
-        </MenuItem>
-        <Separator />
-        <MenuItem Header="{localization:Loc MenuSave}"
-                  Click="SaveProjectOnClick"
-                  InputGestureText="Ctrl+S"
-                  IsEnabled="{Binding IsEditorEnabled}">
-          <MenuItem.Icon>
-            <icons:FluentIcon Icon="Save" IconSize="Size20" FontSize="16" />
-          </MenuItem.Icon>
-        </MenuItem>
-        <MenuItem Header="{localization:Loc MenuSaveAs}"
-                  Click="SaveProjectAsOnClick"
-                  InputGestureText="Ctrl+Shift+S"
-                  IsEnabled="{Binding IsEditorEnabled}">
-          <MenuItem.Icon>
-            <icons:FluentIcon Icon="SaveEdit" IconSize="Size20" FontSize="16" />
-          </MenuItem.Icon>
-        </MenuItem>
-        <Separator />
-        <MenuItem Header="{localization:Loc MenuImport}"
-                  Click="ImportEntriesOnClick"
-                  InputGestureText="Ctrl+I"
-                  IsEnabled="{Binding IsEditorEnabled}"
-                  ToolTip="{localization:Loc MenuImportTooltip}">
-          <MenuItem.Icon>
-            <icons:FluentIcon Icon="ArrowImport" IconSize="Size20" FontSize="16" />
-          </MenuItem.Icon>
-        </MenuItem>
-        <Separator />
-        <MenuItem Header="{localization:Loc MenuExportPrint}"
-                  IsEnabled="{Binding CanExport}">
-          <MenuItem.Icon>
-            <icons:FluentIcon Icon="Print" IconSize="Size20" FontSize="16" />
-          </MenuItem.Icon>
-          <MenuItem Header="{localization:Loc MenuPrintPreview}"
-                    Click="PrintCurrentPreviewOnClick"
-                    InputGestureText="Ctrl+P" />
+        <MenuItem Header="{localization:Loc MenuFile}">
+          <MenuItem Header="{localization:Loc MenuNew}"
+                    Click="NewProjectOnClick"
+                    InputGestureText="Ctrl+N"
+                    IsEnabled="{Binding IsEditorEnabled}">
+            <MenuItem.Icon>
+              <icons:FluentIcon Icon="DocumentAdd" IconSize="Size20" FontSize="16" />
+            </MenuItem.Icon>
+          </MenuItem>
+          <MenuItem Header="{localization:Loc MenuOpen}"
+                    Click="OpenProjectOnClick"
+                    InputGestureText="Ctrl+O"
+                    IsEnabled="{Binding IsEditorEnabled}">
+            <MenuItem.Icon>
+              <icons:FluentIcon Icon="FolderOpen" IconSize="Size20" FontSize="16" />
+            </MenuItem.Icon>
+          </MenuItem>
           <Separator />
-          <MenuItem Header="{localization:Loc MenuSavePdf}"
-                    Click="SaveCurrentPreviewAsPdfOnClick"
-                    InputGestureText="Ctrl+Shift+P" />
-          <MenuItem Header="{localization:Loc MenuSaveHtml}"
-                    Click="SaveCurrentPreviewAsHtmlOnClick"
-                    InputGestureText="Ctrl+Shift+H" />
-          <MenuItem Header="{localization:Loc MenuSavePng}"
-                    Click="SaveCurrentBoardAsPngOnClick"
-                    InputGestureText="Ctrl+Shift+G" />
+          <MenuItem Header="{localization:Loc MenuSave}"
+                    Click="SaveProjectOnClick"
+                    InputGestureText="Ctrl+S"
+                    IsEnabled="{Binding IsEditorEnabled}">
+            <MenuItem.Icon>
+              <icons:FluentIcon Icon="Save" IconSize="Size20" FontSize="16" />
+            </MenuItem.Icon>
+          </MenuItem>
+          <MenuItem Header="{localization:Loc MenuSaveAs}"
+                    Click="SaveProjectAsOnClick"
+                    InputGestureText="Ctrl+Shift+S"
+                    IsEnabled="{Binding IsEditorEnabled}">
+            <MenuItem.Icon>
+              <icons:FluentIcon Icon="SaveEdit" IconSize="Size20" FontSize="16" />
+            </MenuItem.Icon>
+          </MenuItem>
+          <Separator />
+          <MenuItem Header="{localization:Loc MenuImport}"
+                    Click="ImportEntriesOnClick"
+                    InputGestureText="Ctrl+I"
+                    IsEnabled="{Binding IsEditorEnabled}"
+                    ToolTip="{localization:Loc MenuImportTooltip}">
+            <MenuItem.Icon>
+              <icons:FluentIcon Icon="ArrowImport" IconSize="Size20" FontSize="16" />
+            </MenuItem.Icon>
+          </MenuItem>
+          <Separator />
+          <MenuItem Header="{localization:Loc MenuExportPrint}"
+                    IsEnabled="{Binding CanExport}">
+            <MenuItem.Icon>
+              <icons:FluentIcon Icon="Print" IconSize="Size20" FontSize="16" />
+            </MenuItem.Icon>
+            <MenuItem Header="{localization:Loc MenuPrintPreview}"
+                      Click="PrintCurrentPreviewOnClick"
+                      InputGestureText="Ctrl+P"
+                      IsEnabled="{Binding CanExportBrowserPreview}">
+              <MenuItem.Icon>
+                <icons:FluentIcon Icon="Print"
+                                  IconSize="Size20"
+                                  FontSize="16" />
+              </MenuItem.Icon>
+            </MenuItem>
+            <Separator />
+            <MenuItem Header="{localization:Loc MenuSavePdf}"
+                      Click="SaveCurrentPreviewAsPdfOnClick"
+                      InputGestureText="Ctrl+Shift+P"
+                      IsEnabled="{Binding CanExportBrowserPreview}">
+              <MenuItem.Icon>
+                <icons:FluentIcon Icon="DocumentPdf"
+                                  IconSize="Size20"
+                                  FontSize="16" />
+              </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="{localization:Loc MenuSaveDocx}"
+                      Click="SaveCurrentPreviewAsDocxOnClick"
+                      InputGestureText="Ctrl+Shift+W">
+              <MenuItem.Icon>
+                <icons:FluentIcon Icon="DocumentText"
+                                  IconSize="Size20"
+                                  FontSize="16" />
+              </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="{localization:Loc MenuSaveHtml}"
+                      Click="SaveCurrentPreviewAsHtmlOnClick"
+                      InputGestureText="Ctrl+Shift+H">
+              <MenuItem.Icon>
+                <icons:FluentIcon Icon="Code"
+                                  IconSize="Size20"
+                                  FontSize="16" />
+              </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="{localization:Loc MenuSavePng}"
+                      Click="SaveCurrentBoardAsPngOnClick"
+                      InputGestureText="Ctrl+Shift+G">
+              <MenuItem.Icon>
+                <icons:FluentIcon Icon="Image"
+                                  IconSize="Size20"
+                                  FontSize="16" />
+              </MenuItem.Icon>
+            </MenuItem>
+          </MenuItem>
+          <Separator />
+          <MenuItem Header="{localization:Loc MenuSettings}"
+                    Click="SettingsOnClick"
+                    InputGestureText="Ctrl+,"
+                    IsEnabled="{Binding IsEditorEnabled}">
+            <MenuItem.Icon>
+              <icons:FluentIcon Icon="Settings" IconSize="Size20" FontSize="16" />
+            </MenuItem.Icon>
+          </MenuItem>
+          <Separator />
+          <MenuItem Header="{localization:Loc MenuExit}"
+                    Click="ExitOnClick"
+                    InputGestureText="Alt+F4">
+            <MenuItem.Icon>
+              <icons:FluentIcon Icon="Dismiss" IconSize="Size20" FontSize="16" />
+            </MenuItem.Icon>
+          </MenuItem>
         </MenuItem>
-        <Separator />
-        <MenuItem Header="{localization:Loc MenuSettings}"
-                  Click="SettingsOnClick"
-                  InputGestureText="Ctrl+,"
-                  IsEnabled="{Binding IsEditorEnabled}">
-          <MenuItem.Icon>
-            <icons:FluentIcon Icon="Settings" IconSize="Size20" FontSize="16" />
-          </MenuItem.Icon>
+        <MenuItem Header="{localization:Loc MenuHelp}">
+          <MenuItem Header="{localization:Loc MenuAbout}"
+                    Click="AboutOnClick"
+                    InputGestureText="F1">
+            <MenuItem.Icon>
+              <icons:FluentIcon Icon="Info" IconSize="Size20" FontSize="16" />
+            </MenuItem.Icon>
+          </MenuItem>
         </MenuItem>
-        <Separator />
-        <MenuItem Header="{localization:Loc MenuExit}"
-                  Click="ExitOnClick"
-                  InputGestureText="Alt+F4">
-          <MenuItem.Icon>
-            <icons:FluentIcon Icon="Dismiss" IconSize="Size20" FontSize="16" />
-          </MenuItem.Icon>
-        </MenuItem>
-      </MenuItem>
-      <MenuItem Header="{localization:Loc MenuHelp}">
-        <MenuItem Header="{localization:Loc MenuAbout}"
-                  Click="AboutOnClick"
-                  InputGestureText="F1">
-          <MenuItem.Icon>
-            <icons:FluentIcon Icon="Info" IconSize="Size20" FontSize="16" />
-          </MenuItem.Icon>
-        </MenuItem>
-      </MenuItem>
       </Menu>
     </Border>
 
@@ -159,25 +195,23 @@
                   <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="14" />
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="50" />
                     <ColumnDefinition Width="14" />
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="50" />
                   </Grid.ColumnDefinitions>
                   <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                   </Grid.RowDefinitions>
 
                   <TextBlock Grid.Row="0"
-                             Grid.ColumnSpan="5"
+                             Grid.Column="0"
                              Style="{StaticResource FieldLabelTextStyle}"
                              Text="{localization:Loc Mode}" />
                   <ComboBox x:Name="ModeComboBox"
                             Grid.Row="1"
-                            Grid.ColumnSpan="5"
-                            Margin="0,5,0,9"
+                            Grid.Column="0"
+                            Margin="0,5,0,0"
                             ItemsSource="{Binding Modes}"
                             SelectedItem="{Binding Mode}">
                     <ComboBox.ItemTemplate>
@@ -187,114 +221,94 @@
                     </ComboBox.ItemTemplate>
                   </ComboBox>
 
-                  <TextBlock Grid.Row="2"
-                             Grid.Column="0"
-                             Style="{StaticResource FieldLabelTextStyle}"
-                             Text="{localization:Loc Rows}" />
-                  <TextBlock Grid.Row="2"
+                  <TextBlock Grid.Row="0"
                              Grid.Column="2"
+                             Grid.ColumnSpan="3"
                              Style="{StaticResource FieldLabelTextStyle}"
-                             Text="{localization:Loc Columns}" />
-                  <TextBlock Grid.Row="2"
-                             Grid.Column="4"
-                             Style="{StaticResource FieldLabelTextStyle}"
-                             Text="{localization:Loc CellCount}" />
+                             Text="{localization:Loc Dimensions}" />
 
-                  <TextBox x:Name="RowsTextBox"
-                           Grid.Row="3"
-                           Grid.Column="0"
-                           Margin="0,5,0,0"
-                           Text="{Binding RowsText,
-                                                            UpdateSourceTrigger=PropertyChanged,
-                                                            ValidatesOnNotifyDataErrors=True}"
-                           ToolTip="{localization:Loc RowsTooltip}" />
-                  <TextBox x:Name="ColumnsTextBox"
-                           Grid.Row="3"
-                           Grid.Column="2"
-                           Margin="0,5,0,0"
-                           Text="{Binding ColumnsText,
-                                                            UpdateSourceTrigger=PropertyChanged,
-                                                             ValidatesOnNotifyDataErrors=True}"
-                           ToolTip="{localization:Loc ColumnsTooltip}" />
-                  <TextBox Grid.Row="3"
-                           Grid.Column="4"
-                           Margin="0,5,0,0"
-                           Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-                           Cursor="Arrow"
-                           Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
-                           IsReadOnly="True"
-                           IsTabStop="False"
-                           Text="{Binding TotalCellCountText, Mode=OneWay}" />
+                  <viewControls:BoardDimensionsEditor
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    Grid.ColumnSpan="3"
+                    Margin="0,5,0,0"
+                    CellCountLabel="{localization:Loc CellCount}"
+                    ColumnsText="{Binding ColumnsText,
+                                          UpdateSourceTrigger=PropertyChanged,
+                                          ValidatesOnNotifyDataErrors=True}"
+                    RowsText="{Binding RowsText,
+                                       UpdateSourceTrigger=PropertyChanged,
+                                       ValidatesOnNotifyDataErrors=True}" />
                 </Grid>
               </GroupBox>
 
               <GroupBox Header="{localization:Loc WordsOrQuestions}">
                 <StackPanel>
                   <Grid>
-                  <StackPanel>
-                    <StackPanel.Style>
-                      <Style TargetType="StackPanel">
-                        <Setter Property="Visibility" Value="Collapsed" />
-                        <Style.Triggers>
-                          <DataTrigger Binding="{Binding IsNormalMode}" Value="True">
-                            <Setter Property="Visibility" Value="Visible" />
-                          </DataTrigger>
-                        </Style.Triggers>
-                      </Style>
-                    </StackPanel.Style>
-                    <TextBlock Style="{StaticResource SupportingTextStyle}"
-                               Text="{localization:Loc WordsInstructions}"
-                               TextWrapping="Wrap" />
-                    <TextBox x:Name="WordsTextBox"
-                             Height="210"
-                             Margin="0,7,0,0"
-                             AcceptsReturn="True"
-                             AcceptsTab="False"
-                             HorizontalScrollBarVisibility="Auto"
-                             Text="{Binding WordsText,
+                    <StackPanel>
+                      <StackPanel.Style>
+                        <Style TargetType="StackPanel">
+                          <Setter Property="Visibility" Value="Collapsed" />
+                          <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsNormalMode}" Value="True">
+                              <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                          </Style.Triggers>
+                        </Style>
+                      </StackPanel.Style>
+                      <TextBlock Style="{StaticResource SupportingTextStyle}"
+                                 Text="{localization:Loc WordsInstructions}"
+                                 TextWrapping="Wrap" />
+                      <TextBox x:Name="WordsTextBox"
+                               Height="210"
+                               Margin="0,7,0,0"
+                               AcceptsReturn="True"
+                               AcceptsTab="False"
+                               HorizontalScrollBarVisibility="Auto"
+                               Text="{Binding WordsText,
                                                                 UpdateSourceTrigger=PropertyChanged,
                                                                 ValidatesOnNotifyDataErrors=True}"
-                             VerticalScrollBarVisibility="Auto"
-                             TextWrapping="NoWrap"
-                             ToolTip="{localization:Loc WordsTooltip}" />
-                  </StackPanel>
+                               VerticalScrollBarVisibility="Auto"
+                               TextWrapping="NoWrap"
+                               ToolTip="{localization:Loc WordsTooltip}" />
+                    </StackPanel>
 
-                  <StackPanel>
-                    <StackPanel.Style>
-                      <Style TargetType="StackPanel">
-                        <Setter Property="Visibility" Value="Collapsed" />
-                        <Style.Triggers>
-                          <DataTrigger Binding="{Binding IsQuizMode}" Value="True">
-                            <Setter Property="Visibility" Value="Visible" />
-                          </DataTrigger>
-                        </Style.Triggers>
-                      </Style>
-                    </StackPanel.Style>
-                    <TextBlock Style="{StaticResource SupportingTextStyle}"
-                               Text="{localization:Loc QuizInstructions}"
-                               TextWrapping="Wrap" />
-                    <DataGrid Height="240"
-                              Margin="0,7,0,0"
-                              AutoGenerateColumns="False"
-                              CanUserAddRows="True"
-                              CanUserDeleteRows="True"
-                              HeadersVisibility="Column"
-                              ItemsSource="{Binding QuizEntries}"
-                              SelectionMode="Single">
-                      <DataGrid.Columns>
-                        <DataGridTextColumn Width="2*"
-                                            Header="{localization:Loc Answer}"
-                                            Binding="{Binding Answer,
+                    <StackPanel>
+                      <StackPanel.Style>
+                        <Style TargetType="StackPanel">
+                          <Setter Property="Visibility" Value="Collapsed" />
+                          <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsQuizMode}" Value="True">
+                              <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                          </Style.Triggers>
+                        </Style>
+                      </StackPanel.Style>
+                      <TextBlock Style="{StaticResource SupportingTextStyle}"
+                                 Text="{localization:Loc QuizInstructions}"
+                                 TextWrapping="Wrap" />
+                      <DataGrid Height="240"
+                                Margin="0,7,0,0"
+                                AutoGenerateColumns="False"
+                                CanUserAddRows="True"
+                                CanUserDeleteRows="True"
+                                HeadersVisibility="Column"
+                                ItemsSource="{Binding QuizEntries}"
+                                SelectionMode="Single">
+                        <DataGrid.Columns>
+                          <DataGridTextColumn Width="2*"
+                                              Header="{localization:Loc Answer}"
+                                              Binding="{Binding Answer,
                                                                                       UpdateSourceTrigger=PropertyChanged,
                                                                                       ValidatesOnNotifyDataErrors=True}" />
-                        <DataGridTextColumn Width="3*"
-                                            Header="{localization:Loc Question}"
-                                            Binding="{Binding Question,
+                          <DataGridTextColumn Width="3*"
+                                              Header="{localization:Loc Question}"
+                                              Binding="{Binding Question,
                                                                                       UpdateSourceTrigger=PropertyChanged,
                                                                                       ValidatesOnNotifyDataErrors=True}" />
-                      </DataGrid.Columns>
-                    </DataGrid>
-                  </StackPanel>
+                        </DataGrid.Columns>
+                      </DataGrid>
+                    </StackPanel>
                   </Grid>
 
                   <Button Margin="0,8,0,0"

@@ -9,7 +9,7 @@ using WordSearchGenerator.Desktop.Models.Rendering;
 
 namespace WordSearchGenerator.Desktop.Services.Rendering
 {
-  public sealed class BoardPngRenderer
+  public sealed class BoardPngRenderer : IBoardPngRenderer
   {
     #region Static Fields
 
@@ -26,7 +26,7 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
 
     #endregion
 
-    #region Other Stuff
+    #region Interface Implementations
 
     public byte[] Render(
       BoardRenderModel model,
@@ -109,6 +109,10 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
       encoder.Save(stream);
       return stream.ToArray();
     }
+
+    #endregion
+
+    #region Other Stuff
 
     private static Brush CreateBrush(string color)
     {

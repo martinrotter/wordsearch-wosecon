@@ -24,7 +24,7 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
           nameof(model));
       }
 
-      var isSolution = previewMode == BoardPreviewMode.Solution;
+      var isSolution = PuzzleDocumentPresentation.IsSolution(previewMode);
       var browserTitle = string.IsNullOrWhiteSpace(model.PuzzleHeading)
         ? isSolution
           ? AppStrings.Get("HtmlPuzzleSolution")
@@ -42,14 +42,14 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
         isSolution);
       AppendMatrix(builder, model, isSolution);
 
-      if (!isSolution)
+      if (PuzzleDocumentPresentation.ShouldIncludeTutorial(previewMode))
       {
         AppendTutorial(builder, model);
       }
 
-      if (model.SecretMessage.Length != 0)
+      if (PuzzleDocumentPresentation.ShouldIncludeSecretMessage(model))
       {
-        AppendSecretMessageSection(builder, model, isSolution);
+        AppendSecretMessageSection(builder, model, previewMode);
       }
 
       if (isSolution)
@@ -57,7 +57,7 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
         AppendSolutionDetails(builder, model);
       }
 
-      AppendEntries(builder, model, isSolution);
+      AppendEntries(builder, model, previewMode);
       builder.AppendLine("    </main>");
       builder.AppendLine("  </body>");
       builder.AppendLine("</html>");
@@ -395,8 +395,13 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
     private static void AppendEntries(
       StringBuilder builder,
       BoardRenderModel model,
-      bool isSolution)
+      BoardPreviewMode previewMode)
     {
+      var includeQuizAnswers =
+        PuzzleDocumentPresentation.ShouldIncludeQuizAnswers(
+          model,
+          previewMode);
+
       builder.AppendLine("      <section class=\"entries\">");
 
       if (!string.IsNullOrWhiteSpace(model.EntryListHeading))
@@ -410,9 +415,8 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
       {
         builder.AppendLine("        <ul class=\"word-list\">");
 
-        foreach (var entry in model.Entries.OrderBy(
-                   entry => entry.Answer,
-                   StringComparer.CurrentCulture))
+        foreach (var entry in
+                 PuzzleDocumentPresentation.EnumerateEntries(model))
         {
           builder.Append("          <li>");
           builder.Append(Encode(entry.Answer));
@@ -433,7 +437,7 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
           builder.Append(Encode(entry.Question ?? string.Empty));
           builder.Append("</span>");
 
-          if (isSolution)
+          if (includeQuizAnswers)
           {
             builder.Append("<span class=\"answer\">");
             builder.Append(Encode(AppStrings.Get("HtmlAnswer")));
@@ -528,8 +532,9 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
     private static void AppendSecretMessageSection(
       StringBuilder builder,
       BoardRenderModel model,
-      bool isSolution)
+      BoardPreviewMode previewMode)
     {
+      var isSolution = PuzzleDocumentPresentation.IsSolution(previewMode);
       var accessibleLabel = isSolution
         ? AppStrings.Format(
           "HtmlSecretMessageSolutionLabel",
@@ -543,11 +548,10 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
       builder.Append(Encode(AppStrings.Get("SecretMessage")));
       builder.AppendLine("</h2>");
       builder.Append("        <p class=\"secret-message-instructions\">");
-      builder.Append(Encode(AppStrings.Get(isSolution
-        ? "HtmlSecretMessageSolutionInstructions"
-        : model.Mode == PuzzleMode.Quiz
-          ? "HtmlSecretMessageQuizInstructions"
-          : "HtmlSecretMessageNormalInstructions")));
+      builder.Append(Encode(
+        PuzzleDocumentPresentation.GetSecretMessageInstructions(
+          model,
+          previewMode)));
       builder.AppendLine("</p>");
       builder.Append("        <div class=\"message-slots\" aria-label=\"");
       builder.Append(Encode(accessibleLabel));
@@ -579,20 +583,13 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
       StringBuilder builder,
       BoardRenderModel model)
     {
-      var instructionsKey = model.Mode == PuzzleMode.Quiz
-        ? model.SecretMessage.Length == 0
-          ? "HtmlTutorialQuiz"
-          : "HtmlTutorialQuizWithMessage"
-        : model.SecretMessage.Length == 0
-          ? "HtmlTutorialNormal"
-          : "HtmlTutorialNormalWithMessage";
-
       builder.AppendLine("      <section class=\"tutorial\">");
       builder.Append("        <h2>");
       builder.Append(Encode(AppStrings.Get("HtmlTutorialHeading")));
       builder.AppendLine("</h2>");
       builder.Append("        <p>");
-      builder.Append(Encode(AppStrings.Get(instructionsKey)));
+      builder.Append(Encode(
+        PuzzleDocumentPresentation.GetTutorialText(model)));
       builder.AppendLine("</p>");
       builder.AppendLine("      </section>");
     }

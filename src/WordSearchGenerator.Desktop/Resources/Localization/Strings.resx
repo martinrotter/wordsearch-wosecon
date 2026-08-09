@@ -14,6 +14,7 @@
   <data name="MenuExportPrint" xml:space="preserve"><value>_Export / Print</value></data>
   <data name="MenuPrintPreview" xml:space="preserve"><value>_Print current preview...</value></data>
   <data name="MenuSavePdf" xml:space="preserve"><value>Save current preview as _PDF...</value></data>
+  <data name="MenuSaveDocx" xml:space="preserve"><value>Save current preview as _Word document...</value></data>
   <data name="MenuSaveHtml" xml:space="preserve"><value>Save current preview as _HTML...</value></data>
   <data name="MenuSavePng" xml:space="preserve"><value>Save current _board as PNG...</value></data>
   <data name="MenuSettings" xml:space="preserve"><value>_Settings...</value></data>
@@ -30,6 +31,7 @@
   <data name="RowsTooltip" xml:space="preserve"><value>Number of rows in the generated matrix</value></data>
   <data name="ColumnsTooltip" xml:space="preserve"><value>Number of columns in the generated matrix</value></data>
   <data name="CellCount" xml:space="preserve"><value>Cell count</value></data>
+  <data name="Dimensions" xml:space="preserve"><value>Dimensions</value></data>
   <data name="WordsOrQuestions" xml:space="preserve"><value>Words or questions</value></data>
   <data name="WordsInstructions" xml:space="preserve"><value>Enter one word per line. Words are case-sensitive; surrounding spaces are trimmed.</value></data>
   <data name="WordsTooltip" xml:space="preserve"><value>Empty lines and case-sensitive duplicates are ignored</value></data>
@@ -186,17 +188,21 @@
   <data name="PngFilter" xml:space="preserve"><value>PNG image (*.png)|*.png</value></data>
   <data name="HtmlFilter" xml:space="preserve"><value>HTML document (*.html)|*.html</value></data>
   <data name="PdfFilter" xml:space="preserve"><value>PDF document (*.pdf)|*.pdf</value></data>
+  <data name="DocxFilter" xml:space="preserve"><value>Word document (*.docx)|*.docx</value></data>
   <data name="SavingPng" xml:space="preserve"><value>Saving PNG</value></data>
   <data name="SavingHtml" xml:space="preserve"><value>Saving HTML</value></data>
   <data name="SavingPdf" xml:space="preserve"><value>Saving PDF</value></data>
+  <data name="SavingDocx" xml:space="preserve"><value>Saving Word document</value></data>
   <data name="PngSaved" xml:space="preserve"><value>PNG saved</value></data>
   <data name="HtmlSaved" xml:space="preserve"><value>HTML saved</value></data>
   <data name="PdfSaved" xml:space="preserve"><value>PDF saved</value></data>
+  <data name="DocxSaved" xml:space="preserve"><value>Word document saved</value></data>
   <data name="NoBoardToExport" xml:space="preserve"><value>There is no generated board to export.</value></data>
   <data name="ChromiumPdfFailed" xml:space="preserve"><value>Chromium could not create the PDF file.</value></data>
   <data name="PngExport" xml:space="preserve"><value>PNG export</value></data>
   <data name="HtmlExport" xml:space="preserve"><value>HTML export</value></data>
   <data name="PdfExport" xml:space="preserve"><value>PDF export</value></data>
+  <data name="DocxExport" xml:space="preserve"><value>Word document export</value></data>
   <data name="SaveCurrentPreviewTitle" xml:space="preserve"><value>Save current preview</value></data>
   <data name="DefaultExportBaseName" xml:space="preserve"><value>word-search</value></data>
   <data name="PuzzleFileSuffix" xml:space="preserve"><value>-puzzle</value></data>

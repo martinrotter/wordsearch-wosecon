@@ -14,6 +14,7 @@
   <data name="MenuExportPrint" xml:space="preserve"><value>_Export / tisk</value></data>
   <data name="MenuPrintPreview" xml:space="preserve"><value>_Vytisknout aktuální náhled...</value></data>
   <data name="MenuSavePdf" xml:space="preserve"><value>Uložit aktuální náhled jako _PDF...</value></data>
+  <data name="MenuSaveDocx" xml:space="preserve"><value>Uložit aktuální náhled jako dokument _Word...</value></data>
   <data name="MenuSaveHtml" xml:space="preserve"><value>Uložit aktuální náhled jako _HTML...</value></data>
   <data name="MenuSavePng" xml:space="preserve"><value>Uložit aktuální _mřížku jako PNG...</value></data>
   <data name="MenuSettings" xml:space="preserve"><value>_Nastavení...</value></data>
@@ -30,6 +31,7 @@
   <data name="RowsTooltip" xml:space="preserve"><value>Počet řádků v generované mřížce</value></data>
   <data name="ColumnsTooltip" xml:space="preserve"><value>Počet sloupců v generované mřížce</value></data>
   <data name="CellCount" xml:space="preserve"><value>Počet buněk</value></data>
+  <data name="Dimensions" xml:space="preserve"><value>Rozměry</value></data>
   <data name="WordsOrQuestions" xml:space="preserve"><value>Slova nebo otázky</value></data>
   <data name="WordsInstructions" xml:space="preserve"><value>Zadejte jedno slovo na řádek. Rozlišují se malá a velká písmena; mezery na začátku a konci se odstraní.</value></data>
   <data name="WordsTooltip" xml:space="preserve"><value>Prázdné řádky a duplicitní slova se stejnou velikostí písmen budou ignorovány</value></data>
@@ -186,17 +188,21 @@
   <data name="PngFilter" xml:space="preserve"><value>Obrázek PNG (*.png)|*.png</value></data>
   <data name="HtmlFilter" xml:space="preserve"><value>Dokument HTML (*.html)|*.html</value></data>
   <data name="PdfFilter" xml:space="preserve"><value>Dokument PDF (*.pdf)|*.pdf</value></data>
+  <data name="DocxFilter" xml:space="preserve"><value>Dokument Word (*.docx)|*.docx</value></data>
   <data name="SavingPng" xml:space="preserve"><value>Ukládání PNG</value></data>
   <data name="SavingHtml" xml:space="preserve"><value>Ukládání HTML</value></data>
   <data name="SavingPdf" xml:space="preserve"><value>Ukládání PDF</value></data>
+  <data name="SavingDocx" xml:space="preserve"><value>Ukládání dokumentu Word</value></data>
   <data name="PngSaved" xml:space="preserve"><value>PNG uloženo</value></data>
   <data name="HtmlSaved" xml:space="preserve"><value>HTML uloženo</value></data>
   <data name="PdfSaved" xml:space="preserve"><value>PDF uloženo</value></data>
+  <data name="DocxSaved" xml:space="preserve"><value>Dokument Word uložen</value></data>
   <data name="NoBoardToExport" xml:space="preserve"><value>Není k dispozici žádná vygenerovaná mřížka pro export.</value></data>
   <data name="ChromiumPdfFailed" xml:space="preserve"><value>Chromium nedokázal vytvořit soubor PDF.</value></data>
   <data name="PngExport" xml:space="preserve"><value>Export PNG</value></data>
   <data name="HtmlExport" xml:space="preserve"><value>Export HTML</value></data>
   <data name="PdfExport" xml:space="preserve"><value>Export PDF</value></data>
+  <data name="DocxExport" xml:space="preserve"><value>Export do dokumentu Word</value></data>
   <data name="SaveCurrentPreviewTitle" xml:space="preserve"><value>Uložit aktuální náhled</value></data>
   <data name="DefaultExportBaseName" xml:space="preserve"><value>osmisměrka</value></data>
   <data name="PuzzleFileSuffix" xml:space="preserve"><value>-zadání</value></data>

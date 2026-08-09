@@ -26,8 +26,8 @@ namespace WordSearchGenerator.Desktop.ViewModels
     private BoardRenderModel? _boardRenderModel;
     private bool _canGenerate;
     private int _cancelledAttemptCount;
-    private long _completedCandidateCount;
     private string _columnsText = NewProjectColumnsText;
+    private long _completedCandidateCount;
     private GenerationResult? _currentResult;
     private CancellationTokenSource? _difficultyCancellation;
 
@@ -76,7 +76,9 @@ namespace WordSearchGenerator.Desktop.ViewModels
       private set => SetProperty(ref _canGenerate, value);
     }
 
-    public bool CanExport => IsPreviewReady && !IsExporting;
+    public bool CanExport => HasPreview && !IsExporting;
+
+    public bool CanExportBrowserPreview => IsPreviewReady && !IsExporting;
 
     public RelayCommand CancelCommand
     {
@@ -110,7 +112,6 @@ namespace WordSearchGenerator.Desktop.ViewModels
       {
         if (SetProperty(ref _columnsText, value ?? string.Empty))
         {
-          OnPropertyChanged(nameof(TotalCellCountText));
           MarkDocumentChanged(true);
           RefreshEditorState();
         }
@@ -216,6 +217,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
         if (SetProperty(ref _isExporting, value))
         {
           OnPropertyChanged(nameof(CanExport));
+          OnPropertyChanged(nameof(CanExportBrowserPreview));
           OnPropertyChanged(nameof(IsEditorEnabled));
           GenerateCommand.NotifyCanExecuteChanged();
           ShowPuzzlePreviewCommand.NotifyCanExecuteChanged();
@@ -233,7 +235,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
       {
         if (SetProperty(ref _isPreviewReady, value))
         {
-          OnPropertyChanged(nameof(CanExport));
+          OnPropertyChanged(nameof(CanExportBrowserPreview));
         }
       }
     }
@@ -326,6 +328,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
         {
           IsPreviewReady = false;
           OnPropertyChanged(nameof(HasPreview));
+          OnPropertyChanged(nameof(CanExport));
           ShowPuzzlePreviewCommand.NotifyCanExecuteChanged();
           ShowSolutionPreviewCommand.NotifyCanExecuteChanged();
         }
@@ -376,7 +379,6 @@ namespace WordSearchGenerator.Desktop.ViewModels
       {
         if (SetProperty(ref _rowsText, value ?? string.Empty))
         {
-          OnPropertyChanged(nameof(TotalCellCountText));
           MarkDocumentChanged(true);
           RefreshEditorState();
         }
@@ -428,22 +430,6 @@ namespace WordSearchGenerator.Desktop.ViewModels
           OnPropertyChanged(nameof(TestedPositionsText));
           OnPropertyChanged(nameof(ProgressToolTip));
         }
-      }
-    }
-
-    public string TotalCellCountText
-    {
-      get
-      {
-        if (!int.TryParse(RowsText, out var rows) ||
-            rows <= 0 ||
-            !int.TryParse(ColumnsText, out var columns) ||
-            columns <= 0)
-        {
-          return string.Empty;
-        }
-
-        return ((long)rows * columns).ToString("N0");
       }
     }
 

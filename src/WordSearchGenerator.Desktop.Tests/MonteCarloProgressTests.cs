@@ -1,5 +1,4 @@
 using WordSearchGenerator.Common.WoSeCon.Api;
-using WordSearchGenerator.Desktop.Models;
 using WordSearchGenerator.Desktop.Services;
 
 namespace WordSearchGenerator.Desktop.Tests
@@ -7,6 +6,8 @@ namespace WordSearchGenerator.Desktop.Tests
   [TestClass]
   public sealed class MonteCarloProgressTests
   {
+    #region Other Stuff
+
     [TestMethod]
     public void CandidateRejectionsAreCountedImmediatelyInLayoutUnits()
     {
@@ -93,5 +94,7 @@ namespace WordSearchGenerator.Desktop.Tests
       Assert.AreEqual(1, snapshot.MessageCapacityRejectionCount);
       Assert.AreEqual(1, snapshot.AmbiguousBoardRejectionCount);
     }
+
+    #endregion
   }
 }

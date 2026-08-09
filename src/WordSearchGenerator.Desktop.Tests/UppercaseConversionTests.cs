@@ -9,6 +9,8 @@ namespace WordSearchGenerator.Desktop.Tests
   [TestClass]
   public sealed class UppercaseConversionTests
   {
+    #region Other Stuff
+
     [TestMethod]
     public void NormalModeConvertsWordsAndPreservesFormatting()
     {
@@ -55,8 +57,14 @@ namespace WordSearchGenerator.Desktop.Tests
         new UnusedBoardHtmlRenderer());
     }
 
+    #endregion
+
+    #region Nested Types
+
     private sealed class UnusedPuzzleGenerator : IPuzzleGenerator
     {
+      #region Interface Implementations
+
       public Task<GenerationResult> GenerateAsync(
         PuzzleDefinition definition,
         IProgress<MonteCarloProgress>? progress,
@@ -64,16 +72,24 @@ namespace WordSearchGenerator.Desktop.Tests
       {
         throw new NotSupportedException();
       }
+
+      #endregion
     }
 
     private sealed class UnusedBoardHtmlRenderer : IBoardHtmlRenderer
     {
+      #region Interface Implementations
+
       public string Render(
         BoardRenderModel model,
         BoardPreviewMode previewMode)
       {
         throw new NotSupportedException();
       }
+
+      #endregion
     }
+
+    #endregion
   }
 }

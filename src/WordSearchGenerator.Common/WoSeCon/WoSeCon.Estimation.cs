@@ -93,7 +93,8 @@ namespace WordSearchGenerator.Common.WoSeCon
       var answerCharacterCount = wordList.Sum(word => (long)word.Text.Length);
       var requiredIntersections = Math.Max(
         0L,
-        answerCharacterCount + questionCellCount -
+        answerCharacterCount +
+        questionCellCount -
         availablePlacementCellCount);
       var placementLengths = wordList
         .Select(word => word.Text.Length + (quizMode ? 1 : 0))
@@ -128,10 +129,10 @@ namespace WordSearchGenerator.Common.WoSeCon
           (double)Math.Max(1L, crossingStatistics.MatchingPositionPairCount);
       var averageWordLength = answerCharacterCount / (double)wordList.Count;
       var maximumCharacterShare = wordList
-        .SelectMany(word => word.Text)
-        .GroupBy(character => character)
-        .Max(group => group.LongCount()) /
-        (double)answerCharacterCount;
+                                    .SelectMany(word => word.Text)
+                                    .GroupBy(character => character)
+                                    .Max(group => group.LongCount()) /
+                                  (double)answerCharacterCount;
 
       // Calibrated against the repository's Phase 2 and Phase 3 benchmark
       // corpus. The score deliberately favors conservative warnings because
@@ -285,6 +286,10 @@ namespace WordSearchGenerator.Common.WoSeCon
 
       return (value - minimum) / (maximum - minimum);
     }
+
+    #endregion
+
+    #region Nested Types
 
     private readonly record struct CrossingStatistics(
       long CompatiblePairCount,

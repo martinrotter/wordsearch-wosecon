@@ -213,8 +213,7 @@ namespace WordSearchGenerator.Tests
     {
       var words = CreateWords(new[]
       {
-        "ALPHA", "BRAVO", "CHIME", "DELTA",
-        "EAGLE", "FJORD", "GHOST", "HOTEL"
+        "ALPHA", "BRAVO", "CHIME", "DELTA", "EAGLE", "FJORD", "GHOST", "HOTEL"
       });
 
       var underMinute = WoSeCon.EstimateDifficulty(
@@ -275,9 +274,8 @@ namespace WordSearchGenerator.Tests
       var estimate = WoSeCon.EstimateDifficulty(
         CreateWords(new[]
         {
-          "ABCDEF", "BCDEFA", "CDEFAB", "DEFABC",
-          "EFABCD", "FABCDE", "ACEBDF", "BDFACE",
-          "ADBECF", "BEACFD", "CAFBED", "DABFCE"
+          "ABCDEF", "BCDEFA", "CDEFAB", "DEFABC", "EFABCD", "FABCDE", "ACEBDF", "BDFACE", "ADBECF", "BEACFD",
+          "CAFBED", "DABFCE"
         }),
         10,
         10,
@@ -295,14 +293,10 @@ namespace WordSearchGenerator.Tests
       var estimate = WoSeCon.EstimateDifficulty(
         CreateWords(new[]
         {
-          "AAAAAAAAAAA", "BBBBBBBBBBB", "CDEFGHIJKLM",
-          "NOPQRSTUVWX", "YZ012345678", "9ABCDEFGHIJ",
-          "KLMNOPQRSTU", "VWXYZ012345", "6789ABCDEFG",
-          "HIJKLMNOPQR", "STUVWXYZ012", "ABCNY9KV6HS",
-          "ABDOZALW7IT", "ABEP0BMX8JU", "ABFQ1CNY9KV",
-          "ABGR2DOZALW", "ABHS3EP0BMX", "ABIT4FQ1CNY",
-          "ABJU5GR2DOZ", "ABKV6HS3EP0", "ABLW7IT4FQ1",
-          "ABMX8JU5GR2"
+          "AAAAAAAAAAA", "BBBBBBBBBBB", "CDEFGHIJKLM", "NOPQRSTUVWX", "YZ012345678", "9ABCDEFGHIJ",
+          "KLMNOPQRSTU", "VWXYZ012345", "6789ABCDEFG", "HIJKLMNOPQR", "STUVWXYZ012", "ABCNY9KV6HS",
+          "ABDOZALW7IT", "ABEP0BMX8JU", "ABFQ1CNY9KV", "ABGR2DOZALW", "ABHS3EP0BMX", "ABIT4FQ1CNY",
+          "ABJU5GR2DOZ", "ABKV6HS3EP0", "ABLW7IT4FQ1", "ABMX8JU5GR2"
         }),
         11,
         11,
