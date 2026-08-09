@@ -27,7 +27,11 @@
       <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
 
-    <Menu Grid.Row="0">
+    <Border Grid.Row="0"
+            Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+            BorderBrush="{DynamicResource {x:Static SystemColors.InactiveBorderBrushKey}}"
+            BorderThickness="0,0,0,1">
+      <Menu Background="Transparent">
       <MenuItem Header="{localization:Loc MenuFile}">
         <MenuItem Header="{localization:Loc MenuNew}"
                   Click="NewProjectOnClick"
@@ -65,6 +69,7 @@
         <Separator />
         <MenuItem Header="{localization:Loc MenuImport}"
                   Click="ImportEntriesOnClick"
+                  InputGestureText="Ctrl+I"
                   IsEnabled="{Binding IsEditorEnabled}"
                   ToolTip="{localization:Loc MenuImportTooltip}">
           <MenuItem.Icon>
@@ -78,25 +83,32 @@
             <icons:FluentIcon Icon="Print" IconSize="Size20" FontSize="16" />
           </MenuItem.Icon>
           <MenuItem Header="{localization:Loc MenuPrintPreview}"
-                    Click="PrintCurrentPreviewOnClick" />
+                    Click="PrintCurrentPreviewOnClick"
+                    InputGestureText="Ctrl+P" />
           <Separator />
           <MenuItem Header="{localization:Loc MenuSavePdf}"
-                    Click="SaveCurrentPreviewAsPdfOnClick" />
+                    Click="SaveCurrentPreviewAsPdfOnClick"
+                    InputGestureText="Ctrl+Shift+P" />
           <MenuItem Header="{localization:Loc MenuSaveHtml}"
-                    Click="SaveCurrentPreviewAsHtmlOnClick" />
+                    Click="SaveCurrentPreviewAsHtmlOnClick"
+                    InputGestureText="Ctrl+Shift+H" />
           <MenuItem Header="{localization:Loc MenuSavePng}"
-                    Click="SaveCurrentBoardAsPngOnClick" />
+                    Click="SaveCurrentBoardAsPngOnClick"
+                    InputGestureText="Ctrl+Shift+G" />
         </MenuItem>
         <Separator />
         <MenuItem Header="{localization:Loc MenuSettings}"
                   Click="SettingsOnClick"
+                  InputGestureText="Ctrl+,"
                   IsEnabled="{Binding IsEditorEnabled}">
           <MenuItem.Icon>
             <icons:FluentIcon Icon="Settings" IconSize="Size20" FontSize="16" />
           </MenuItem.Icon>
         </MenuItem>
         <Separator />
-        <MenuItem Header="{localization:Loc MenuExit}" Click="ExitOnClick">
+        <MenuItem Header="{localization:Loc MenuExit}"
+                  Click="ExitOnClick"
+                  InputGestureText="Alt+F4">
           <MenuItem.Icon>
             <icons:FluentIcon Icon="Dismiss" IconSize="Size20" FontSize="16" />
           </MenuItem.Icon>
@@ -104,13 +116,15 @@
       </MenuItem>
       <MenuItem Header="{localization:Loc MenuHelp}">
         <MenuItem Header="{localization:Loc MenuAbout}"
-                  Click="AboutOnClick">
+                  Click="AboutOnClick"
+                  InputGestureText="F1">
           <MenuItem.Icon>
             <icons:FluentIcon Icon="Info" IconSize="Size20" FontSize="16" />
           </MenuItem.Icon>
         </MenuItem>
       </MenuItem>
-    </Menu>
+      </Menu>
+    </Border>
 
     <Grid Grid.Row="1">
       <Grid.ColumnDefinitions>
@@ -215,7 +229,8 @@
               </GroupBox>
 
               <GroupBox Header="{localization:Loc WordsOrQuestions}">
-                <Grid>
+                <StackPanel>
+                  <Grid>
                   <StackPanel>
                     <StackPanel.Style>
                       <Style TargetType="StackPanel">
@@ -280,7 +295,22 @@
                       </DataGrid.Columns>
                     </DataGrid>
                   </StackPanel>
-                </Grid>
+                  </Grid>
+
+                  <Button Margin="0,8,0,0"
+                          Padding="10,5"
+                          HorizontalAlignment="Left"
+                          Command="{Binding ConvertToUppercaseCommand}">
+                    <StackPanel Orientation="Horizontal">
+                      <icons:FluentIcon Margin="0,0,6,0"
+                                        Icon="TextCaseUppercase"
+                                        IconSize="Size20"
+                                        FontSize="16" />
+                      <TextBlock VerticalAlignment="Center"
+                                 Text="{localization:Loc ConvertToUppercase}" />
+                    </StackPanel>
+                  </Button>
+                </StackPanel>
               </GroupBox>
 
               <GroupBox Header="{localization:Loc SecretMessage}">
@@ -700,6 +730,7 @@
     </Grid>
 
     <Border Grid.Row="2"
+            Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
             Padding="14,8,14,9"
             BorderBrush="{DynamicResource {x:Static SystemColors.InactiveBorderBrushKey}}"
             BorderThickness="0,1,0,0">

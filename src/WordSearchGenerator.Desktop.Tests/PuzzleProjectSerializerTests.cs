@@ -9,6 +9,48 @@ namespace WordSearchGenerator.Desktop.Tests
   public sealed class PuzzleProjectSerializerTests
   {
     [TestMethod]
+    public async Task VersionedProjectIsRejected()
+    {
+      var definition = new PuzzleDefinition(
+        PuzzleMode.Normal,
+        1,
+        3,
+        [new PuzzleEntry("ABC")],
+        string.Empty,
+        string.Empty,
+        string.Empty,
+        new GenerationOptions(1));
+      var serializer = new PuzzleProjectSerializer();
+      var path = Path.Combine(
+        Path.GetTempPath(),
+        $"wosecon-version-{Guid.NewGuid():N}.wosecon");
+
+      try
+      {
+        await serializer.SaveAsync(path, definition, null);
+        var json = await File.ReadAllTextAsync(path);
+
+        Assert.IsFalse(json.Contains(
+          "formatVersion",
+          StringComparison.Ordinal));
+
+        await File.WriteAllTextAsync(
+          path,
+          json.Insert(1, "\n  \"formatVersion\": 1,"));
+
+        await Assert.ThrowsExactlyAsync<InvalidDataException>(
+          () => serializer.LoadAsync(path));
+      }
+      finally
+      {
+        if (File.Exists(path))
+        {
+          File.Delete(path);
+        }
+      }
+    }
+
+    [TestMethod]
     public async Task CandidateStatisticsRoundTripWithGeneratedProject()
     {
       var definition = new PuzzleDefinition(

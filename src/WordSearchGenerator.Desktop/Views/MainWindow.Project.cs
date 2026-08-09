@@ -169,26 +169,83 @@ namespace WordSearchGenerator.Desktop.Views
       object sender,
       KeyEventArgs e)
     {
-      if ((Keyboard.Modifiers & ModifierKeys.Control) == 0 ||
-          !_viewModel.IsEditorEnabled)
-      {
-        return;
-      }
+      var modifiers = Keyboard.Modifiers;
 
-      switch (e.Key)
+      switch (e.Key, modifiers)
       {
-        case Key.N:
+        case (Key.N, ModifierKeys.Control):
           e.Handled = true;
-          await NewProjectAsync();
+          if (_viewModel.IsEditorEnabled)
+          {
+            await NewProjectAsync();
+          }
           break;
-        case Key.O:
+        case (Key.O, ModifierKeys.Control):
           e.Handled = true;
-          await OpenProjectAsync();
+          if (_viewModel.IsEditorEnabled)
+          {
+            await OpenProjectAsync();
+          }
           break;
-        case Key.S:
+        case (Key.S, ModifierKeys.Control):
           e.Handled = true;
-          await SaveProjectAsync(
-            (Keyboard.Modifiers & ModifierKeys.Shift) != 0);
+          if (_viewModel.IsEditorEnabled)
+          {
+            await SaveProjectAsync(false);
+          }
+          break;
+        case (Key.S, ModifierKeys.Control | ModifierKeys.Shift):
+          e.Handled = true;
+          if (_viewModel.IsEditorEnabled)
+          {
+            await SaveProjectAsync(true);
+          }
+          break;
+        case (Key.I, ModifierKeys.Control):
+          e.Handled = true;
+          if (_viewModel.IsEditorEnabled)
+          {
+            await ImportEntriesAsync();
+          }
+          break;
+        case (Key.P, ModifierKeys.Control):
+          e.Handled = true;
+          if (_viewModel.CanExport)
+          {
+            PrintCurrentPreviewOnClick(sender, e);
+          }
+          break;
+        case (Key.P, ModifierKeys.Control | ModifierKeys.Shift):
+          e.Handled = true;
+          if (_viewModel.CanExport)
+          {
+            SaveCurrentPreviewAsPdfOnClick(sender, e);
+          }
+          break;
+        case (Key.H, ModifierKeys.Control | ModifierKeys.Shift):
+          e.Handled = true;
+          if (_viewModel.CanExport)
+          {
+            SaveCurrentPreviewAsHtmlOnClick(sender, e);
+          }
+          break;
+        case (Key.G, ModifierKeys.Control | ModifierKeys.Shift):
+          e.Handled = true;
+          if (_viewModel.CanExport)
+          {
+            SaveCurrentBoardAsPngOnClick(sender, e);
+          }
+          break;
+        case (Key.OemComma, ModifierKeys.Control):
+          e.Handled = true;
+          if (_viewModel.IsEditorEnabled)
+          {
+            SettingsOnClick(sender, e);
+          }
+          break;
+        case (Key.F1, ModifierKeys.None):
+          e.Handled = true;
+          AboutOnClick(sender, e);
           break;
       }
     }

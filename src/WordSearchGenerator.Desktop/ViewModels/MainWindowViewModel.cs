@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Globalization;
 using WordSearchGenerator.Common.WoSeCon;
 using WordSearchGenerator.Desktop.Commands;
 using WordSearchGenerator.Desktop.Localization;
@@ -78,6 +79,11 @@ namespace WordSearchGenerator.Desktop.ViewModels
     public bool CanExport => IsPreviewReady && !IsExporting;
 
     public RelayCommand CancelCommand
+    {
+      get;
+    }
+
+    public RelayCommand ConvertToUppercaseCommand
     {
       get;
     }
@@ -254,6 +260,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
         OnPropertyChanged(nameof(IsNormalMode));
         OnPropertyChanged(nameof(IsQuizMode));
         OnPropertyChanged(nameof(SecretMessageDescription));
+        ConvertToUppercaseCommand.NotifyCanExecuteChanged();
 
         if (EntryListHeading == GetDefaultEntryListHeading(previousMode))
         {
@@ -601,6 +608,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
       {
         if (SetProperty(ref _wordsText, value ?? string.Empty))
         {
+          ConvertToUppercaseCommand.NotifyCanExecuteChanged();
           MarkDocumentChanged(true);
           RefreshEditorState();
         }
@@ -641,6 +649,9 @@ namespace WordSearchGenerator.Desktop.ViewModels
       CancelCommand = new RelayCommand(
         GenerateCommand.Cancel,
         () => GenerateCommand.CanBeCanceled);
+      ConvertToUppercaseCommand = new RelayCommand(
+        ConvertEntriesToUppercase,
+        CanConvertEntriesToUppercase);
       ShowPuzzlePreviewCommand = new RelayCommand(
         () => SetPreviewMode(BoardPreviewMode.Puzzle),
         () => HasPreview && !IsExporting);
@@ -672,6 +683,41 @@ namespace WordSearchGenerator.Desktop.ViewModels
 
       definition = CreateDefinition();
       return true;
+    }
+
+    private bool CanConvertEntriesToUppercase()
+    {
+      if (!IsEditorEnabled)
+      {
+        return false;
+      }
+
+      return IsNormalMode
+        ? HasLowercaseConversion(WordsText)
+        : QuizEntries.Any(entry =>
+          HasLowercaseConversion(entry.Answer));
+    }
+
+    private void ConvertEntriesToUppercase()
+    {
+      if (IsNormalMode)
+      {
+        WordsText = WordsText.ToUpper(CultureInfo.CurrentCulture);
+        return;
+      }
+
+      foreach (var entry in QuizEntries)
+      {
+        entry.Answer = entry.Answer.ToUpper(CultureInfo.CurrentCulture);
+      }
+    }
+
+    private static bool HasLowercaseConversion(string value)
+    {
+      return !string.Equals(
+        value,
+        value.ToUpper(CultureInfo.CurrentCulture),
+        StringComparison.Ordinal);
     }
 
     internal BoardRenderModel? GetCurrentBoardRenderModel()
@@ -944,6 +990,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
       OnPropertyChanged(nameof(IsEditorEnabled));
       OnPropertyChanged(nameof(WorkersText));
       CancelCommand.NotifyCanExecuteChanged();
+      ConvertToUppercaseCommand.NotifyCanExecuteChanged();
     }
 
     private void ResetGenerationProgress(
@@ -1056,6 +1103,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
 
       MarkDocumentChanged(true);
       RefreshEditorState();
+      ConvertToUppercaseCommand.NotifyCanExecuteChanged();
     }
 
     private void QuizEntryOnErrorsChanged(
@@ -1071,6 +1119,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
     {
       MarkDocumentChanged(true);
       RefreshEditorState();
+      ConvertToUppercaseCommand.NotifyCanExecuteChanged();
     }
 
     private void RefreshEditorState()

@@ -13,8 +13,6 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
   {
     #region Static Fields
 
-    private const int CurrentFormatVersion = 1;
-
     private static readonly JsonSerializerOptions JsonOptions = CreateOptions();
 
     #endregion
@@ -163,7 +161,6 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
           })
           .ToList(),
         EntryListHeading = definition.EntryListHeading,
-        FormatVersion = CurrentFormatVersion,
         GeneratedBoard = generated,
         Mode = definition.Mode,
         ParallelAttempts = definition.Generation.ParallelAttempts,
@@ -179,6 +176,8 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
       {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         ReadCommentHandling = JsonCommentHandling.Skip,
+        RespectNullableAnnotations = true,
+        UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
         WriteIndented = true
       };
       options.Converters.Add(new JsonStringEnumConverter());
@@ -189,8 +188,7 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
       PuzzleDefinition definition,
       GeneratedBoardFile generated)
     {
-      if (generated.Placements == null ||
-          generated.Placements.Count != definition.Entries.Count)
+      if (generated.Placements.Count != definition.Entries.Count)
       {
         throw new InvalidDataException(
           AppStrings.Get("SavedBoardPlacementCount"));
@@ -200,7 +198,7 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
       ValidateNonNegative(
         generated.AmbiguousBoardRejectionCount,
         nameof(generated.AmbiguousBoardRejectionCount));
-      ValidateOptionalNonNegative(
+      ValidateNonNegative(
         generated.AmbiguityRejectedAttemptCount,
         nameof(generated.AmbiguityRejectedAttemptCount));
       ValidateNonNegative(generated.Backtrackings, nameof(generated.Backtrackings));
@@ -208,10 +206,10 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
         generated.CancelledAttemptCount,
         nameof(generated.CancelledAttemptCount));
       ValidateNonNegative(generated.ElapsedTicks, nameof(generated.ElapsedTicks));
-      ValidateOptionalNonNegative(
+      ValidateNonNegative(
         generated.CompletedCandidateCount,
         nameof(generated.CompletedCandidateCount));
-      ValidateOptionalNonNegative(
+      ValidateNonNegative(
         generated.MessageCapacityRejectionCount,
         nameof(generated.MessageCapacityRejectionCount));
       ValidateNonNegative(
@@ -323,14 +321,6 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
           AppStrings.Get("SavedBoardAmbiguous"));
       }
 
-      var messageCapacityRejectionCount =
-        generated.MessageCapacityRejectionCount ??
-        generated.MessageRejectedAttemptCount;
-      var completedCandidateCount = generated.CompletedCandidateCount ??
-                                    messageCapacityRejectionCount +
-                                    generated.AmbiguousBoardRejectionCount +
-                                    1;
-
       return new GenerationResult(
         definition,
         board,
@@ -345,35 +335,27 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
         generated.WinningAttemptBacktrackings,
         generated.PlacementFailureCount,
         generated.MessageRejectedAttemptCount,
-        generated.AmbiguityRejectedAttemptCount ?? 0,
-        completedCandidateCount,
-        messageCapacityRejectionCount,
+        generated.AmbiguityRejectedAttemptCount,
+        generated.CompletedCandidateCount,
+        generated.MessageCapacityRejectionCount,
         generated.AmbiguousBoardRejectionCount,
         generated.CancelledAttemptCount);
     }
 
     private static PuzzleProject RestoreProject(ProjectFile file)
     {
-      if (file.FormatVersion != CurrentFormatVersion)
-      {
-        throw new InvalidDataException(AppStrings.Format(
-          "UnsupportedProjectVersion",
-          file.FormatVersion,
-          CurrentFormatVersion));
-      }
-
       if (!Enum.IsDefined(file.Mode))
       {
         throw new InvalidDataException(AppStrings.Get("ProjectModeInvalid"));
       }
 
-      if (file.Entries == null || file.Entries.Count == 0)
+      if (file.Entries.Count == 0)
       {
         throw new InvalidDataException(AppStrings.Get("ProjectEntryRequired"));
       }
 
       var rawEntries = file.Entries.Select(entry => new PuzzleEntry(
-        entry.Answer ?? string.Empty,
+        entry.Answer,
         entry.Question));
       var entries = file.Mode == PuzzleMode.Normal
         ? PuzzleInputParser.ParseWords(
@@ -401,9 +383,9 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
           file.Rows,
           file.Columns,
           entries,
-          file.SecretMessage ?? string.Empty,
-          file.PuzzleHeading ?? string.Empty,
-          file.EntryListHeading ?? string.Empty,
+          file.SecretMessage,
+          file.PuzzleHeading,
+          file.EntryListHeading,
           new GenerationOptions(file.ParallelAttempts));
       }
       catch (Exception exception)
@@ -431,14 +413,6 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
       }
     }
 
-    private static void ValidateOptionalNonNegative(long? value, string name)
-    {
-      if (value.HasValue)
-      {
-        ValidateNonNegative(value.Value, name);
-      }
-    }
-
     #endregion
 
     #region Nested Types
@@ -447,13 +421,13 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
     {
       #region Properties
 
-      public string? Answer
+      public required string Answer
       {
         get;
         set;
       }
 
-      public string? Question
+      public required string? Question
       {
         get;
         set;
@@ -466,103 +440,103 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
     {
       #region Properties
 
-      public long AmbiguousBoardRejectionCount
+      public required long AmbiguousBoardRejectionCount
       {
         get;
         set;
       }
 
-      public int? AmbiguityRejectedAttemptCount
+      public required int AmbiguityRejectedAttemptCount
       {
         get;
         set;
       }
 
-      public int AttemptCount
+      public required int AttemptCount
       {
         get;
         set;
       }
 
-      public long Backtrackings
+      public required long Backtrackings
       {
         get;
         set;
       }
 
-      public int CancelledAttemptCount
+      public required int CancelledAttemptCount
       {
         get;
         set;
       }
 
-      public long? CompletedCandidateCount
+      public required long CompletedCandidateCount
       {
         get;
         set;
       }
 
-      public long ElapsedTicks
+      public required long ElapsedTicks
       {
         get;
         set;
       }
 
-      public long? MessageCapacityRejectionCount
+      public required long MessageCapacityRejectionCount
       {
         get;
         set;
       }
 
-      public int MessageRejectedAttemptCount
+      public required int MessageRejectedAttemptCount
       {
         get;
         set;
       }
 
-      public int PlacementFailureCount
+      public required int PlacementFailureCount
       {
         get;
         set;
       }
 
-      public List<PlacementFile>? Placements
+      public required List<PlacementFile> Placements
       {
         get;
         set;
       }
 
-      public long TestedPositions
+      public required long TestedPositions
       {
         get;
         set;
       }
 
-      public int WinningAttemptBacktrackings
+      public required int WinningAttemptBacktrackings
       {
         get;
         set;
       }
 
-      public long WinningAttemptElapsedTicks
+      public required long WinningAttemptElapsedTicks
       {
         get;
         set;
       }
 
-      public int WinningAttemptNumber
+      public required int WinningAttemptNumber
       {
         get;
         set;
       }
 
-      public long WinningAttemptTestedPositions
+      public required long WinningAttemptTestedPositions
       {
         get;
         set;
       }
 
-      public int WinningSeed
+      public required int WinningSeed
       {
         get;
         set;
@@ -575,25 +549,25 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
     {
       #region Properties
 
-      public int Column
+      public required int Column
       {
         get;
         set;
       }
 
-      public DirectedLocation.LocationDirection Direction
+      public required DirectedLocation.LocationDirection Direction
       {
         get;
         set;
       }
 
-      public int Row
+      public required int Row
       {
         get;
         set;
       }
 
-      public int WordNumber
+      public required int WordNumber
       {
         get;
         set;
@@ -606,61 +580,55 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
     {
       #region Properties
 
-      public int Columns
+      public required int Columns
       {
         get;
         set;
       }
 
-      public List<EntryFile>? Entries
+      public required List<EntryFile> Entries
       {
         get;
         set;
       }
 
-      public string? EntryListHeading
+      public required string EntryListHeading
       {
         get;
         set;
       }
 
-      public int FormatVersion
+      public required GeneratedBoardFile? GeneratedBoard
       {
         get;
         set;
       }
 
-      public GeneratedBoardFile? GeneratedBoard
+      public required PuzzleMode Mode
       {
         get;
         set;
       }
 
-      public PuzzleMode Mode
+      public required int ParallelAttempts
       {
         get;
         set;
       }
 
-      public int ParallelAttempts
+      public required string PuzzleHeading
       {
         get;
         set;
       }
 
-      public string? PuzzleHeading
+      public required int Rows
       {
         get;
         set;
       }
 
-      public int Rows
-      {
-        get;
-        set;
-      }
-
-      public string? SecretMessage
+      public required string SecretMessage
       {
         get;
         set;

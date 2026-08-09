@@ -36,6 +36,7 @@
   <data name="QuizInstructions" xml:space="preserve"><value>Zadejte každou odpověď a její otázku. Další položku přidáte do prázdného řádku; řádek odstraníte jeho výběrem a klávesou Delete.</value></data>
   <data name="Answer" xml:space="preserve"><value>Odpověď</value></data>
   <data name="Question" xml:space="preserve"><value>Otázka</value></data>
+  <data name="ConvertToUppercase" xml:space="preserve"><value>Převést na velká písmena</value></data>
   <data name="SecretMessage" xml:space="preserve"><value>Tajenka</value></data>
   <data name="SecretMessageDescription" xml:space="preserve"><value>Tajenka vyplní buňky neobsazené slovy. Zbývající volné buňky budou černé.</value></data>
   <data name="SecretMessageQuizDescription" xml:space="preserve"><value>Každý znak tajenky se musí vyskytovat v odpovědích. Odpovídající buňky budou zvýrazněny a očíslovány v pořadí tajenky; nepoužité buňky budou černé.</value></data>
@@ -50,7 +51,7 @@
   <data name="Generation" xml:space="preserve"><value>Generování</value></data>
   <data name="ParallelAttempts" xml:space="preserve"><value>Paralelní pokusy</value></data>
   <data name="DifficultyTooltip" xml:space="preserve"><value>Jde o orientační odhad, nikoli zaručenou dobu dokončení.</value></data>
-  <data name="DifficultyLabel" xml:space="preserve"><value>Obtížnost</value></data>
+  <data name="DifficultyLabel" xml:space="preserve"><value>Orientační odhad obtížnosti</value></data>
   <data name="Cancel" xml:space="preserve"><value>Zrušit</value></data>
   <data name="BoardPreview" xml:space="preserve"><value>Náhled mřížky</value></data>
   <data name="Solution" xml:space="preserve"><value>Řešení</value></data>
@@ -251,7 +252,6 @@
   <data name="SavedPlacementConflict" xml:space="preserve"><value>Slovo {0} je v konfliktu s jiným uloženým umístěním.</value></data>
   <data name="SavedBoardCannotReconstruct" xml:space="preserve"><value>Z uložených umístění nelze mřížku obnovit.</value></data>
   <data name="SavedBoardAmbiguous" xml:space="preserve"><value>Uložená osmisměrka obsahuje některé slovo na více místech a je nutné ji vygenerovat znovu.</value></data>
-  <data name="UnsupportedProjectVersion" xml:space="preserve"><value>Nepodporovaná verze formátu projektu {0}. Tato aplikace podporuje verzi {1}.</value></data>
   <data name="ProjectModeInvalid" xml:space="preserve"><value>Režim projektu není platný.</value></data>
   <data name="ProjectEntryRequired" xml:space="preserve"><value>Projekt musí obsahovat alespoň jedno slovo nebo kvízovou položku.</value></data>
   <data name="ProjectEntriesInvalid" xml:space="preserve"><value>Projekt obsahuje prázdné, duplicitní nebo jednoznakové položky.</value></data>
