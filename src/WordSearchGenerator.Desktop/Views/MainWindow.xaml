@@ -249,7 +249,18 @@
             <TabControl Grid.Row="1"
                         HorizontalContentAlignment="Stretch"
                         VerticalContentAlignment="Stretch">
-              <TabItem Header="{localization:Loc WordsAndSecretTab}">
+              <TabItem>
+                <TabItem.Header>
+                  <StackPanel Orientation="Horizontal">
+                    <icons:FluentIcon Margin="0,0,6,0"
+                                      Icon="DocumentText"
+                                      IconSize="Size20"
+                                      FontSize="16" />
+                    <TextBlock VerticalAlignment="Center"
+                               Text="{localization:Loc WordsAndSecretTab}" />
+                  </StackPanel>
+                </TabItem.Header>
+
                 <Grid Margin="0,10,0,0">
                   <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
@@ -383,7 +394,18 @@
                 </Grid>
               </TabItem>
 
-              <TabItem Header="{localization:Loc AdditionalOptionsTab}">
+              <TabItem>
+                <TabItem.Header>
+                  <StackPanel Orientation="Horizontal">
+                    <icons:FluentIcon Margin="0,0,6,0"
+                                      Icon="Settings"
+                                      IconSize="Size20"
+                                      FontSize="16" />
+                    <TextBlock VerticalAlignment="Center"
+                               Text="{localization:Loc AdditionalOptionsTab}" />
+                  </StackPanel>
+                </TabItem.Header>
+
                 <StackPanel Margin="0,10,0,0">
                   <GroupBox Header="{localization:Loc PreviewText}">
                     <StackPanel>
