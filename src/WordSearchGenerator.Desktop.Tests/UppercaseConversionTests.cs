@@ -54,7 +54,8 @@ namespace WordSearchGenerator.Desktop.Tests
     {
       return new MainWindowViewModel(
         new UnusedPuzzleGenerator(),
-        new UnusedBoardHtmlRenderer());
+        new UnusedBoardHtmlRenderer(),
+        new EmbeddedBoardStyleCatalog());
     }
 
     #endregion
@@ -82,7 +83,8 @@ namespace WordSearchGenerator.Desktop.Tests
 
       public string Render(
         BoardRenderModel model,
-        BoardPreviewMode previewMode)
+        BoardPreviewMode previewMode,
+        string styleId)
       {
         throw new NotSupportedException();
       }

@@ -92,6 +92,7 @@ namespace WordSearchGenerator.Desktop.Tests
         secretMessage,
         string.Empty,
         string.Empty,
+        EmbeddedBoardStyleCatalog.EditorialStyleId,
         new GenerationOptions(1, 0));
       var words = definition.CreateWordInfos();
 

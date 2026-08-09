@@ -9,13 +9,31 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
 {
   public sealed class BoardHtmlRenderer : IBoardHtmlRenderer
   {
+    #region Fields
+
+    private readonly IBoardStyleCatalog _styleCatalog;
+
+    #endregion
+
+    #region Constructors
+
+    public BoardHtmlRenderer(IBoardStyleCatalog styleCatalog)
+    {
+      _styleCatalog = styleCatalog ??
+                      throw new ArgumentNullException(nameof(styleCatalog));
+    }
+
+    #endregion
+
     #region Interface Implementations
 
     public string Render(
       BoardRenderModel model,
-      BoardPreviewMode previewMode)
+      BoardPreviewMode previewMode,
+      string styleId)
     {
       ArgumentNullException.ThrowIfNull(model);
+      var styleCss = _styleCatalog.GetCss(styleId);
 
       if (model.Cells.Count != model.Rows * model.Columns)
       {
@@ -36,10 +54,11 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
 
       AppendDocumentStart(
         builder,
-        model.Columns,
         browserTitle,
         model.PuzzleHeading,
-        isSolution);
+        isSolution,
+        styleId,
+        styleCss);
       AppendMatrix(builder, model, isSolution);
 
       if (PuzzleDocumentPresentation.ShouldIncludeTutorial(previewMode))
@@ -71,10 +90,11 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
 
     private static void AppendDocumentStart(
       StringBuilder builder,
-      int columnCount,
       string browserTitle,
       string puzzleHeading,
-      bool isSolution)
+      bool isSolution,
+      string styleId,
+      string styleCss)
     {
       var modeClass = isSolution ? "solution" : "puzzle";
       var language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
@@ -88,299 +108,12 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
                            <meta name="color-scheme" content="light">
                            <title>{{Encode(browserTitle)}}</title>
                            <style>
-                             :root {
-                               --columns: {{columnCount.ToString(CultureInfo.InvariantCulture)}};
-                               --cell-max-size: 58px;
-                               --ink: #17202a;
-                               --muted: #5f6b76;
-                               --paper: #ffffff;
-                               --canvas: #f3f5f7;
-                               --line: #9aa7b2;
-                               --word: #dbeafe;
-                               --message: #fef3c7;
-                               --intersection: #e9d5ff;
-                               --quiz: #dcfce7;
-                               --black-box: #16191d;
-                             }
-
-                             * { box-sizing: border-box; }
-
-                             html, body { min-height: 100%; }
-
-                             body {
-                               margin: 0;
-                               color: var(--ink);
-                               background: var(--canvas);
-                               font-family: "Segoe UI", Arial, sans-serif;
-                             }
-
-                             .sheet {
-                               width: min(100%, 1100px);
-                               min-height: 100vh;
-                               margin: 0 auto;
-                               padding: clamp(16px, 3vw, 38px);
-                               background: var(--paper);
-                               box-shadow: 0 8px 30px rgba(23, 32, 42, 0.12);
-                             }
-
-                             .document-title {
-                               margin: 0 0 18px;
-                               font-size: clamp(22px, 3vw, 34px);
-                               font-weight: 650;
-                               text-align: center;
-                             }
-
-                             .matrix {
-                               display: grid;
-                               grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
-                               width: min(100%, 900px, calc(var(--columns) * var(--cell-max-size)));
-                               margin: 0 auto;
-                               overflow: hidden;
-                               border: 2px solid #26313a;
-                               border-radius: 6px;
-                               background: #26313a;
-                               break-inside: avoid;
-                             }
-
-                             .cell {
-                               position: relative;
-                               display: flex;
-                               align-items: center;
-                               justify-content: center;
-                               container-type: inline-size;
-                               aspect-ratio: 1 / 1;
-                               min-width: 0;
-                               overflow: hidden;
-                               border: 0.5px solid var(--line);
-                               background: #ffffff;
-                               font-weight: 650;
-                               line-height: 1;
-                               user-select: none;
-                             }
-
-                             .cell-letter {
-                               font-size: clamp(8px, 52cqi, 30px);
-                             }
-
-                             .cell.black-box {
-                               border-color: var(--black-box);
-                               background: var(--black-box);
-                             }
-
-                             .cell.quiz-question {
-                               flex-direction: column;
-                               gap: 1px;
-                               background: var(--quiz);
-                               font-weight: 700;
-                             }
-
-                             .quiz-number {
-                               font-size: clamp(6px, 30cqi, 18px);
-                             }
-
-                             .quiz-arrow {
-                               font-size: clamp(7px, 40cqi, 24px);
-                             }
-
-                             .solution .cell.word { background: var(--word); }
-                             .solution .cell.message { background: var(--message); }
-                             .solution .cell.intersection { background: var(--intersection); }
-                             .puzzle .cell.message-extraction,
-                             .solution .cell.message-extraction { background: var(--message); }
-
-                             .message-index {
-                               position: absolute;
-                               top: 4%;
-                               right: 4%;
-                               display: flex;
-                               align-items: center;
-                               justify-content: center;
-                               min-width: 38cqi;
-                               min-height: 32cqi;
-                               padding: 1cqi 4cqi;
-                               border: 1px solid #9a6700;
-                               border-radius: 4px;
-                               background: #fbbf24;
-                               color: #3f2d00;
-                               font-size: clamp(7px, 24cqi, 15px);
-                               font-weight: 800;
-                               line-height: 1;
-                             }
-
-                             .tutorial {
-                               width: min(100%, 900px);
-                               margin: 20px auto 0;
-                               padding: 14px 16px;
-                               border: 1px solid #d5dce2;
-                               border-radius: 8px;
-                               background: #f8fafc;
-                               break-inside: avoid;
-                             }
-
-                             .tutorial h2 {
-                               margin: 0 0 5px;
-                               font-size: 18px;
-                             }
-
-                             .tutorial p {
-                               margin: 0;
-                               color: var(--muted);
-                               font-size: 14px;
-                               line-height: 1.45;
-                             }
-
-                             .tutorial + .secret-message {
-                               margin-top: 14px;
-                             }
-
-                             .secret-message {
-                               width: min(100%, 900px);
-                               margin: 24px auto 0;
-                               padding: 16px;
-                               border: 1px solid #d5dce2;
-                               border-radius: 8px;
-                               background: #f8fafc;
-                               break-inside: avoid;
-                             }
-
-                             .secret-message h2 {
-                               margin: 0 0 5px;
-                               font-size: 18px;
-                             }
-
-                             .secret-message-instructions {
-                               margin: 0 0 14px;
-                               color: var(--muted);
-                               font-size: 13px;
-                             }
-
-                             .message-slots {
-                               display: flex;
-                               flex-wrap: wrap;
-                               justify-content: center;
-                               gap: 9px 6px;
-                             }
-
-                             .message-slot {
-                               display: inline-flex;
-                               align-items: flex-end;
-                               justify-content: center;
-                               width: 30px;
-                               height: 34px;
-                               padding-bottom: 3px;
-                               border-bottom: 2px solid var(--ink);
-                               font-size: 21px;
-                               font-weight: 650;
-                               line-height: 1;
-                             }
-
-                             .details,
-                             .entries {
-                               width: min(100%, 900px);
-                               margin: 24px auto 0;
-                             }
-
-                             .details {
-                               padding: 14px 16px;
-                               border: 1px solid #d5dce2;
-                               border-radius: 8px;
-                               background: #f8fafc;
-                             }
-
-                             .legend {
-                               display: flex;
-                               flex-wrap: wrap;
-                               gap: 10px 18px;
-                               margin-bottom: 10px;
-                               color: var(--muted);
-                               font-size: 13px;
-                             }
-
-                             .legend-item {
-                               display: inline-flex;
-                               align-items: center;
-                               gap: 7px;
-                             }
-
-                             .swatch {
-                               width: 16px;
-                               height: 16px;
-                               border: 1px solid var(--line);
-                               border-radius: 3px;
-                             }
-
-                             .swatch.word { background: var(--word); }
-                             .swatch.message { background: var(--message); }
-                             .swatch.intersection { background: var(--intersection); }
-                             .swatch.black-box { background: var(--black-box); }
-
-                             .statistics {
-                               margin: 0;
-                               color: var(--muted);
-                               font-size: 13px;
-                             }
-
-                             .entries h2 {
-                               margin: 0 0 12px;
-                               font-size: 18px;
-                             }
-
-                             .word-list {
-                               columns: 3 150px;
-                               column-gap: 28px;
-                               margin: 0;
-                               padding: 0;
-                               list-style: none;
-                             }
-
-                             .word-list li {
-                               padding: 4px 0;
-                               break-inside: avoid;
-                             }
-
-                             .question-list {
-                               margin: 0;
-                               padding-left: 28px;
-                             }
-
-                             .question-list li {
-                               margin-bottom: 9px;
-                               padding-left: 4px;
-                               break-inside: avoid;
-                             }
-
-                             .answer {
-                               display: block;
-                               margin-top: 2px;
-                               color: #1d4ed8;
-                               font-weight: 650;
-                             }
-
-                             @media (max-width: 620px) {
-                               .sheet { padding: 12px; }
-                               .document-title { margin-bottom: 12px; }
-                               .word-list { columns: 2 120px; }
-                             }
-
-                             @media print {
-                               @page { margin: 12mm; }
-
-                               body { background: #ffffff; }
-
-                               .sheet {
-                                 width: 100%;
-                                 min-height: auto;
-                                 padding: 0;
-                                 box-shadow: none;
-                               }
-
-                               .matrix { width: min(100%, 185mm); }
-                               .details, .entries { width: min(100%, 185mm); }
-                               .cell { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-                             }
+                       """);
+      builder.AppendLine(styleCss);
+      builder.Append($$"""
                            </style>
                          </head>
-                         <body class="{{modeClass}}">
+                         <body class="{{modeClass}}" data-style="{{Encode(styleId)}}">
                            <main class="sheet">
                        """);
 
@@ -459,7 +192,9 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
       BoardRenderModel model,
       bool isSolution)
     {
-      builder.Append("      <div class=\"matrix\" role=\"grid\" aria-rowcount=\"");
+      builder.Append("      <div class=\"matrix\" style=\"--columns: ");
+      builder.Append(model.Columns.ToString(CultureInfo.InvariantCulture));
+      builder.Append(";\" role=\"grid\" aria-rowcount=\"");
       builder.Append(model.Rows.ToString(CultureInfo.InvariantCulture));
       builder.Append("\" aria-colcount=\"");
       builder.Append(model.Columns.ToString(CultureInfo.InvariantCulture));

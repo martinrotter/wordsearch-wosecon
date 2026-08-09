@@ -5,6 +5,7 @@ using WordSearchGenerator.Common.WoSeCon.Api;
 using WordSearchGenerator.Desktop.Models;
 using WordSearchGenerator.Desktop.Models.Rendering;
 using WordSearchGenerator.Desktop.Services.Exporting;
+using WordSearchGenerator.Desktop.Services.Rendering;
 using W = DocumentFormat.OpenXml.Wordprocessing;
 
 namespace WordSearchGenerator.Desktop.Tests
@@ -176,6 +177,7 @@ namespace WordSearchGenerator.Desktop.Tests
         secretMessage,
         heading,
         mode == PuzzleMode.Normal ? "Words" : "Questions",
+        EmbeddedBoardStyleCatalog.EditorialStyleId,
         new GenerationOptions(1, 0));
       var words = definition.CreateWordInfos();
 

@@ -129,5 +129,6 @@
   "entryListHeading": "Výrazy k nalezení",
   "parallelAttempts": 16,
   "maximumAttemptTimeSeconds": 0,
+  "styleId": "editorial",
   "generatedBoard": null
 }

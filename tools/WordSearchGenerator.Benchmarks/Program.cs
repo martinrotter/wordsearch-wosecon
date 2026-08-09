@@ -145,6 +145,7 @@ namespace WordSearchGenerator.Benchmarks
         benchmarkCase.SecretMessage,
         string.Empty,
         string.Empty,
+        "editorial",
         new GenerationOptions(benchmarkCase.Parallelism, 0));
       var estimate = WoSeCon.EstimateDifficulty(
         definition.CreateWordInfos(),

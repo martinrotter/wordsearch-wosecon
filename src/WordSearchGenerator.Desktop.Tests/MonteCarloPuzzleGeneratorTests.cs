@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using WordSearchGenerator.Desktop.Models;
 using WordSearchGenerator.Desktop.Services;
+using WordSearchGenerator.Desktop.Services.Rendering;
 
 namespace WordSearchGenerator.Desktop.Tests
 {
@@ -122,6 +123,7 @@ namespace WordSearchGenerator.Desktop.Tests
         message,
         string.Empty,
         string.Empty,
+        EmbeddedBoardStyleCatalog.EditorialStyleId,
         new GenerationOptions(1, 0));
     }
 
@@ -140,6 +142,7 @@ namespace WordSearchGenerator.Desktop.Tests
         message,
         string.Empty,
         string.Empty,
+        EmbeddedBoardStyleCatalog.EditorialStyleId,
         new GenerationOptions(1, maximumAttemptTimeSeconds));
     }
 

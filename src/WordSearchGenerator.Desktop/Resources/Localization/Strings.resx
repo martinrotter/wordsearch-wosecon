@@ -32,8 +32,12 @@
   <data name="ColumnsTooltip" xml:space="preserve"><value>Number of columns in the generated matrix</value></data>
   <data name="CellCount" xml:space="preserve"><value>Cell count</value></data>
   <data name="Dimensions" xml:space="preserve"><value>Dimensions</value></data>
-  <data name="WordsAndSecretTab" xml:space="preserve"><value>Words &amp; secret</value></data>
-  <data name="AdditionalOptionsTab" xml:space="preserve"><value>Additional options</value></data>
+  <data name="ContentTab" xml:space="preserve"><value>Content</value></data>
+  <data name="AppearanceTab" xml:space="preserve"><value>Appearance</value></data>
+  <data name="GenerationTab" xml:space="preserve"><value>Generation</value></data>
+  <data name="Appearance" xml:space="preserve"><value>Appearance</value></data>
+  <data name="PuzzleStyle" xml:space="preserve"><value>Puzzle style</value></data>
+  <data name="PuzzleStyleDescription" xml:space="preserve"><value>The selected style is used in the preview, printing, and exports.</value></data>
   <data name="WordsOrQuestions" xml:space="preserve"><value>Words or questions</value></data>
   <data name="WordsInstructions" xml:space="preserve"><value>Enter one word per line. Words are case-sensitive; surrounding spaces are trimmed.</value></data>
   <data name="WordsTooltip" xml:space="preserve"><value>Empty lines and case-sensitive duplicates are ignored</value></data>
@@ -276,4 +280,10 @@
   <data name="PuzzleEntryRequired" xml:space="preserve"><value>At least one puzzle entry is required.</value></data>
   <data name="PuzzleEntriesNoNull" xml:space="preserve"><value>Puzzle entries cannot contain null values.</value></data>
   <data name="GenerationAttemptUnexpected" xml:space="preserve"><value>Generation attempt {0} failed unexpectedly.</value></data>
+  <data name="BoardStyleResourceNameInvalid" xml:space="preserve"><value>Embedded board style resource '{0}' does not have a valid flat CSS filename.</value></data>
+  <data name="BoardStyleResourceMissing" xml:space="preserve"><value>Embedded board style resource '{0}' could not be opened.</value></data>
+  <data name="BoardStyleEmpty" xml:space="preserve"><value>Board style '{0}' is empty.</value></data>
+  <data name="BoardStyleDuplicate" xml:space="preserve"><value>More than one embedded board style uses the ID '{0}'.</value></data>
+  <data name="BoardStyleDefaultMissing" xml:space="preserve"><value>The default board style '{0}' is not embedded in the application.</value></data>
+  <data name="BoardStyleUnknown" xml:space="preserve"><value>Board style '{0}' is not available.</value></data>
 </root>

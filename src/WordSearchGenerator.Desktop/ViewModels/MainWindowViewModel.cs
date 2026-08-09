@@ -17,6 +17,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
     #region Fields
 
     private readonly IBoardHtmlRenderer _boardHtmlRenderer;
+    private readonly string _defaultBoardStyleId;
     private readonly IPuzzleGenerator _puzzleGenerator;
 
     private int _activeAttemptCount;
@@ -62,6 +63,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
     private string _puzzleHeading = string.Empty;
     private string _rowsText = NewProjectRowsText;
     private string _secretMessage = NewProjectSecretMessage;
+    private string _selectedStyleId;
     private ParallelismOption _selectedParallelismOption;
     private string _statusText = AppStrings.Get("Idle");
     private long _testedPositions;
@@ -281,6 +283,11 @@ namespace WordSearchGenerator.Desktop.ViewModels
     public bool IsQuizMode => Mode == PuzzleMode.Quiz;
 
     public ObservableCollection<ParallelismOption> ParallelismOptions
+    {
+      get;
+    }
+
+    public ObservableCollection<string> BoardStyleIds
     {
       get;
     }
@@ -604,6 +611,23 @@ namespace WordSearchGenerator.Desktop.ViewModels
       }
     }
 
+    public string SelectedStyleId
+    {
+      get => _selectedStyleId;
+      set
+      {
+        if (SetProperty(ref _selectedStyleId, value))
+        {
+          MarkDocumentChanged(false);
+
+          if (_boardRenderModel != null)
+          {
+            SetPreviewMode(PreviewMode, true);
+          }
+        }
+      }
+    }
+
     public string WordsText
     {
       get => _wordsText;
@@ -624,14 +648,20 @@ namespace WordSearchGenerator.Desktop.ViewModels
 
     public MainWindowViewModel(
       IPuzzleGenerator puzzleGenerator,
-      IBoardHtmlRenderer boardHtmlRenderer)
+      IBoardHtmlRenderer boardHtmlRenderer,
+      IBoardStyleCatalog boardStyleCatalog)
     {
       ArgumentNullException.ThrowIfNull(puzzleGenerator);
       ArgumentNullException.ThrowIfNull(boardHtmlRenderer);
+      ArgumentNullException.ThrowIfNull(boardStyleCatalog);
 
       _puzzleGenerator = puzzleGenerator;
       _boardHtmlRenderer = boardHtmlRenderer;
+      _defaultBoardStyleId = boardStyleCatalog.DefaultStyleId;
       var automaticParallelism = Math.Max(1, Environment.ProcessorCount);
+
+      BoardStyleIds = new ObservableCollection<string>(
+        boardStyleCatalog.StyleIds);
 
       ParallelismOptions =
       [
@@ -646,6 +676,8 @@ namespace WordSearchGenerator.Desktop.ViewModels
       ];
 
       _selectedParallelismOption = ParallelismOptions[0];
+      _selectedStyleId = BoardStyleIds.Single(styleId =>
+        styleId == _defaultBoardStyleId);
       GenerateCommand = new AsyncRelayCommand(
         GenerateAsync,
         () => CanGenerate && !IsExporting);
@@ -763,6 +795,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
         SecretMessage,
         PuzzleHeading,
         EntryListHeading,
+        SelectedStyleId,
         new GenerationOptions(
           SelectedParallelismOption.ParallelAttempts,
           int.Parse(MaximumAttemptTimeSecondsText)));
@@ -1053,7 +1086,8 @@ namespace WordSearchGenerator.Desktop.ViewModels
       {
         PreviewHtml = _boardHtmlRenderer.Render(
           _boardRenderModel,
-          previewMode);
+          previewMode,
+          SelectedStyleId);
       }
     }
 

@@ -8,7 +8,8 @@ namespace WordSearchGenerator.Desktop.Services.Rendering
 
     string Render(
       BoardRenderModel model,
-      BoardPreviewMode previewMode);
+      BoardPreviewMode previewMode,
+      string styleId);
 
     #endregion
   }

@@ -2,6 +2,7 @@ using WordSearchGenerator.Common;
 using WordSearchGenerator.Common.WoSeCon.Api;
 using WordSearchGenerator.Desktop.Models;
 using WordSearchGenerator.Desktop.Services.Persistence;
+using WordSearchGenerator.Desktop.Services.Rendering;
 
 namespace WordSearchGenerator.Desktop.Tests
 {
@@ -21,8 +22,10 @@ namespace WordSearchGenerator.Desktop.Tests
         string.Empty,
         string.Empty,
         string.Empty,
+        EmbeddedBoardStyleCatalog.EditorialStyleId,
         new GenerationOptions(1, 0));
-      var serializer = new PuzzleProjectSerializer();
+      var serializer = new PuzzleProjectSerializer(
+        new EmbeddedBoardStyleCatalog());
       var path = Path.Combine(
         Path.GetTempPath(),
         $"wosecon-version-{Guid.NewGuid():N}.wosecon");
@@ -62,6 +65,7 @@ namespace WordSearchGenerator.Desktop.Tests
         string.Empty,
         string.Empty,
         string.Empty,
+        EmbeddedBoardStyleCatalog.EditorialStyleId,
         new GenerationOptions(4, 17));
       var word = new WordInfo
       {
@@ -93,7 +97,8 @@ namespace WordSearchGenerator.Desktop.Tests
         7,
         2,
         1);
-      var serializer = new PuzzleProjectSerializer();
+      var serializer = new PuzzleProjectSerializer(
+        new EmbeddedBoardStyleCatalog());
       var path = Path.Combine(
         Path.GetTempPath(),
         $"wosecon-statistics-{Guid.NewGuid():N}.wosecon");
@@ -107,12 +112,57 @@ namespace WordSearchGenerator.Desktop.Tests
         Assert.AreEqual(
           17,
           restored.Definition.Generation.MaximumAttemptTimeSeconds);
+        Assert.AreEqual(
+          EmbeddedBoardStyleCatalog.EditorialStyleId,
+          restored.Definition.StyleId);
         Assert.AreEqual(10, restored.GeneratedResult.CompletedCandidateCount);
         Assert.AreEqual(7, restored.GeneratedResult.MessageCapacityRejectionCount);
         Assert.AreEqual(2, restored.GeneratedResult.AmbiguousBoardRejectionCount);
         Assert.AreEqual(1, restored.GeneratedResult.PlacementFailedAttemptCount);
         Assert.AreEqual(1, restored.GeneratedResult.MessageCapacityRejectedAttemptCount);
         Assert.AreEqual(1, restored.GeneratedResult.AmbiguityRejectedAttemptCount);
+      }
+      finally
+      {
+        if (File.Exists(path))
+        {
+          File.Delete(path);
+        }
+      }
+    }
+
+    [TestMethod]
+    public async Task UnknownBoardStyleIsRejected()
+    {
+      var catalog = new EmbeddedBoardStyleCatalog();
+      var definition = new PuzzleDefinition(
+        PuzzleMode.Normal,
+        1,
+        3,
+        [new PuzzleEntry("ABC")],
+        string.Empty,
+        string.Empty,
+        string.Empty,
+        catalog.DefaultStyleId,
+        new GenerationOptions(1, 0));
+      var serializer = new PuzzleProjectSerializer(catalog);
+      var path = Path.Combine(
+        Path.GetTempPath(),
+        $"wosecon-style-{Guid.NewGuid():N}.wosecon");
+
+      try
+      {
+        await serializer.SaveAsync(path, definition, null);
+        var json = await File.ReadAllTextAsync(path);
+        await File.WriteAllTextAsync(
+          path,
+          json.Replace(
+            "\"styleId\": \"editorial\"",
+            "\"styleId\": \"missing\"",
+            StringComparison.Ordinal));
+
+        await Assert.ThrowsExactlyAsync<InvalidDataException>(() =>
+          serializer.LoadAsync(path));
       }
       finally
       {

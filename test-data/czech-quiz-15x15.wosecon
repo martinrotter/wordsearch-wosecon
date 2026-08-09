@@ -105,5 +105,6 @@
   "entryListHeading": "Otázky",
   "parallelAttempts": 8,
   "maximumAttemptTimeSeconds": 0,
+  "styleId": "editorial",
   "generatedBoard": null
 }

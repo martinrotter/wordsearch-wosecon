@@ -6,6 +6,7 @@ using WordSearchGenerator.Common.WoSeCon.Api;
 using WordSearchGenerator.Desktop.Localization;
 using WordSearchGenerator.Desktop.Models;
 using WordSearchGenerator.Desktop.Models.Persistence;
+using WordSearchGenerator.Desktop.Services.Rendering;
 
 namespace WordSearchGenerator.Desktop.Services.Persistence
 {
@@ -14,6 +15,19 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
     #region Static Fields
 
     private static readonly JsonSerializerOptions JsonOptions = CreateOptions();
+
+    private readonly IBoardStyleCatalog _boardStyleCatalog;
+
+    #endregion
+
+    #region Constructors
+
+    public PuzzleProjectSerializer(IBoardStyleCatalog boardStyleCatalog)
+    {
+      _boardStyleCatalog = boardStyleCatalog ??
+                           throw new ArgumentNullException(
+                             nameof(boardStyleCatalog));
+    }
 
     #endregion
 
@@ -168,7 +182,8 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
         ParallelAttempts = definition.Generation.ParallelAttempts,
         PuzzleHeading = definition.PuzzleHeading,
         Rows = definition.Rows,
-        SecretMessage = definition.SecretMessage
+        SecretMessage = definition.SecretMessage,
+        StyleId = definition.StyleId
       };
     }
 
@@ -344,7 +359,7 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
         generated.CancelledAttemptCount);
     }
 
-    private static PuzzleProject RestoreProject(ProjectFile file)
+    private PuzzleProject RestoreProject(ProjectFile file)
     {
       if (!Enum.IsDefined(file.Mode))
       {
@@ -354,6 +369,13 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
       if (file.Entries.Count == 0)
       {
         throw new InvalidDataException(AppStrings.Get("ProjectEntryRequired"));
+      }
+
+      if (!_boardStyleCatalog.Contains(file.StyleId))
+      {
+        throw new InvalidDataException(AppStrings.Format(
+          "BoardStyleUnknown",
+          file.StyleId));
       }
 
       var rawEntries = file.Entries.Select(entry => new PuzzleEntry(
@@ -388,6 +410,7 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
           file.SecretMessage,
           file.PuzzleHeading,
           file.EntryListHeading,
+          file.StyleId,
           new GenerationOptions(
             file.ParallelAttempts,
             file.MaximumAttemptTimeSeconds));
@@ -639,6 +662,12 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
       }
 
       public required string SecretMessage
+      {
+        get;
+        set;
+      }
+
+      public required string StyleId
       {
         get;
         set;

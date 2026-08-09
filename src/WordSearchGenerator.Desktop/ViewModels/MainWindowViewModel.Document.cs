@@ -116,6 +116,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
         SecretMessage = definition.SecretMessage;
         PuzzleHeading = definition.PuzzleHeading;
         EntryListHeading = definition.EntryListHeading;
+        SelectedStyleId = GetStyleId(definition.StyleId);
         SelectedParallelismOption = GetOrAddParallelismOption(
           definition.Generation.ParallelAttempts);
         MaximumAttemptTimeSecondsText =
@@ -190,6 +191,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
         SecretMessage = NewProjectSecretMessage;
         PuzzleHeading = string.Empty;
         EntryListHeading = GetDefaultEntryListHeading(PuzzleMode.Normal);
+        SelectedStyleId = GetStyleId(_defaultBoardStyleId);
         SelectedParallelismOption = ParallelismOptions[0];
         MaximumAttemptTimeSecondsText =
           NewProjectMaximumAttemptTimeSecondsText;
@@ -247,6 +249,11 @@ namespace WordSearchGenerator.Desktop.ViewModels
         parallelAttempts);
       ParallelismOptions.Add(option);
       return option;
+    }
+
+    private string GetStyleId(string styleId)
+    {
+      return BoardStyleIds.Single(candidate => candidate == styleId);
     }
 
     private void InvalidateGeneratedBoard()

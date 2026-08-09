@@ -105,5 +105,6 @@
   "maximumAttemptTimeSeconds": 0,
   "puzzleHeading": "\u010Cesk\u00E1 osmism\u011Brka",
   "rows": 15,
-  "secretMessage": "\u010Desk\u00E1 republika"
+  "secretMessage": "\u010Desk\u00E1 republika",
+  "styleId": "editorial"
 }

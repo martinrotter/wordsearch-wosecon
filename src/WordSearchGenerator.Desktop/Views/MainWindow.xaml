@@ -282,7 +282,7 @@
                                         IconSize="Size20"
                                         FontSize="16" />
                       <TextBlock VerticalAlignment="Center"
-                                 Text="{localization:Loc WordsAndSecretTab}" />
+                                 Text="{localization:Loc ContentTab}" />
                     </StackPanel>
                   </Border>
                 </TabItem.Header>
@@ -425,17 +425,29 @@
                   <Border Style="{StaticResource EditorTabHeaderBorderStyle}">
                     <StackPanel Orientation="Horizontal">
                       <icons:FluentIcon Margin="0,0,6,0"
-                                        Icon="Settings"
+                                        Icon="PaintBrush"
                                         IconSize="Size20"
                                         FontSize="16" />
                       <TextBlock VerticalAlignment="Center"
-                                 Text="{localization:Loc AdditionalOptionsTab}" />
+                                 Text="{localization:Loc AppearanceTab}" />
                     </StackPanel>
                   </Border>
                 </TabItem.Header>
 
                 <StackPanel Margin="0,10,0,0">
-                  <GroupBox Header="{localization:Loc PreviewText}">
+                  <GroupBox Header="{localization:Loc PuzzleStyle}">
+                    <StackPanel>
+                      <TextBlock Style="{StaticResource SupportingTextStyle}"
+                                 Text="{localization:Loc PuzzleStyleDescription}"
+                                 TextWrapping="Wrap" />
+                      <ComboBox Margin="0,7,0,0"
+                                ItemsSource="{Binding BoardStyleIds}"
+                                SelectedItem="{Binding SelectedStyleId}" />
+                    </StackPanel>
+                  </GroupBox>
+
+                  <GroupBox Margin="0"
+                            Header="{localization:Loc PreviewText}">
                     <StackPanel>
                       <TextBlock Style="{StaticResource SupportingTextStyle}"
                                  Text="{localization:Loc PreviewTextDescription}"
@@ -458,9 +470,25 @@
                                ToolTip="{localization:Loc OmitListHeadingTooltip}" />
                     </StackPanel>
                   </GroupBox>
+                </StackPanel>
+              </TabItem>
 
-                  <GroupBox Margin="0"
-                            Header="{localization:Loc Generation}">
+              <TabItem>
+                <TabItem.Header>
+                  <Border Style="{StaticResource EditorTabHeaderBorderStyle}">
+                    <StackPanel Orientation="Horizontal">
+                      <icons:FluentIcon Margin="0,0,6,0"
+                                        Icon="Settings"
+                                        IconSize="Size20"
+                                        FontSize="16" />
+                      <TextBlock VerticalAlignment="Center"
+                                 Text="{localization:Loc GenerationTab}" />
+                    </StackPanel>
+                  </Border>
+                </TabItem.Header>
+
+                <StackPanel Margin="0,10,0,0">
+                  <GroupBox Header="{localization:Loc Generation}">
                     <Grid>
                       <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />

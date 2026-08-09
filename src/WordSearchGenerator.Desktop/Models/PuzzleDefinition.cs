@@ -48,6 +48,11 @@ namespace WordSearchGenerator.Desktop.Models
       get;
     }
 
+    public string StyleId
+    {
+      get;
+    }
+
     public bool QuizMode => Mode == PuzzleMode.Quiz;
 
     #endregion
@@ -62,6 +67,7 @@ namespace WordSearchGenerator.Desktop.Models
       string secretMessage,
       string puzzleHeading,
       string entryListHeading,
+      string styleId,
       GenerationOptions generation)
     {
       ArgumentOutOfRangeException.ThrowIfNegativeOrZero(rows);
@@ -70,6 +76,7 @@ namespace WordSearchGenerator.Desktop.Models
       ArgumentNullException.ThrowIfNull(secretMessage);
       ArgumentNullException.ThrowIfNull(puzzleHeading);
       ArgumentNullException.ThrowIfNull(entryListHeading);
+      ArgumentException.ThrowIfNullOrWhiteSpace(styleId);
       ArgumentNullException.ThrowIfNull(generation);
 
       var entryArray = entries.ToArray();
@@ -95,6 +102,7 @@ namespace WordSearchGenerator.Desktop.Models
       SecretMessage = secretMessage;
       PuzzleHeading = puzzleHeading.Trim();
       EntryListHeading = entryListHeading.Trim();
+      StyleId = styleId;
       Generation = generation;
     }
 

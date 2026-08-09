@@ -24,12 +24,14 @@ namespace WordSearchGenerator.Desktop
       ApplicationCulture.Apply(settings.UiCulture);
 
       var puzzleGenerator = new MonteCarloPuzzleGenerator();
-      var boardHtmlRenderer = new BoardHtmlRenderer();
+      var boardStyleCatalog = new EmbeddedBoardStyleCatalog();
+      var boardHtmlRenderer = new BoardHtmlRenderer(boardStyleCatalog);
       var docxPuzzleExporter = new DocxPuzzleExporter();
-      var projectSerializer = new PuzzleProjectSerializer();
+      var projectSerializer = new PuzzleProjectSerializer(boardStyleCatalog);
       var mainWindowViewModel = new MainWindowViewModel(
         puzzleGenerator,
-        boardHtmlRenderer);
+        boardHtmlRenderer,
+        boardStyleCatalog);
       var mainWindow = new MainWindow(
         mainWindowViewModel,
         projectSerializer,
