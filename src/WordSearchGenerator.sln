@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordSearchGenerator.Desktop
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordSearchGenerator.Desktop.Tests", "WordSearchGenerator.Desktop.Tests\WordSearchGenerator.Desktop.Tests.csproj", "{5D0B749B-2A9C-4FA2-A8A4-4C0370A6D93F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordSearchGenerator.Benchmarks", "WordSearchGenerator.Benchmarks\WordSearchGenerator.Benchmarks.csproj", "{77B8B05F-6867-BEF1-5A25-D92B22AFB851}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{5D0B749B-2A9C-4FA2-A8A4-4C0370A6D93F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D0B749B-2A9C-4FA2-A8A4-4C0370A6D93F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D0B749B-2A9C-4FA2-A8A4-4C0370A6D93F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77B8B05F-6867-BEF1-5A25-D92B22AFB851}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77B8B05F-6867-BEF1-5A25-D92B22AFB851}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77B8B05F-6867-BEF1-5A25-D92B22AFB851}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77B8B05F-6867-BEF1-5A25-D92B22AFB851}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

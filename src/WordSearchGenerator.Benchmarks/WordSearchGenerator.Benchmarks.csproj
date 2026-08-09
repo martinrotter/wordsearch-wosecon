@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\WordSearchGenerator.Desktop\WordSearchGenerator.Desktop.csproj" />
+    <ProjectReference Include="..\WordSearchGenerator.Desktop\WordSearchGenerator.Desktop.csproj" />
   </ItemGroup>
 
 </Project>
