@@ -255,25 +255,36 @@
                 <Style TargetType="TabItem"
                        BasedOn="{StaticResource {x:Type TabItem}}">
                   <Setter Property="BorderBrush" Value="Transparent" />
+                  <Setter Property="Padding" Value="0" />
+                </Style>
+                <Style x:Key="EditorTabHeaderBorderStyle"
+                       TargetType="Border">
+                  <Setter Property="Padding" Value="10,5" />
+                  <Setter Property="BorderBrush" Value="Transparent" />
+                  <Setter Property="BorderThickness" Value="0 0 0 1" />
                   <Style.Triggers>
-                    <Trigger Property="IsSelected" Value="True">
+                    <DataTrigger Binding="{Binding IsSelected,
+                                                   RelativeSource={RelativeSource AncestorType={x:Type TabItem}}}"
+                                 Value="True">
                       <Setter Property="BorderBrush"
                               Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
-                    </Trigger>
+                    </DataTrigger>
                   </Style.Triggers>
                 </Style>
               </TabControl.Resources>
 
               <TabItem>
                 <TabItem.Header>
-                  <StackPanel Orientation="Horizontal">
-                    <icons:FluentIcon Margin="0,0,6,0"
-                                      Icon="DocumentText"
-                                      IconSize="Size20"
-                                      FontSize="16" />
-                    <TextBlock VerticalAlignment="Center"
-                               Text="{localization:Loc WordsAndSecretTab}" />
-                  </StackPanel>
+                  <Border Style="{StaticResource EditorTabHeaderBorderStyle}">
+                    <StackPanel Orientation="Horizontal">
+                      <icons:FluentIcon Margin="0,0,6,0"
+                                        Icon="DocumentText"
+                                        IconSize="Size20"
+                                        FontSize="16" />
+                      <TextBlock VerticalAlignment="Center"
+                                 Text="{localization:Loc WordsAndSecretTab}" />
+                    </StackPanel>
+                  </Border>
                 </TabItem.Header>
 
                 <Grid Margin="0,10,0,0">
@@ -411,14 +422,16 @@
 
               <TabItem>
                 <TabItem.Header>
-                  <StackPanel Orientation="Horizontal">
-                    <icons:FluentIcon Margin="0,0,6,0"
-                                      Icon="Settings"
-                                      IconSize="Size20"
-                                      FontSize="16" />
-                    <TextBlock VerticalAlignment="Center"
-                               Text="{localization:Loc AdditionalOptionsTab}" />
-                  </StackPanel>
+                  <Border Style="{StaticResource EditorTabHeaderBorderStyle}">
+                    <StackPanel Orientation="Horizontal">
+                      <icons:FluentIcon Margin="0,0,6,0"
+                                        Icon="Settings"
+                                        IconSize="Size20"
+                                        FontSize="16" />
+                      <TextBlock VerticalAlignment="Center"
+                                 Text="{localization:Loc AdditionalOptionsTab}" />
+                    </StackPanel>
+                  </Border>
                 </TabItem.Header>
 
                 <StackPanel Margin="0,10,0,0">
