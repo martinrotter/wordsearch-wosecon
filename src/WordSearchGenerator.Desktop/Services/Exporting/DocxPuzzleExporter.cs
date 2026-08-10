@@ -19,8 +19,8 @@ namespace Wose.Desktop.Services.Exporting
   {
     #region Static Fields
 
-    private const uint PageWidthTwips = 11906;
-    private const uint PageHeightTwips = 16838;
+    private const uint PageWidthTwips = 8391;
+    private const uint PageHeightTwips = 11906;
     private const uint PageMarginTwips = 1021;
     private const long EmusPerTwip = 635;
     private const int MaximumMessageColumns = 18;

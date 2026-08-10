@@ -210,7 +210,6 @@
   <data name="DefaultExportBaseName" xml:space="preserve"><value>osmisměrka</value></data>
   <data name="PuzzleFileSuffix" xml:space="preserve"><value>-zadání</value></data>
   <data name="SolutionFileSuffix" xml:space="preserve"><value>-řešení</value></data>
-  <data name="BoardFileSuffix" xml:space="preserve"><value>-mřížka</value></data>
   <data name="QuizImportLineFormat" xml:space="preserve"><value>Řádek {0} musí obsahovat odpověď, tabulátor a otázku.</value></data>
   <data name="QuizImportLineInvalid" xml:space="preserve"><value>Řádek {0} musí obsahovat odpověď o alespoň dvou znacích a neprázdnou otázku.</value></data>
   <data name="NoQuizEntriesInFile" xml:space="preserve"><value>Vybraný soubor neobsahuje žádné úplné položky křížovky.</value></data>

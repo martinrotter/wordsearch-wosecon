@@ -210,7 +210,6 @@
   <data name="DefaultExportBaseName" xml:space="preserve"><value>word-search</value></data>
   <data name="PuzzleFileSuffix" xml:space="preserve"><value>-puzzle</value></data>
   <data name="SolutionFileSuffix" xml:space="preserve"><value>-solution</value></data>
-  <data name="BoardFileSuffix" xml:space="preserve"><value>-board</value></data>
   <data name="QuizImportLineFormat" xml:space="preserve"><value>Line {0} must contain an answer, a tab, and a question.</value></data>
   <data name="QuizImportLineInvalid" xml:space="preserve"><value>Line {0} must contain an answer of at least two characters and a non-empty question.</value></data>
   <data name="NoQuizEntriesInFile" xml:space="preserve"><value>The selected file contains no complete quiz entries.</value></data>
