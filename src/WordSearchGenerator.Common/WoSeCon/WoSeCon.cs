@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
-using WordSearchGenerator.Common.WoSeCon.Api;
-using static WordSearchGenerator.Common.WoSeCon.Api.Locator;
+using Wose.Common.WoSeCon.Api;
+using static Wose.Common.WoSeCon.Api.Locator;
 
-namespace WordSearchGenerator.Common.WoSeCon
+namespace Wose.Common.WoSeCon
 {
   public partial class WoSeCon
   {

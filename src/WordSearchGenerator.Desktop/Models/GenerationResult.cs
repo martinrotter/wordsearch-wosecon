@@ -1,6 +1,6 @@
-using WordSearchGenerator.Common;
+using Wose.Common;
 
-namespace WordSearchGenerator.Desktop.Models
+namespace Wose.Desktop.Models
 {
   public sealed class GenerationResult
   {

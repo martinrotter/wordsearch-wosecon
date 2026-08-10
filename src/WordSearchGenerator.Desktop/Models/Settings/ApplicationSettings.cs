@@ -1,4 +1,4 @@
-namespace WordSearchGenerator.Desktop.Models.Settings
+namespace Wose.Desktop.Models.Settings
 {
   public sealed record ApplicationSettings(
     string UiCulture,

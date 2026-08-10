@@ -1,11 +1,11 @@
-using WordSearchGenerator.Common;
-using WordSearchGenerator.Desktop.Models;
-using WordSearchGenerator.Desktop.Models.Rendering;
-using WordSearchGenerator.Desktop.Services;
-using WordSearchGenerator.Desktop.Services.Rendering;
-using WordSearchGenerator.Desktop.ViewModels;
+using Wose.Common;
+using Wose.Desktop.Models;
+using Wose.Desktop.Models.Rendering;
+using Wose.Desktop.Services;
+using Wose.Desktop.Services.Rendering;
+using Wose.Desktop.ViewModels;
 
-namespace WordSearchGenerator.Desktop.Tests
+namespace Wose.Desktop.Tests
 {
   [TestClass]
   public sealed class UppercaseConversionTests

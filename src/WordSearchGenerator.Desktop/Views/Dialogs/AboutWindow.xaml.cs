@@ -1,8 +1,8 @@
 using System.Reflection;
 using System.Windows;
-using WordSearchGenerator.Desktop.Localization;
+using Wose.Desktop.Localization;
 
-namespace WordSearchGenerator.Desktop.Views.Dialogs
+namespace Wose.Desktop.Views.Dialogs
 {
   public partial class AboutWindow : Window
   {

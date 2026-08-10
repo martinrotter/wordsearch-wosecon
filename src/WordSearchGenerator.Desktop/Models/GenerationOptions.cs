@@ -1,6 +1,6 @@
-using WordSearchGenerator.Desktop.Localization;
+using Wose.Desktop.Localization;
 
-namespace WordSearchGenerator.Desktop.Models
+namespace Wose.Desktop.Models
 {
   public sealed class GenerationOptions
   {

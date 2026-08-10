@@ -1,10 +1,10 @@
-using WordSearchGenerator.Common;
-using WordSearchGenerator.Common.WoSeCon.Api;
-using WordSearchGenerator.Desktop.Models;
-using WordSearchGenerator.Desktop.Services.Persistence;
-using WordSearchGenerator.Desktop.Services.Rendering;
+using Wose.Common;
+using Wose.Common.WoSeCon.Api;
+using Wose.Desktop.Models;
+using Wose.Desktop.Services.Persistence;
+using Wose.Desktop.Services.Rendering;
 
-namespace WordSearchGenerator.Desktop.Tests
+namespace Wose.Desktop.Tests
 {
   [TestClass]
   public sealed class PuzzleProjectSerializerTests
@@ -28,7 +28,7 @@ namespace WordSearchGenerator.Desktop.Tests
         new EmbeddedBoardStyleCatalog());
       var path = Path.Combine(
         Path.GetTempPath(),
-        $"wosecon-version-{Guid.NewGuid():N}.wosecon");
+        $"wose-version-{Guid.NewGuid():N}.wose");
 
       try
       {
@@ -101,7 +101,7 @@ namespace WordSearchGenerator.Desktop.Tests
         new EmbeddedBoardStyleCatalog());
       var path = Path.Combine(
         Path.GetTempPath(),
-        $"wosecon-statistics-{Guid.NewGuid():N}.wosecon");
+        $"wose-statistics-{Guid.NewGuid():N}.wose");
 
       try
       {
@@ -148,7 +148,7 @@ namespace WordSearchGenerator.Desktop.Tests
       var serializer = new PuzzleProjectSerializer(catalog);
       var path = Path.Combine(
         Path.GetTempPath(),
-        $"wosecon-style-{Guid.NewGuid():N}.wosecon");
+        $"wose-style-{Guid.NewGuid():N}.wose");
 
       try
       {

@@ -7,10 +7,10 @@ using System.Windows.Media.Imaging;
 using CefSharp;
 using CefSharp.Wpf;
 using Microsoft.Win32;
-using WordSearchGenerator.Desktop.Localization;
-using WordSearchGenerator.Desktop.Models.Rendering;
+using Wose.Desktop.Localization;
+using Wose.Desktop.Models.Rendering;
 
-namespace WordSearchGenerator.Desktop.Views
+namespace Wose.Desktop.Views
 {
   public partial class MainWindow
   {

@@ -1,4 +1,4 @@
-namespace WordSearchGenerator.Desktop.Services.Rendering
+namespace Wose.Desktop.Services.Rendering
 {
   public interface IBoardStyleCatalog
   {

@@ -1,12 +1,12 @@
 using System.Diagnostics;
 using System.Security.Cryptography;
-using WordSearchGenerator.Common;
-using WordSearchGenerator.Common.WoSeCon;
-using WordSearchGenerator.Common.WoSeCon.Api;
-using WordSearchGenerator.Desktop.Localization;
-using WordSearchGenerator.Desktop.Models;
+using Wose.Common;
+using Wose.Common.WoSeCon;
+using Wose.Common.WoSeCon.Api;
+using Wose.Desktop.Localization;
+using Wose.Desktop.Models;
 
-namespace WordSearchGenerator.Desktop.Services
+namespace Wose.Desktop.Services
 {
   public sealed class MonteCarloPuzzleGenerator : IPuzzleGenerator
   {

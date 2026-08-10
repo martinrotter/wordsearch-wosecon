@@ -2,14 +2,14 @@ using System.Globalization;
 using System.Reflection;
 using System.Resources;
 
-namespace WordSearchGenerator.Desktop.Localization
+namespace Wose.Desktop.Localization
 {
   public static class AppStrings
   {
     #region Static Fields
 
     private static readonly ResourceManager ResourceManager = new(
-      "WordSearchGenerator.Desktop.Resources.Localization.Strings",
+      $"{typeof(Wose.Desktop.App).Namespace}.Resources.Localization.Strings",
       Assembly.GetExecutingAssembly());
 
     #endregion

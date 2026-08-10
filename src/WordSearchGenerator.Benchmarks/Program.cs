@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using WordSearchGenerator.Common;
-using WordSearchGenerator.Common.WoSeCon;
-using WordSearchGenerator.Desktop.Models;
-using WordSearchGenerator.Desktop.Services;
+using Wose.Common;
+using Wose.Common.WoSeCon;
+using Wose.Desktop.Models;
+using Wose.Desktop.Services;
 
-namespace WordSearchGenerator.Benchmarks
+namespace Wose.Benchmarks
 {
   internal static class Program
   {
@@ -37,7 +37,7 @@ namespace WordSearchGenerator.Benchmarks
       if (arguments.Length is < 1 or > 2)
       {
         Console.Error.WriteLine(
-          "Usage: WordSearchGenerator.Benchmarks <manifest.json> [output-directory]");
+          "Usage: Wose.Benchmarks <manifest.json> [output-directory]");
         return 2;
       }
 

@@ -1,6 +1,6 @@
-using WordSearchGenerator.Desktop.Localization;
+using Wose.Desktop.Localization;
 
-namespace WordSearchGenerator.Desktop.ViewModels
+namespace Wose.Desktop.ViewModels
 {
   public sealed class QuizEntryViewModel : ValidatableViewModelBase
   {

@@ -20,8 +20,8 @@
   <data name="MenuSettings" xml:space="preserve"><value>_Settings...</value></data>
   <data name="MenuExit" xml:space="preserve"><value>E_xit</value></data>
   <data name="MenuHelp" xml:space="preserve"><value>_Help</value></data>
-  <data name="MenuAbout" xml:space="preserve"><value>_About WoSeCon...</value></data>
-  <data name="AboutTitle" xml:space="preserve"><value>About WoSeCon</value></data>
+  <data name="MenuAbout" xml:space="preserve"><value>_About WoSe...</value></data>
+  <data name="AboutTitle" xml:space="preserve"><value>About WoSe</value></data>
   <data name="AboutVersion" xml:space="preserve"><value>Version {0}</value></data>
   <data name="PuzzleEditor" xml:space="preserve"><value>Puzzle editor</value></data>
   <data name="Puzzle" xml:space="preserve"><value>Puzzle</value></data>
@@ -77,7 +77,7 @@
   <data name="SettingsOk" xml:space="preserve"><value>OK</value></data>
   <data name="CultureNameFull" xml:space="preserve"><value>en-US</value></data>
   <data name="CultureNameShort" xml:space="preserve"><value>en</value></data>
-  <data name="LanguageRestartMessage" xml:space="preserve"><value>The language setting was saved. Restart WoSeCon to apply it.</value></data>
+  <data name="LanguageRestartMessage" xml:space="preserve"><value>The language setting was saved. Restart WoSe to apply it.</value></data>
   <data name="LanguageRestartTitle" xml:space="preserve"><value>Restart required</value></data>
   <data name="SettingsSaveFailed" xml:space="preserve"><value>The settings could not be saved.</value></data>
   <data name="SettingsSaveFailedTitle" xml:space="preserve"><value>Could not save settings</value></data>
@@ -170,16 +170,16 @@
   <data name="ImportingEntries" xml:space="preserve"><value>Importing entries</value></data>
   <data name="ImportFailed" xml:space="preserve"><value>Import failed</value></data>
   <data name="CouldNotImport" xml:space="preserve"><value>Could not import entries</value></data>
-  <data name="UntitledProjectFile" xml:space="preserve"><value>Untitled.wosecon</value></data>
-  <data name="ProjectFilesFilter" xml:space="preserve"><value>WoSeCon projects (*.wosecon)|*.wosecon|All files (*.*)|*.*</value></data>
-  <data name="ProjectSaveFilter" xml:space="preserve"><value>WoSeCon projects (*.wosecon)|*.wosecon</value></data>
-  <data name="OpenProjectTitle" xml:space="preserve"><value>Open WoSeCon project</value></data>
+  <data name="UntitledProjectFile" xml:space="preserve"><value>Untitled.wose</value></data>
+  <data name="ProjectFilesFilter" xml:space="preserve"><value>WoSe projects (*.wose)|*.wose|All files (*.*)|*.*</value></data>
+  <data name="ProjectSaveFilter" xml:space="preserve"><value>WoSe projects (*.wose)|*.wose</value></data>
+  <data name="OpenProjectTitle" xml:space="preserve"><value>Open WoSe project</value></data>
   <data name="OpeningProject" xml:space="preserve"><value>Opening project</value></data>
   <data name="OpenFailed" xml:space="preserve"><value>Open failed</value></data>
   <data name="CouldNotOpenProject" xml:space="preserve"><value>Could not open project</value></data>
   <data name="CorrectSettingsBeforeSaving" xml:space="preserve"><value>Correct the highlighted puzzle settings before saving.</value></data>
   <data name="PuzzleCannotBeSaved" xml:space="preserve"><value>Puzzle cannot be saved</value></data>
-  <data name="SaveProjectTitle" xml:space="preserve"><value>Save WoSeCon project</value></data>
+  <data name="SaveProjectTitle" xml:space="preserve"><value>Save WoSe project</value></data>
   <data name="SavingProject" xml:space="preserve"><value>Saving project</value></data>
   <data name="SaveFailed" xml:space="preserve"><value>Save failed</value></data>
   <data name="CouldNotSaveProject" xml:space="preserve"><value>Could not save project</value></data>
@@ -249,7 +249,7 @@
   <data name="HtmlWordLabel" xml:space="preserve"><value>{0} {1}, words {2}, {3}</value></data>
   <data name="MonteCarloFailure" xml:space="preserve"><value>None of {0} attempts produced an acceptable board. Attempts exhausted before a complete layout: {1}; complete candidates checked: {2}; rejected due to message capacity: {3}; rejected as ambiguous: {4}.</value></data>
   <data name="ProjectFileEmpty" xml:space="preserve"><value>The project file is empty.</value></data>
-  <data name="ProjectJsonInvalid" xml:space="preserve"><value>The project file does not contain valid WoSeCon JSON.</value></data>
+  <data name="ProjectJsonInvalid" xml:space="preserve"><value>The project file does not contain valid WoSe JSON.</value></data>
   <data name="ProjectPathNoParent" xml:space="preserve"><value>The project path has no parent directory.</value></data>
   <data name="DirectoryDoesNotExist" xml:space="preserve"><value>The directory '{0}' does not exist.</value></data>
   <data name="GeneratedWordNoPlacement" xml:space="preserve"><value>Generated word {0} has no placement.</value></data>

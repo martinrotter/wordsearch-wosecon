@@ -2,7 +2,7 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 
-namespace WordSearchGenerator.Desktop.Localization
+namespace Wose.Desktop.Localization
 {
   public static class ApplicationCulture
   {

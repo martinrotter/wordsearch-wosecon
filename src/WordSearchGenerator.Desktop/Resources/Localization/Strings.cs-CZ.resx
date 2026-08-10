@@ -20,8 +20,8 @@
   <data name="MenuSettings" xml:space="preserve"><value>_Nastavení...</value></data>
   <data name="MenuExit" xml:space="preserve"><value>U_končit</value></data>
   <data name="MenuHelp" xml:space="preserve"><value>_Nápověda</value></data>
-  <data name="MenuAbout" xml:space="preserve"><value>_O aplikaci WoSeCon...</value></data>
-  <data name="AboutTitle" xml:space="preserve"><value>O aplikaci WoSeCon</value></data>
+  <data name="MenuAbout" xml:space="preserve"><value>_O aplikaci WoSe...</value></data>
+  <data name="AboutTitle" xml:space="preserve"><value>O aplikaci WoSe</value></data>
   <data name="AboutVersion" xml:space="preserve"><value>Verze {0}</value></data>
   <data name="PuzzleEditor" xml:space="preserve"><value>Editor osmisměrky</value></data>
   <data name="Puzzle" xml:space="preserve"><value>Osmisměrka</value></data>
@@ -77,7 +77,7 @@
   <data name="SettingsOk" xml:space="preserve"><value>OK</value></data>
   <data name="CultureNameFull" xml:space="preserve"><value>cs-CZ</value></data>
   <data name="CultureNameShort" xml:space="preserve"><value>cs</value></data>
-  <data name="LanguageRestartMessage" xml:space="preserve"><value>Nastavení jazyka bylo uloženo. Pro jeho použití restartujte WoSeCon.</value></data>
+  <data name="LanguageRestartMessage" xml:space="preserve"><value>Nastavení jazyka bylo uloženo. Pro jeho použití restartujte WoSe.</value></data>
   <data name="LanguageRestartTitle" xml:space="preserve"><value>Je nutný restart</value></data>
   <data name="SettingsSaveFailed" xml:space="preserve"><value>Nastavení se nepodařilo uložit.</value></data>
   <data name="SettingsSaveFailedTitle" xml:space="preserve"><value>Nastavení nelze uložit</value></data>
@@ -170,16 +170,16 @@
   <data name="ImportingEntries" xml:space="preserve"><value>Import položek</value></data>
   <data name="ImportFailed" xml:space="preserve"><value>Import selhal</value></data>
   <data name="CouldNotImport" xml:space="preserve"><value>Položky nelze importovat</value></data>
-  <data name="UntitledProjectFile" xml:space="preserve"><value>Bez názvu.wosecon</value></data>
-  <data name="ProjectFilesFilter" xml:space="preserve"><value>Projekty WoSeCon (*.wosecon)|*.wosecon|Všechny soubory (*.*)|*.*</value></data>
-  <data name="ProjectSaveFilter" xml:space="preserve"><value>Projekty WoSeCon (*.wosecon)|*.wosecon</value></data>
-  <data name="OpenProjectTitle" xml:space="preserve"><value>Otevřít projekt WoSeCon</value></data>
+  <data name="UntitledProjectFile" xml:space="preserve"><value>Bez názvu.wose</value></data>
+  <data name="ProjectFilesFilter" xml:space="preserve"><value>Projekty WoSe (*.wose)|*.wose|Všechny soubory (*.*)|*.*</value></data>
+  <data name="ProjectSaveFilter" xml:space="preserve"><value>Projekty WoSe (*.wose)|*.wose</value></data>
+  <data name="OpenProjectTitle" xml:space="preserve"><value>Otevřít projekt WoSe</value></data>
   <data name="OpeningProject" xml:space="preserve"><value>Otevírání projektu</value></data>
   <data name="OpenFailed" xml:space="preserve"><value>Otevření selhalo</value></data>
   <data name="CouldNotOpenProject" xml:space="preserve"><value>Projekt nelze otevřít</value></data>
   <data name="CorrectSettingsBeforeSaving" xml:space="preserve"><value>Před uložením opravte zvýrazněná nastavení osmisměrky.</value></data>
   <data name="PuzzleCannotBeSaved" xml:space="preserve"><value>Osmisměrku nelze uložit</value></data>
-  <data name="SaveProjectTitle" xml:space="preserve"><value>Uložit projekt WoSeCon</value></data>
+  <data name="SaveProjectTitle" xml:space="preserve"><value>Uložit projekt WoSe</value></data>
   <data name="SavingProject" xml:space="preserve"><value>Ukládání projektu</value></data>
   <data name="SaveFailed" xml:space="preserve"><value>Uložení selhalo</value></data>
   <data name="CouldNotSaveProject" xml:space="preserve"><value>Projekt nelze uložit</value></data>
@@ -249,7 +249,7 @@
   <data name="HtmlWordLabel" xml:space="preserve"><value>{0} {1}, slova {2}, {3}</value></data>
   <data name="MonteCarloFailure" xml:space="preserve"><value>Žádný z {0} pokusů nevytvořil přijatelnou mřížku. Pokusy vyčerpané bez úplného rozložení: {1}; prověřené úplné kandidátní mřížky: {2}; odmítnutí kvůli kapacitě tajenky: {3}; odmítnutí kvůli nejednoznačnosti: {4}.</value></data>
   <data name="ProjectFileEmpty" xml:space="preserve"><value>Soubor projektu je prázdný.</value></data>
-  <data name="ProjectJsonInvalid" xml:space="preserve"><value>Soubor projektu neobsahuje platný JSON WoSeCon.</value></data>
+  <data name="ProjectJsonInvalid" xml:space="preserve"><value>Soubor projektu neobsahuje platný JSON WoSe.</value></data>
   <data name="ProjectPathNoParent" xml:space="preserve"><value>Cesta projektu nemá nadřazenou složku.</value></data>
   <data name="DirectoryDoesNotExist" xml:space="preserve"><value>Složka „{0}“ neexistuje.</value></data>
   <data name="GeneratedWordNoPlacement" xml:space="preserve"><value>Vygenerované slovo {0} nemá umístění.</value></data>

@@ -1,4 +1,4 @@
-namespace WordSearchGenerator.Common.WoSeCon.Api
+namespace Wose.Common.WoSeCon.Api
 {
   public class Locator
   {

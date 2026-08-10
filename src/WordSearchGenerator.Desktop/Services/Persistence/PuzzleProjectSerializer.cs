@@ -1,14 +1,14 @@
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using WordSearchGenerator.Common;
-using WordSearchGenerator.Common.WoSeCon.Api;
-using WordSearchGenerator.Desktop.Localization;
-using WordSearchGenerator.Desktop.Models;
-using WordSearchGenerator.Desktop.Models.Persistence;
-using WordSearchGenerator.Desktop.Services.Rendering;
+using Wose.Common;
+using Wose.Common.WoSeCon.Api;
+using Wose.Desktop.Localization;
+using Wose.Desktop.Models;
+using Wose.Desktop.Models.Persistence;
+using Wose.Desktop.Services.Rendering;
 
-namespace WordSearchGenerator.Desktop.Services.Persistence
+namespace Wose.Desktop.Services.Persistence
 {
   public sealed class PuzzleProjectSerializer : IPuzzleProjectSerializer
   {

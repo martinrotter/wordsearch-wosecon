@@ -1,8 +1,8 @@
 using System.Globalization;
-using WordSearchGenerator.Desktop.Localization;
-using WordSearchGenerator.Desktop.Models.Settings;
+using Wose.Desktop.Localization;
+using Wose.Desktop.Models.Settings;
 
-namespace WordSearchGenerator.Desktop.ViewModels
+namespace Wose.Desktop.ViewModels
 {
   public sealed class SettingsWindowViewModel : ViewModelBase
   {

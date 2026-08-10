@@ -1,14 +1,14 @@
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Validation;
-using WordSearchGenerator.Common;
-using WordSearchGenerator.Common.WoSeCon.Api;
-using WordSearchGenerator.Desktop.Models;
-using WordSearchGenerator.Desktop.Models.Rendering;
-using WordSearchGenerator.Desktop.Services.Exporting;
-using WordSearchGenerator.Desktop.Services.Rendering;
+using Wose.Common;
+using Wose.Common.WoSeCon.Api;
+using Wose.Desktop.Models;
+using Wose.Desktop.Models.Rendering;
+using Wose.Desktop.Services.Exporting;
+using Wose.Desktop.Services.Rendering;
 using W = DocumentFormat.OpenXml.Wordprocessing;
 
-namespace WordSearchGenerator.Desktop.Tests
+namespace Wose.Desktop.Tests
 {
   [TestClass]
   public sealed class DocxPuzzleExporterTests

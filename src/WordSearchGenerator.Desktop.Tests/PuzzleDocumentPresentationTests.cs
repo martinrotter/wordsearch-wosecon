@@ -1,10 +1,10 @@
-using WordSearchGenerator.Common;
-using WordSearchGenerator.Common.WoSeCon.Api;
-using WordSearchGenerator.Desktop.Models;
-using WordSearchGenerator.Desktop.Models.Rendering;
-using WordSearchGenerator.Desktop.Services.Rendering;
+using Wose.Common;
+using Wose.Common.WoSeCon.Api;
+using Wose.Desktop.Models;
+using Wose.Desktop.Models.Rendering;
+using Wose.Desktop.Services.Rendering;
 
-namespace WordSearchGenerator.Desktop.Tests
+namespace Wose.Desktop.Tests
 {
   [TestClass]
   public sealed class PuzzleDocumentPresentationTests

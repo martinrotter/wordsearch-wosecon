@@ -49,14 +49,14 @@ jobs:
             -p:PublishSingleFile=false `
             -p:DebugType=None `
             -p:DebugSymbols=false `
-            --output artifacts/wosecon-win64
+            --output artifacts/wose-win64
 
       - name: Remove unused Chromium locales
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
 
-          $publishDirectory = (Resolve-Path 'artifacts/wosecon-win64').Path
+          $publishDirectory = (Resolve-Path 'artifacts/wose-win64').Path
           $localeDirectory = (Resolve-Path `
             (Join-Path $publishDirectory 'locales')).Path
 
@@ -132,7 +132,7 @@ jobs:
 
           Copy-Item `
             -Path (Join-Path $crtDirectory.FullName '*.dll') `
-            -Destination 'artifacts/wosecon-win64' `
+            -Destination 'artifacts/wose-win64' `
             -Force
 
           $requiredRuntimeFiles = @(
@@ -142,7 +142,7 @@ jobs:
           )
 
           foreach ($file in $requiredRuntimeFiles) {
-            $publishedFile = Join-Path 'artifacts/wosecon-win64' $file
+            $publishedFile = Join-Path 'artifacts/wose-win64' $file
             if (-not (Test-Path -LiteralPath $publishedFile -PathType Leaf)) {
               throw "Required Visual C++ runtime file was not bundled: $file"
             }
@@ -159,7 +159,7 @@ jobs:
             throw 'Could not determine the short Git commit hash.'
           }
 
-          $archiveName = "wosecon-$shortHash-win64.zip"
+          $archiveName = "wose-$shortHash-win64.zip"
           "archive_name=$archiveName" >> $env:GITHUB_OUTPUT
 
       - name: Create application archive
@@ -171,7 +171,7 @@ jobs:
             'artifacts/${{ steps.package.outputs.archive_name }}'
 
           Compress-Archive `
-            -Path (Join-Path $PWD 'artifacts/wosecon-win64/*') `
+            -Path (Join-Path $PWD 'artifacts/wose-win64/*') `
             -DestinationPath $archive `
             -CompressionLevel Optimal `
             -Force
@@ -234,7 +234,9 @@ jobs:
 
           $oldArchives = $oldAssets | Where-Object {
             $_ -eq 'wosecon-win64.zip' -or
-            $_ -match '^wosecon-[0-9a-f]+-win64\.zip$'
+            $_ -match '^wosecon-[0-9a-f]+-win64\.zip$' -or
+            $_ -eq 'wose-win64.zip' -or
+            $_ -match '^wose-[0-9a-f]+-win64\.zip$'
           }
 
           foreach ($oldArchive in $oldArchives) {

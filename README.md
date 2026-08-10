@@ -1,10 +1,10 @@
 <p align="center">
-  <img src="src/WordSearchGenerator.Desktop/WordSearchGenerator.Desktop.png" width="128" alt="WoSeCon application icon">
+  <img src="src/WordSearchGenerator.Desktop/WordSearchGenerator.Desktop.png" width="128" alt="WoSe application icon">
 </p>
 
-# WoSeCon Word Search Generator
+# WoSe
 
-WoSeCon is a Windows application for creating word searches and question-based
+WoSe is a Windows application for creating word searches and question-based
 crosswords. Enter the content, choose a board size, and generate.
 
 **[Download the development build for Windows x64](https://github.com/martinrotter/wordsearch-wosecon/releases/tag/dev)**
@@ -23,7 +23,7 @@ branch. Extract the ZIP and run the application; installation is not required.
 - Work in English or Czech.
 
 Simple puzzles can generate instantly, while dense layouts may take much longer.
-WoSeCon estimates difficulty, shows progress, runs parallel searches, and lets
+WoSe estimates difficulty, shows progress, runs parallel searches, and lets
 you cancel generation at any time.
 
 ## For developers
@@ -35,8 +35,8 @@ dotnet build src/WordSearchGenerator.sln -c Release
 dotnet test src/WordSearchGenerator.sln -c Release --filter "TestCategory!=LongRunning"
 ```
 
-The reusable generator is in `WordSearchGenerator.Common`; the desktop
-application is in `WordSearchGenerator.Desktop`. The algorithm is based on the
+The reusable `WoSe.Common` library is in `WordSearchGenerator.Common`; the
+`WoSe` application is in `WordSearchGenerator.Desktop`. The algorithm is based on the
 [included WoSeCon paper](docs/68-IJSES-V6N1.pdf).
 
 ## License

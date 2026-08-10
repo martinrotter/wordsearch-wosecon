@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using System.Windows;
-using WordSearchGenerator.Desktop.Models.Settings;
+using Wose.Desktop.Models.Settings;
 
-namespace WordSearchGenerator.Desktop.Views
+namespace Wose.Desktop.Views
 {
   public partial class MainWindow
   {

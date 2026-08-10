@@ -1,6 +1,6 @@
-using WordSearchGenerator.Common.WoSeCon.Api;
+using Wose.Common.WoSeCon.Api;
 
-namespace WordSearchGenerator.Common.WoSeCon
+namespace Wose.Common.WoSeCon
 {
   public partial class WoSeCon
   {

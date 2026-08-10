@@ -1,6 +1,6 @@
-using WordSearchGenerator.Desktop.Models.Rendering;
+using Wose.Desktop.Models.Rendering;
 
-namespace WordSearchGenerator.Desktop.Services.Rendering
+namespace Wose.Desktop.Services.Rendering
 {
   public interface IBoardHtmlRenderer
   {

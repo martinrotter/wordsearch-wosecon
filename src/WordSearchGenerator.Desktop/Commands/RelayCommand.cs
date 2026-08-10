@@ -1,6 +1,6 @@
 using System.Windows.Input;
 
-namespace WordSearchGenerator.Desktop.Commands
+namespace Wose.Desktop.Commands
 {
   public sealed class RelayCommand : ICommand
   {

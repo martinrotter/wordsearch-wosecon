@@ -1,8 +1,8 @@
 using System.Windows;
-using WordSearchGenerator.Desktop.Localization;
-using WordSearchGenerator.Desktop.Views.Dialogs;
+using Wose.Desktop.Localization;
+using Wose.Desktop.Views.Dialogs;
 
-namespace WordSearchGenerator.Desktop.Views
+namespace Wose.Desktop.Views
 {
   public partial class MainWindow
   {

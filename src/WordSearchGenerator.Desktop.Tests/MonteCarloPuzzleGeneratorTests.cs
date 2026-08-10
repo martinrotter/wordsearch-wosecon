@@ -1,10 +1,10 @@
 using System.Collections.Concurrent;
-using WordSearchGenerator.Common;
-using WordSearchGenerator.Desktop.Models;
-using WordSearchGenerator.Desktop.Services;
-using WordSearchGenerator.Desktop.Services.Rendering;
+using Wose.Common;
+using Wose.Desktop.Models;
+using Wose.Desktop.Services;
+using Wose.Desktop.Services.Rendering;
 
-namespace WordSearchGenerator.Desktop.Tests
+namespace Wose.Desktop.Tests
 {
   [TestClass]
   public sealed class MonteCarloPuzzleGeneratorTests

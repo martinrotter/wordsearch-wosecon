@@ -1,4 +1,4 @@
-namespace WordSearchGenerator.Common
+namespace Wose.Common
 {
   public enum PuzzleMode
   {

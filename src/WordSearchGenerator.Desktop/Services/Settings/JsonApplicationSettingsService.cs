@@ -1,9 +1,9 @@
 using System.IO;
 using System.Text.Json;
-using WordSearchGenerator.Desktop.Localization;
-using WordSearchGenerator.Desktop.Models.Settings;
+using Wose.Desktop.Localization;
+using Wose.Desktop.Models.Settings;
 
-namespace WordSearchGenerator.Desktop.Services.Settings
+namespace Wose.Desktop.Services.Settings
 {
   public sealed class JsonApplicationSettingsService : IApplicationSettingsService
   {
@@ -30,7 +30,7 @@ namespace WordSearchGenerator.Desktop.Services.Settings
       _settingsPath = settingsPath ??
                       Path.Combine(
                         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                        "WoSeCon",
+                        "WoSe",
                         "settings.json");
     }
 
