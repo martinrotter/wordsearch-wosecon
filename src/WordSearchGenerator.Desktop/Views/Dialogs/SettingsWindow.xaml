@@ -10,7 +10,7 @@
         ResizeMode="NoResize"
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner">
-  <Grid Margin="24">
+  <Grid Margin="16">
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
       <RowDefinition Height="Auto" />
@@ -19,7 +19,7 @@
     </Grid.RowDefinitions>
 
     <StackPanel Grid.Row="0" Orientation="Horizontal">
-      <icons:FluentIcon Margin="0,0,10,0"
+      <icons:FluentIcon Margin="0,0,7,0"
                         VerticalAlignment="Center"
                         Icon="Settings"
                         IconSize="Size24"
@@ -29,10 +29,10 @@
                  Text="{localization:Loc SettingsTitle}" />
     </StackPanel>
 
-    <StackPanel Grid.Row="1" Margin="0,22,0,0">
+    <StackPanel Grid.Row="1" Margin="0,14,0,0">
       <TextBlock Style="{StaticResource FieldLabelTextStyle}"
                  Text="{localization:Loc SettingsLanguage}" />
-      <TextBlock Margin="0,4,0,10"
+      <TextBlock Margin="0,3,0,7"
                  Style="{StaticResource SupportingTextStyle}"
                  Text="{localization:Loc SettingsLanguageDescription}"
                  TextWrapping="Wrap" />
@@ -44,12 +44,12 @@
     </StackPanel>
 
     <Border Grid.Row="2"
-            Margin="0,20,0,0"
-            Padding="12"
+            Margin="0,14,0,0"
+            Padding="8"
             Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
             CornerRadius="5">
       <StackPanel Orientation="Horizontal">
-        <icons:FluentIcon Margin="0,0,9,0"
+        <icons:FluentIcon Margin="0,0,6,0"
                           VerticalAlignment="Top"
                           Icon="Info"
                           IconSize="Size20"
@@ -61,15 +61,15 @@
     </Border>
 
     <StackPanel Grid.Row="3"
-                Margin="0,24,0,0"
+                Margin="0,16,0,0"
                 HorizontalAlignment="Right"
                 Orientation="Horizontal">
-      <Button MinWidth="92"
-              Margin="0,0,8,0"
+      <Button MinWidth="80"
+              Margin="0,0,6,0"
               IsDefault="True"
               Click="OkOnClick"
               Content="{localization:Loc SettingsOk}" />
-      <Button MinWidth="92"
+      <Button MinWidth="80"
               IsCancel="True"
               Content="{localization:Loc Cancel}" />
     </StackPanel>

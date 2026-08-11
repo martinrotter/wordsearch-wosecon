@@ -62,6 +62,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
     private double _progressMaximum = 1;
     private double _progressValue;
     private string _puzzleHeading = string.Empty;
+    private bool _requireExactMessageFit;
     private string _rowsText = NewProjectRowsText;
     private string _secretMessage = NewProjectSecretMessage;
     private string _selectedStyleId;
@@ -426,6 +427,19 @@ namespace WordSearchGenerator.Desktop.ViewModels
       set
       {
         if (SetProperty(ref _secretMessage, value ?? string.Empty))
+        {
+          MarkDocumentChanged(true);
+          RefreshEditorState();
+        }
+      }
+    }
+
+    public bool RequireExactMessageFit
+    {
+      get => _requireExactMessageFit;
+      set
+      {
+        if (SetProperty(ref _requireExactMessageFit, value))
         {
           MarkDocumentChanged(true);
           RefreshEditorState();
@@ -799,7 +813,8 @@ namespace WordSearchGenerator.Desktop.ViewModels
         SelectedStyleId,
         new GenerationOptions(
           SelectedParallelismOption.ParallelAttempts,
-          int.Parse(MaximumAttemptTimeSecondsText)));
+          int.Parse(MaximumAttemptTimeSecondsText)),
+        RequireExactMessageFit);
     }
 
     private static string FormatDifficulty(
@@ -988,10 +1003,19 @@ namespace WordSearchGenerator.Desktop.ViewModels
         {
           StatusText = AppStrings.Get("MessageDidNotFit");
           EditorActionState = EditorActionState.MessageDidNotFit;
-          EditorStatusTitle = AppStrings.Get("PlacementsTooFewMessageCells");
+          EditorStatusTitle = AppStrings.Get(
+            definition.RequireExactMessageFit
+              ? "NoExactMessageFit"
+              : "PlacementsTooFewMessageCells");
           EditorStatusMessage = exception.Message;
-          PreviewTitle = AppStrings.Get("MessageNeedsVacantCells");
-          PreviewMessage = AppStrings.Get("MessageFitAdvice");
+          PreviewTitle = AppStrings.Get(
+            definition.RequireExactMessageFit
+              ? "NoExactMessageFit"
+              : "MessageNeedsVacantCells");
+          PreviewMessage = AppStrings.Get(
+            definition.RequireExactMessageFit
+              ? "ExactMessageFitAdvice"
+              : "MessageFitAdvice");
         }
         else
         {

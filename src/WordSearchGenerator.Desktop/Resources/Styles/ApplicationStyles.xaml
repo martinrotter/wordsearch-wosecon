@@ -52,7 +52,7 @@
   <Style x:Key="AccentButtonStyle"
          TargetType="Button"
          BasedOn="{StaticResource {x:Type Button}}">
-    <Setter Property="Padding" Value="16,8" />
+    <Setter Property="Padding" Value="12,6" />
     <Setter Property="FontWeight" Value="SemiBold" />
     <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
     <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.AccentColorBrushKey}}" />
@@ -105,7 +105,7 @@
   <Style x:Key="CancelButtonStyle"
          TargetType="Button"
          BasedOn="{StaticResource {x:Type Button}}">
-    <Setter Property="Padding" Value="14,8" />
+    <Setter Property="Padding" Value="11,6" />
     <Setter Property="FontWeight" Value="SemiBold" />
     <Setter Property="Foreground" Value="#C42B1C" />
     <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
@@ -113,7 +113,32 @@
   </Style>
 
   <Style TargetType="GroupBox">
-    <Setter Property="Margin" Value="0,0,0,12" />
-    <Setter Property="Padding" Value="10" />
+    <Setter Property="Margin" Value="0,0,0,8" />
+    <Setter Property="Padding" Value="8" />
+  </Style>
+
+  <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+    <Setter Property="Padding" Value="9,4" />
+  </Style>
+
+  <Style TargetType="ComboBox" BasedOn="{StaticResource {x:Type ComboBox}}">
+    <Setter Property="Padding" Value="6,3" />
+  </Style>
+
+  <Style TargetType="Menu" BasedOn="{StaticResource {x:Type Menu}}">
+    <Setter Property="Padding" Value="2,0" />
+  </Style>
+
+  <Style TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">
+    <Setter Property="Padding" Value="7,3" />
+    <Style.Triggers>
+      <Trigger Property="Role" Value="TopLevelHeader">
+        <Setter Property="Padding" Value="7,2" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+
+  <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+    <Setter Property="Padding" Value="6,3" />
   </Style>
 </ResourceDictionary>

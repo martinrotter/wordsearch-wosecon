@@ -10,7 +10,7 @@
              VerticalContentAlignment="Stretch">
   <UserControl.Resources>
     <Style x:Key="DimensionTextBoxStyle" TargetType="TextBox">
-      <Setter Property="Padding" Value="5,3" />
+      <Setter Property="Padding" Value="4,2" />
       <Setter Property="TextAlignment" Value="Center" />
       <Setter Property="VerticalContentAlignment" Value="Center" />
       <Setter Property="Background" Value="Transparent" />
@@ -68,7 +68,7 @@
                               UpdateSourceTrigger=PropertyChanged}" />
 
       <TextBlock Grid.Column="1"
-                 Margin="5,0"
+                 Margin="4,0"
                  VerticalAlignment="Center"
                  FontWeight="SemiBold"
                  IsHitTestVisible="False"

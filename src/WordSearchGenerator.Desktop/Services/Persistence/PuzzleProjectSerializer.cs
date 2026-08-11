@@ -175,6 +175,7 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
           definition.Generation.MaximumAttemptTimeSeconds,
         ParallelAttempts = definition.Generation.ParallelAttempts,
         PuzzleHeading = definition.PuzzleHeading,
+        RequireExactMessageFit = definition.RequireExactMessageFit,
         Rows = definition.Rows,
         SecretMessage = definition.SecretMessage,
         StyleId = definition.StyleId
@@ -315,7 +316,8 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
         board = new Board(
           words,
           definition,
-          definition.SecretMessage);
+          definition.SecretMessage,
+          definition.RequireExactMessageFit);
       }
       catch (Exception exception)
       {
@@ -404,7 +406,8 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
           file.StyleId,
           new GenerationOptions(
             file.ParallelAttempts,
-            file.MaximumAttemptTimeSeconds));
+            file.MaximumAttemptTimeSeconds),
+          file.RequireExactMessageFit);
       }
       catch (Exception exception)
         when (exception is ArgumentException)
@@ -622,6 +625,12 @@ namespace WordSearchGenerator.Desktop.Services.Persistence
       }
 
       public required string PuzzleHeading
+      {
+        get;
+        set;
+      }
+
+      public bool RequireExactMessageFit
       {
         get;
         set;

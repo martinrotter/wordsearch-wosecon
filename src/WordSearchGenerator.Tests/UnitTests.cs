@@ -1000,6 +1000,55 @@ namespace WordSearchGenerator.Tests
     }
 
     [TestMethod]
+    public void ExactNormalMessageFitLeavesNoEmptyCells()
+    {
+      var word = new WordInfo
+      {
+        Placement = Location(
+          0,
+          0,
+          DirectedLocation.LocationDirection.LeftToRight),
+        Text = "AB",
+        WordNumber = 1
+      };
+
+      var board = new Board(
+        [word],
+        2,
+        2,
+        PuzzleMode.Normal,
+        "CD",
+        true);
+
+      Assert.IsFalse(board.Matrix
+        .OfType<Board.Cell>()
+        .Any(cell => cell.Type == Board.Cell.CellType.Empty));
+    }
+
+    [TestMethod]
+    public void ExactNormalMessageFitRejectsRemainingBlackBoxes()
+    {
+      var word = new WordInfo
+      {
+        Placement = Location(
+          0,
+          0,
+          DirectedLocation.LocationDirection.LeftToRight),
+        Text = "AB",
+        WordNumber = 1
+      };
+
+      Assert.ThrowsExactly<MessageCannotBePlacedException>(() =>
+        new Board(
+          [word],
+          2,
+          2,
+          PuzzleMode.Normal,
+          "C",
+          true));
+    }
+
+    [TestMethod]
     public void NormalMessageIsSpreadUniformlyAcrossEmptyCells()
     {
       var words = new List<WordInfo>

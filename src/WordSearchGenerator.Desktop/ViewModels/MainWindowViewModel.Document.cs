@@ -115,6 +115,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
         RowsText = definition.Rows.ToString();
         ColumnsText = definition.Columns.ToString();
         SecretMessage = definition.SecretMessage;
+        RequireExactMessageFit = definition.RequireExactMessageFit;
         PuzzleHeading = definition.PuzzleHeading;
         EntryListHeading = definition.EntryListHeading;
         SelectedStyleId = GetStyleId(definition.StyleId);
@@ -190,6 +191,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
         ColumnsText = NewProjectColumnsText;
         WordsText = NewProjectWordsText;
         SecretMessage = NewProjectSecretMessage;
+        RequireExactMessageFit = false;
         PuzzleHeading = string.Empty;
         EntryListHeading = GetDefaultEntryListHeading(PuzzleMode.Normal);
         SelectedStyleId = GetStyleId(_defaultBoardStyleId);

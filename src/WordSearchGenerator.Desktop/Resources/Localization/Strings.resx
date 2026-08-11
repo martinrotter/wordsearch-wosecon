@@ -46,6 +46,8 @@
   <data name="SecretMessageDescription" xml:space="preserve"><value>The message fills cells not occupied by words. Remaining vacant cells become black boxes.</value></data>
   <data name="SecretMessageQuizDescription" xml:space="preserve"><value>Each message character must occur in the answers. Matching answer cells are highlighted and numbered in message order; unused cells become black boxes.</value></data>
   <data name="SecretMessageTooltip" xml:space="preserve"><value>Spaces are preserved as message characters</value></data>
+  <data name="RequireExactMessageFit" xml:space="preserve"><value>No black boxes</value></data>
+  <data name="RequireExactMessageFitTooltip" xml:space="preserve"><value>Only accept a Normal-mode board when no black boxes remain.</value></data>
   <data name="SpaceCharacter" xml:space="preserve"><value>space</value></data>
   <data name="PreviewText" xml:space="preserve"><value>Preview text</value></data>
   <data name="PreviewTextDescription" xml:space="preserve"><value>These headings are used in the preview and exported or printed output.</value></data>
@@ -126,6 +128,8 @@
   <data name="PlacementsTooFewMessageCells" xml:space="preserve"><value>The generated placements left too few message cells.</value></data>
   <data name="MessageNeedsVacantCells" xml:space="preserve"><value>Message needs more vacant cells</value></data>
   <data name="MessageFitAdvice" xml:space="preserve"><value>Try again for different placements, shorten the message, or enlarge the matrix.</value></data>
+  <data name="NoExactMessageFit" xml:space="preserve"><value>No exact message fit found</value></data>
+  <data name="ExactMessageFitAdvice" xml:space="preserve"><value>Try again or adjust the words, message, or matrix dimensions.</value></data>
   <data name="NoAcceptableBoard" xml:space="preserve"><value>No acceptable board</value></data>
   <data name="NoAttemptProducedBoard" xml:space="preserve"><value>No attempt produced an acceptable board</value></data>
   <data name="NoBoardGenerated" xml:space="preserve"><value>No board generated</value></data>

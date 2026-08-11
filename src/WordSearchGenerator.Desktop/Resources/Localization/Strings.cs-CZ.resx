@@ -46,6 +46,8 @@
   <data name="SecretMessageDescription" xml:space="preserve"><value>Tajenka vyplní buňky neobsazené slovy. Zbývající volné buňky budou černé.</value></data>
   <data name="SecretMessageQuizDescription" xml:space="preserve"><value>Každý znak tajenky se musí vyskytovat v odpovědích. Odpovídající buňky budou zvýrazněny a očíslovány v pořadí tajenky; nepoužité buňky budou černé.</value></data>
   <data name="SecretMessageTooltip" xml:space="preserve"><value>Mezery zůstanou zachovány jako znaky tajenky</value></data>
+  <data name="RequireExactMessageFit" xml:space="preserve"><value>Bez černých políček</value></data>
+  <data name="RequireExactMessageFitTooltip" xml:space="preserve"><value>Přijmout osmisměrku v normálním režimu pouze tehdy, když nezůstanou žádná černá políčka.</value></data>
   <data name="SpaceCharacter" xml:space="preserve"><value>mezera</value></data>
   <data name="PreviewText" xml:space="preserve"><value>Text náhledu</value></data>
   <data name="PreviewTextDescription" xml:space="preserve"><value>Tyto nadpisy se použijí v náhledu a v exportovaném nebo tištěném výstupu.</value></data>
@@ -126,6 +128,8 @@
   <data name="PlacementsTooFewMessageCells" xml:space="preserve"><value>Vygenerované umístění ponechalo příliš málo buněk pro tajenku.</value></data>
   <data name="MessageNeedsVacantCells" xml:space="preserve"><value>Tajenka potřebuje více volných buněk</value></data>
   <data name="MessageFitAdvice" xml:space="preserve"><value>Zkuste jiné umístění, zkraťte tajenku nebo zvětšete mřížku.</value></data>
+  <data name="NoExactMessageFit" xml:space="preserve"><value>Nebylo nalezeno přesné vyplnění tajenkou</value></data>
+  <data name="ExactMessageFitAdvice" xml:space="preserve"><value>Zkuste generování znovu nebo upravte slova, tajenku či rozměry mřížky.</value></data>
   <data name="NoAcceptableBoard" xml:space="preserve"><value>Nebyla nalezena přijatelná mřížka</value></data>
   <data name="NoAttemptProducedBoard" xml:space="preserve"><value>Žádný pokus nevytvořil přijatelnou mřížku</value></data>
   <data name="NoBoardGenerated" xml:space="preserve"><value>Mřížka nebyla vygenerována</value></data>

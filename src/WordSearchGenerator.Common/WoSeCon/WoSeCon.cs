@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using WordSearchGenerator.Common.WoSeCon.Api;
 using static WordSearchGenerator.Common.WoSeCon.Api.Locator;
 

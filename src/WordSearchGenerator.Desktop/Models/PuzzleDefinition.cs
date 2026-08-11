@@ -29,6 +29,11 @@ namespace WordSearchGenerator.Desktop.Models
       get;
     }
 
+    public bool RequireExactMessageFit
+    {
+      get;
+    }
+
     public string SecretMessage
     {
       get;
@@ -52,7 +57,8 @@ namespace WordSearchGenerator.Desktop.Models
       string puzzleHeading,
       string entryListHeading,
       string styleId,
-      GenerationOptions generation) : base(mode, rows, columns)
+      GenerationOptions generation,
+      bool requireExactMessageFit = false) : base(mode, rows, columns)
     {
       ArgumentNullException.ThrowIfNull(entries);
       ArgumentNullException.ThrowIfNull(secretMessage);
@@ -83,6 +89,7 @@ namespace WordSearchGenerator.Desktop.Models
       EntryListHeading = entryListHeading.Trim();
       StyleId = styleId;
       Generation = generation;
+      RequireExactMessageFit = requireExactMessageFit;
     }
 
     #endregion

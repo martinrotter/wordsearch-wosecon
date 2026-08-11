@@ -35,6 +35,32 @@ namespace WordSearchGenerator.Desktop.Tests
     }
 
     [TestMethod]
+    public async Task ExactFitRejectsCandidatesThatWouldLeaveBlackBoxes()
+    {
+      var definition = new PuzzleDefinition(
+        PuzzleMode.Normal,
+        1,
+        4,
+        [new PuzzleEntry("ABC")],
+        string.Empty,
+        string.Empty,
+        string.Empty,
+        EmbeddedBoardStyleCatalog.EditorialStyleId,
+        new GenerationOptions(1, 0),
+        true);
+      var generator = new MonteCarloPuzzleGenerator(_ => [1]);
+
+      var exception = await Assert.ThrowsExactlyAsync<MonteCarloGenerationException>(() =>
+        generator.GenerateAsync(
+          definition,
+          null,
+          CancellationToken.None));
+
+      Assert.IsGreaterThan(0, exception.MessageCapacityRejectionCount);
+      Assert.AreEqual(0, exception.AmbiguousBoardRejectionCount);
+    }
+
+    [TestMethod]
     public async Task AmbiguousCandidatesUseTheSameCompletedLayoutUnit()
     {
       var definition = CreateDefinition(2, 3, "CAT", "CAT");

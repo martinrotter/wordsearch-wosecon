@@ -321,7 +321,8 @@ namespace WordSearchGenerator.Desktop.Services
               board = new Board(
                 placedWords.ToList(),
                 definition,
-                definition.SecretMessage);
+                definition.SecretMessage,
+                definition.RequireExactMessageFit);
             }
             catch (MessageCannotBePlacedException)
             {
@@ -350,7 +351,8 @@ namespace WordSearchGenerator.Desktop.Services
               _ = new Board(
                 placedWords.ToList(),
                 definition,
-                definition.SecretMessage);
+                definition.SecretMessage,
+                definition.RequireExactMessageFit);
               aggregator.RecordAcceptedCandidate();
               return true;
             }
@@ -372,7 +374,8 @@ namespace WordSearchGenerator.Desktop.Services
         var board = new Board(
           generator.Words,
           definition,
-          definition.SecretMessage);
+          definition.SecretMessage,
+          definition.RequireExactMessageFit);
 
         stopwatch.Stop();
         aggregator.Complete(

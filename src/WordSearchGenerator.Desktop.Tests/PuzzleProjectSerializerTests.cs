@@ -66,7 +66,8 @@ namespace WordSearchGenerator.Desktop.Tests
         string.Empty,
         string.Empty,
         EmbeddedBoardStyleCatalog.EditorialStyleId,
-        new GenerationOptions(4, 17));
+        new GenerationOptions(4, 17),
+        true);
       var word = new WordInfo
       {
         Text = "ABC",
@@ -115,6 +116,7 @@ namespace WordSearchGenerator.Desktop.Tests
         Assert.AreEqual(
           EmbeddedBoardStyleCatalog.EditorialStyleId,
           restored.Definition.StyleId);
+        Assert.IsTrue(restored.Definition.RequireExactMessageFit);
         Assert.AreEqual(10, restored.GeneratedResult.CompletedCandidateCount);
         Assert.AreEqual(7, restored.GeneratedResult.MessageCapacityRejectionCount);
         Assert.AreEqual(2, restored.GeneratedResult.AmbiguousBoardRejectionCount);

@@ -24,6 +24,11 @@ namespace WordSearchGenerator.Common
       get;
     }
 
+    public bool RequireExactMessageFit
+    {
+      get;
+    }
+
     public List<WordInfo> Words
     {
       get;
@@ -38,10 +43,12 @@ namespace WordSearchGenerator.Common
       int rows,
       int columns,
       PuzzleMode mode,
-      string message = null) : base(mode, rows, columns)
+      string message = null,
+      bool requireExactMessageFit = false) : base(mode, rows, columns)
     {
       Words = words;
       Message = message ?? string.Empty;
+      RequireExactMessageFit = requireExactMessageFit;
 
       FillBoard();
     }
@@ -49,12 +56,14 @@ namespace WordSearchGenerator.Common
     public Board(
       List<WordInfo> words,
       PuzzleGrid grid,
-      string message = null) : this(
+      string message = null,
+      bool requireExactMessageFit = false) : this(
       words,
       (grid ?? throw new ArgumentNullException(nameof(grid))).Rows,
       grid.Columns,
       grid.Mode,
-      message)
+      message,
+      requireExactMessageFit)
     {
     }
 
@@ -310,6 +319,12 @@ namespace WordSearchGenerator.Common
       {
         throw new MessageCannotBePlacedException(
           $"message is too long, {Message.Length - availableCells.Count} characters remain to be placed");
+      }
+
+      if (RequireExactMessageFit && Message.Length != availableCells.Count)
+      {
+        throw new MessageCannotBePlacedException(
+          $"message is too short, {availableCells.Count - Message.Length} black boxes would remain");
       }
 
       for (var messageIndex = 0; messageIndex < Message.Length; messageIndex++)
