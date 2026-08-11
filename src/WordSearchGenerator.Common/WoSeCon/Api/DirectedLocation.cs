@@ -1,4 +1,4 @@
-﻿namespace Wose.Common.WoSeCon.Api
+namespace Wose.Common.WoSeCon.Api
 {
   public class DirectedLocation : IEquatable<DirectedLocation>, ICloneable
   {
