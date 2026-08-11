@@ -166,6 +166,7 @@ namespace Wose.Desktop.Services.Persistence
 
       return new ProjectFile
       {
+        BlindPercentage = definition.BlindPercentage,
         Columns = definition.Columns,
         Entries = definition.Entries.ToList(),
         EntryListHeading = definition.EntryListHeading,
@@ -407,7 +408,8 @@ namespace Wose.Desktop.Services.Persistence
           new GenerationOptions(
             file.ParallelAttempts,
             file.MaximumAttemptTimeSeconds),
-          file.RequireExactMessageFit);
+          file.RequireExactMessageFit,
+          file.BlindPercentage);
       }
       catch (Exception exception)
         when (exception is ArgumentException)
@@ -581,6 +583,12 @@ namespace Wose.Desktop.Services.Persistence
     private sealed class ProjectFile
     {
       #region Properties
+
+      public required int BlindPercentage
+      {
+        get;
+        set;
+      }
 
       public required int Columns
       {

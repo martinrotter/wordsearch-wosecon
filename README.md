@@ -7,16 +7,18 @@
 WoSe is a Windows application for creating word searches and question-based
 crosswords. Enter the content, choose a board size, and generate.
 
-**[Download the development build for Windows x64](https://github.com/martinrotter/wordsearch-wosecon/releases/tag/dev)**
+**[Download the development build for Windows x64](https://github.com/martinrotter/wordsearch-wosecon/releases/download/dev/wose-win64.zip)**
 
 The development build follows the latest successful build of the `master`
 branch. Extract the ZIP and run the application; installation is not required.
+
+![WoSe puzzle editor](pics/wosecon-1.png)
 
 ## What it can do
 
 - Create word searches or question-based crosswords.
 - Hide a secret message in unused cells or numbered answer cells.
-- Set the board size, headings, content, and black boxes.
+- Set the board size, headings, content, and optional Blind mode.
 - Preview the printable puzzle and its solution.
 - Print or export as Word, PDF, HTML, or PNG.
 - Save projects and import word or question lists from text files.

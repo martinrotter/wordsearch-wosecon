@@ -67,7 +67,8 @@ namespace Wose.Desktop.Tests
         string.Empty,
         EmbeddedBoardStyleCatalog.EditorialStyleId,
         new GenerationOptions(4, 17),
-        true);
+        true,
+        30);
       var word = new WordInfo
       {
         Text = "ABC",
@@ -117,6 +118,7 @@ namespace Wose.Desktop.Tests
           EmbeddedBoardStyleCatalog.EditorialStyleId,
           restored.Definition.StyleId);
         Assert.IsTrue(restored.Definition.RequireExactMessageFit);
+        Assert.AreEqual(30, restored.Definition.BlindPercentage);
         Assert.AreEqual(10, restored.GeneratedResult.CompletedCandidateCount);
         Assert.AreEqual(7, restored.GeneratedResult.MessageCapacityRejectionCount);
         Assert.AreEqual(2, restored.GeneratedResult.AmbiguousBoardRejectionCount);

@@ -33,6 +33,7 @@ namespace Wose.Desktop.Tests
         var css = catalog.GetCss(styleId);
 
         Assert.Contains(".matrix", css);
+        Assert.Contains(".blind-marker", css);
         Assert.Contains("@media print", css);
       }
     }

@@ -153,13 +153,7 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
-
-          $shortHash = (git rev-parse --short=7 $env:GITHUB_SHA).Trim()
-          if ($LASTEXITCODE -ne 0 -or $shortHash -notmatch '^[0-9a-f]+$') {
-            throw 'Could not determine the short Git commit hash.'
-          }
-
-          $archiveName = "wose-$shortHash-win64.zip"
+          $archiveName = "wose-win64.zip"
           "archive_name=$archiveName" >> $env:GITHUB_OUTPUT
 
       - name: Create application archive

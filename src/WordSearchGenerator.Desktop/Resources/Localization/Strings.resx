@@ -35,6 +35,10 @@
   <data name="GenerationTab" xml:space="preserve"><value>Generation</value></data>
   <data name="PuzzleStyle" xml:space="preserve"><value>Puzzle style</value></data>
   <data name="PuzzleStyleDescription" xml:space="preserve"><value>The selected style is used in the preview, printing, and exports.</value></data>
+  <data name="BlindMode" xml:space="preserve"><value>Blind mode</value></data>
+  <data name="BlindModeDescription" xml:space="preserve"><value>Evenly hides the selected percentage of letter cells. Black boxes are not included.</value></data>
+  <data name="BlindModeTooltip" xml:space="preserve"><value>0% turns Blind mode off. Available in Normal mode only.</value></data>
+  <data name="BlindModeNormalOnly" xml:space="preserve"><value>Blind mode is available in Normal mode only.</value></data>
   <data name="WordsOrQuestions" xml:space="preserve"><value>Words or questions</value></data>
   <data name="WordsInstructions" xml:space="preserve"><value>Enter one word per line. Words are case-sensitive; surrounding spaces are trimmed.</value></data>
   <data name="WordsTooltip" xml:space="preserve"><value>Empty lines and case-sensitive duplicates are ignored</value></data>
@@ -227,11 +231,15 @@
   <data name="HtmlQuizExtractionCell" xml:space="preserve"><value>Secret-message extraction cell</value></data>
   <data name="HtmlIntersection" xml:space="preserve"><value>Word intersection</value></data>
   <data name="HtmlBlackBox" xml:space="preserve"><value>Black box</value></data>
+  <data name="HtmlBlindCell" xml:space="preserve"><value>Blind cell</value></data>
   <data name="HtmlStatistics" xml:space="preserve"><value>{0:N0} puzzle cells, {1:N0} message cells, {2:N0} black boxes and {3:N0} intersections.</value></data>
+  <data name="HtmlStatisticsBlind" xml:space="preserve"><value>{0:N0} puzzle cells, {1:N0} message cells, {2:N0} black boxes, {3:N0} intersections and {4:N0} blind cells.</value></data>
   <data name="HtmlQuizStatistics" xml:space="preserve"><value>{0:N0} answer and question cells, of which {1:N0} extract the secret message, {2:N0} black boxes and {3:N0} intersections.</value></data>
   <data name="HtmlTutorialHeading" xml:space="preserve"><value>How to solve</value></data>
   <data name="HtmlTutorialNormal" xml:space="preserve"><value>Find and cross out every word listed below. Words can run in any of the eight directions.</value></data>
   <data name="HtmlTutorialNormalWithMessage" xml:space="preserve"><value>Find and cross out every word listed below. Words can run in any of the eight directions. Read the remaining letters from top to bottom and left to right.</value></data>
+  <data name="HtmlTutorialNormalBlind" xml:space="preserve"><value>Find and cross out every word listed below. Words can run in any of the eight directions. Some cells are blind and intentionally show no character; infer their missing characters.</value></data>
+  <data name="HtmlTutorialNormalBlindWithMessage" xml:space="preserve"><value>Find and cross out every word listed below. Words can run in any of the eight directions. Some cells are blind and intentionally show no character; infer their missing characters. Read the remaining cells from top to bottom and left to right.</value></data>
   <data name="HtmlTutorialQuiz" xml:space="preserve"><value>Answer each question, then write its answer in the arrow's direction, starting in the next cell.</value></data>
   <data name="HtmlTutorialQuizWithMessage" xml:space="preserve"><value>Answer each question, then write its answer in the arrow's direction, starting in the next cell. Read the highlighted cells in number order.</value></data>
   <data name="HtmlSecretMessageNormalInstructions" xml:space="preserve"><value>Write the remaining letters here after finding all words.</value></data>
@@ -241,6 +249,8 @@
   <data name="HtmlSecretMessageSolutionLabel" xml:space="preserve"><value>Secret message: {0}</value></data>
   <data name="HtmlPosition" xml:space="preserve"><value>row {0}, column {1}</value></data>
   <data name="HtmlBlackBoxLabel" xml:space="preserve"><value>Black box, {0}</value></data>
+  <data name="HtmlBlindCellLabel" xml:space="preserve"><value>Blind cell with a hidden character, {0}</value></data>
+  <data name="HtmlBlindSolutionLabel" xml:space="preserve"><value>Originally blind. {0}</value></data>
   <data name="HtmlQuestionLabel" xml:space="preserve"><value>Question {0}, direction {1}, {2}</value></data>
   <data name="HtmlQuizAnswerCellLabel" xml:space="preserve"><value>Empty answer cell, {0}</value></data>
   <data name="HtmlQuizExtractionCellLabel" xml:space="preserve"><value>Secret-message position {0}, empty answer cell, {1}</value></data>

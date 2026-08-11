@@ -25,6 +25,7 @@ namespace Wose.Desktop.ViewModels
     private long _ambiguousBoardRejectionCount;
     private int _attemptCount;
     private long _backtrackings;
+    private int _blindPercentage;
     private BoardRenderModel? _boardRenderModel;
     private bool _canGenerate;
     private int _cancelledAttemptCount;
@@ -80,6 +81,24 @@ namespace Wose.Desktop.ViewModels
     {
       get => _canGenerate;
       private set => SetProperty(ref _canGenerate, value);
+    }
+
+    public int BlindPercentage
+    {
+      get => _blindPercentage;
+      set
+      {
+        if (value is < 0 or > PuzzleDefinition.MaximumBlindPercentage)
+        {
+          throw new ArgumentOutOfRangeException(nameof(value));
+        }
+
+        if (SetProperty(ref _blindPercentage, value))
+        {
+          MarkDocumentChanged(false);
+          RefreshPreviewText();
+        }
+      }
     }
 
     public bool CanExport => HasPreview && !IsExporting;
@@ -814,7 +833,8 @@ namespace Wose.Desktop.ViewModels
         new GenerationOptions(
           SelectedParallelismOption.ParallelAttempts,
           int.Parse(MaximumAttemptTimeSecondsText)),
-        RequireExactMessageFit);
+        RequireExactMessageFit,
+        IsNormalMode ? BlindPercentage : 0);
     }
 
     private static string FormatDifficulty(
@@ -932,7 +952,8 @@ namespace Wose.Desktop.ViewModels
         _boardRenderModel = BoardRenderModel.Create(
           result,
           PuzzleHeading,
-          EntryListHeading);
+          EntryListHeading,
+          BlindPercentage);
         SetPreviewMode(BoardPreviewMode.Puzzle, true);
         Elapsed = result.Elapsed;
         TestedPositions = result.TestedPositions;
@@ -1088,7 +1109,8 @@ namespace Wose.Desktop.ViewModels
       _boardRenderModel = BoardRenderModel.Create(
         CurrentResult,
         PuzzleHeading,
-        EntryListHeading);
+        EntryListHeading,
+        BlindPercentage);
       SetPreviewMode(PreviewMode, true);
     }
 

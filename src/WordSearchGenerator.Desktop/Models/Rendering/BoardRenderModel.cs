@@ -13,6 +13,16 @@ namespace Wose.Desktop.Models.Rendering
       get;
     }
 
+    public int BlindCellCount
+    {
+      get;
+    }
+
+    public int BlindPercentage
+    {
+      get;
+    }
+
     public IReadOnlyList<BoardRenderCell> Cells
     {
       get;
@@ -81,6 +91,7 @@ namespace Wose.Desktop.Models.Rendering
       string puzzleHeading,
       string entryListHeading,
       string secretMessage,
+      int blindPercentage,
       int puzzleCellCount,
       int messageCellCount,
       int blackBoxCount,
@@ -94,6 +105,8 @@ namespace Wose.Desktop.Models.Rendering
       PuzzleHeading = puzzleHeading;
       EntryListHeading = entryListHeading;
       SecretMessage = secretMessage;
+      BlindPercentage = blindPercentage;
+      BlindCellCount = Cells.Count(cell => cell.IsBlind);
       PuzzleCellCount = puzzleCellCount;
       MessageCellCount = messageCellCount;
       BlackBoxCount = blackBoxCount;
@@ -107,11 +120,18 @@ namespace Wose.Desktop.Models.Rendering
     public static BoardRenderModel Create(
       GenerationResult result,
       string? puzzleHeading = null,
-      string? entryListHeading = null)
+      string? entryListHeading = null,
+      int? blindPercentage = null)
     {
       ArgumentNullException.ThrowIfNull(result);
 
       var board = result.Board;
+      var effectiveBlindPercentage = result.Definition.Mode == PuzzleMode.Normal
+        ? blindPercentage ?? result.Definition.BlindPercentage
+        : 0;
+      var blindPositions = SelectBlindPositions(
+        board,
+        effectiveBlindPercentage);
       var cells = new List<BoardRenderCell>(board.Rows * board.Columns);
 
       for (var row = 0; row < board.Rows; row++)
@@ -133,6 +153,7 @@ namespace Wose.Desktop.Models.Rendering
           column,
           kind,
           character,
+          blindPositions.Contains(row * board.Columns + column),
           sourceCell.MessageIndex,
           sourceCell.QuizWordNumber,
           directionArrow,
@@ -154,10 +175,58 @@ namespace Wose.Desktop.Models.Rendering
         (puzzleHeading ?? result.Definition.PuzzleHeading).Trim(),
         (entryListHeading ?? result.Definition.EntryListHeading).Trim(),
         result.Definition.SecretMessage,
+        effectiveBlindPercentage,
         result.PuzzleCellCount,
         result.MessageCellCount,
         result.BlackBoxCount,
         result.IntersectionCount);
+    }
+
+    private static HashSet<int> SelectBlindPositions(
+      Board board,
+      int blindPercentage)
+    {
+      if (blindPercentage is < 0 or > PuzzleDefinition.MaximumBlindPercentage)
+      {
+        throw new ArgumentOutOfRangeException(nameof(blindPercentage));
+      }
+
+      if (blindPercentage == 0 || board.Mode != PuzzleMode.Normal)
+      {
+        return [];
+      }
+
+      var candidates = new List<int>();
+
+      for (var row = 0; row < board.Rows; row++)
+      for (var column = 0; column < board.Columns; column++)
+      {
+        var type = board.Matrix[row, column].Type;
+
+        if (type is Board.Cell.CellType.CharFromText or
+            Board.Cell.CellType.CharFromMessage)
+        {
+          candidates.Add(row * board.Columns + column);
+        }
+      }
+
+      var hiddenCount = (int)Math.Round(
+        candidates.Count * blindPercentage / 100.0,
+        MidpointRounding.AwayFromZero);
+      var hidden = new HashSet<int>(hiddenCount);
+
+      for (var hiddenNumber = 1;
+           hiddenNumber <= hiddenCount;
+           hiddenNumber++)
+      {
+        var candidateIndex = (int)Math.Ceiling(
+                               hiddenNumber * candidates.Count /
+                               (double)hiddenCount) -
+                             1;
+        hidden.Add(candidates[candidateIndex]);
+      }
+
+      return hidden;
     }
 
     #endregion

@@ -1,4 +1,5 @@
 {
+  "blindPercentage": 0,
   "mode": "Quiz",
   "rows": 15,
   "columns": 15,

@@ -247,7 +247,7 @@
             </GroupBox>
 
             <TabControl Grid.Row="1"
-                        BorderBrush="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
+                        BorderBrush="{DynamicResource ControlElevationBorderBrush}"
                         BorderThickness="1"
                         HorizontalContentAlignment="Stretch"
                         VerticalContentAlignment="Stretch">
@@ -450,6 +450,48 @@
                       <ComboBox Margin="0,5,0,0"
                                 ItemsSource="{Binding BoardStyleIds}"
                                 SelectedItem="{Binding SelectedStyleId}" />
+                    </StackPanel>
+                  </GroupBox>
+
+                  <GroupBox Margin="0"
+                            Header="{localization:Loc BlindMode}">
+                    <GroupBox.Style>
+                      <Style TargetType="GroupBox"
+                             BasedOn="{StaticResource {x:Type GroupBox}}">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                          <DataTrigger Binding="{Binding IsNormalMode}"
+                                       Value="True">
+                            <Setter Property="Visibility" Value="Visible" />
+                          </DataTrigger>
+                        </Style.Triggers>
+                      </Style>
+                    </GroupBox.Style>
+                    <StackPanel>
+                      <TextBlock Style="{StaticResource SupportingTextStyle}"
+                                 Text="{localization:Loc BlindModeDescription}"
+                                 TextWrapping="Wrap" />
+                      <Grid Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                          <ColumnDefinition Width="*" />
+                          <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Slider Grid.Column="0"
+                                Maximum="30"
+                                Minimum="0"
+                                IsSnapToTickEnabled="True"
+                                TickFrequency="1"
+                                ToolTip="{localization:Loc BlindModeTooltip}"
+                                Value="{Binding BlindPercentage}" />
+                        <TextBlock Grid.Column="1"
+                                   MinWidth="42"
+                                   Margin="8,0,0,0"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"
+                                   FontWeight="SemiBold"
+                                   Text="{Binding BlindPercentage,
+                                                  StringFormat={}{0}%}" />
+                      </Grid>
                     </StackPanel>
                   </GroupBox>
 

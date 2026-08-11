@@ -98,6 +98,31 @@ body {
   font-size: clamp(8px, 51cqi, 29px);
 }
 
+.blind-marker {
+  position: absolute;
+  top: 6%;
+  right: 6%;
+  width: 28cqi;
+  height: 17cqi;
+  box-sizing: border-box;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  color: var(--muted);
+  opacity: 0.85;
+}
+
+.blind-marker::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 7cqi;
+  height: 7cqi;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: currentColor;
+}
+
 .cell.black-box {
   background: var(--black-box);
 }
@@ -298,6 +323,24 @@ body {
 
 .swatch.black-box {
   background: var(--black-box);
+}
+
+.swatch.blind {
+  position: relative;
+  background: #ffffff;
+}
+
+.swatch.blind .blind-marker {
+  top: 4px;
+  right: 2px;
+  width: 11px;
+  height: 7px;
+  border-width: 1px;
+}
+
+.swatch.blind .blind-marker::after {
+  width: 3px;
+  height: 3px;
 }
 
 .statistics {

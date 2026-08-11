@@ -38,13 +38,26 @@ namespace Wose.Desktop.Services.Rendering
     {
       ArgumentNullException.ThrowIfNull(model);
 
-      var instructionsKey = model.Mode == PuzzleMode.Quiz
-        ? model.SecretMessage.Length == 0
+      string instructionsKey;
+
+      if (model.Mode == PuzzleMode.Quiz)
+      {
+        instructionsKey = model.SecretMessage.Length == 0
           ? "HtmlTutorialQuiz"
-          : "HtmlTutorialQuizWithMessage"
-        : model.SecretMessage.Length == 0
+          : "HtmlTutorialQuizWithMessage";
+      }
+      else if (model.BlindCellCount > 0)
+      {
+        instructionsKey = model.SecretMessage.Length == 0
+          ? "HtmlTutorialNormalBlind"
+          : "HtmlTutorialNormalBlindWithMessage";
+      }
+      else
+      {
+        instructionsKey = model.SecretMessage.Length == 0
           ? "HtmlTutorialNormal"
           : "HtmlTutorialNormalWithMessage";
+      }
 
       return AppStrings.Get(instructionsKey);
     }

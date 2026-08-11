@@ -24,6 +24,11 @@ namespace Wose.Desktop.Models.Rendering
 
     public bool IsIntersection => WordNumbers.Count > 1;
 
+    public bool IsBlind
+    {
+      get;
+    }
+
     public Board.Cell.CellType Kind
     {
       get;
@@ -58,6 +63,7 @@ namespace Wose.Desktop.Models.Rendering
       int column,
       Board.Cell.CellType kind,
       char? character,
+      bool isBlind,
       int? messageIndex,
       int quizQuestionNumber,
       string? directionArrow,
@@ -69,6 +75,7 @@ namespace Wose.Desktop.Models.Rendering
       Column = column;
       Kind = kind;
       Character = character;
+      IsBlind = isBlind;
       MessageIndex = messageIndex;
       QuizQuestionNumber = quizQuestionNumber;
       DirectionArrow = directionArrow ?? string.Empty;

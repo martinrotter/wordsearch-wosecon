@@ -247,8 +247,9 @@ namespace Wose.Desktop.Services.Rendering
       var hideAnswer = mode == PuzzleMode.Quiz &&
                        !isSolution &&
                        cell.Kind == Board.Cell.CellType.CharFromText;
+      var hideBlindCharacter = !isSolution && cell.IsBlind;
 
-      if (!hideAnswer && cell.Character != null)
+      if (!hideAnswer && !hideBlindCharacter && cell.Character != null)
       {
         builder.Append("<span class=\"cell-letter\">");
         builder.Append(cell.Character == ' '
@@ -262,6 +263,11 @@ namespace Wose.Desktop.Services.Rendering
         builder.Append("<span class=\"message-index\" aria-hidden=\"true\">");
         builder.Append(cell.MessageIndex.Value.ToString(CultureInfo.InvariantCulture));
         builder.Append("</span>");
+      }
+
+      if (isSolution && cell.IsBlind)
+      {
+        builder.Append("<span class=\"blind-marker\" aria-hidden=\"true\"></span>");
       }
     }
 
@@ -348,16 +354,25 @@ namespace Wose.Desktop.Services.Rendering
         "intersection",
         AppStrings.Get("HtmlIntersection"));
       AppendLegendItem(builder, "black-box", AppStrings.Get("HtmlBlackBox"));
+
+      if (model.BlindCellCount > 0)
+      {
+        AppendLegendItem(builder, "blind", AppStrings.Get("HtmlBlindCell"));
+      }
+
       builder.AppendLine("        </div>");
       builder.Append("        <p class=\"statistics\">");
       builder.Append(Encode(AppStrings.Format(
         model.Mode == PuzzleMode.Quiz
           ? "HtmlQuizStatistics"
-          : "HtmlStatistics",
+          : model.BlindCellCount > 0
+            ? "HtmlStatisticsBlind"
+            : "HtmlStatistics",
         model.PuzzleCellCount,
         model.MessageCellCount,
         model.BlackBoxCount,
-        model.IntersectionCount)));
+        model.IntersectionCount,
+        model.BlindCellCount)));
       builder.AppendLine("</p>");
       builder.AppendLine("      </section>");
     }
@@ -369,7 +384,14 @@ namespace Wose.Desktop.Services.Rendering
     {
       builder.Append("          <span class=\"legend-item\"><span class=\"swatch ");
       builder.Append(cssClass);
-      builder.Append("\"></span>");
+      builder.Append("\">");
+
+      if (cssClass == "blind")
+      {
+        builder.Append("<span class=\"blind-marker\" aria-hidden=\"true\"></span>");
+      }
+
+      builder.Append("</span>");
       builder.Append(Encode(label));
       builder.AppendLine("</span>");
     }
@@ -403,6 +425,11 @@ namespace Wose.Desktop.Services.Rendering
           position);
       }
 
+      if (cell.IsBlind && !isSolution)
+      {
+        return AppStrings.Format("HtmlBlindCellLabel", position);
+      }
+
       var character = cell.Character == ' '
         ? AppStrings.Get("HtmlSpace")
         : cell.Character?.ToString() ?? string.Empty;
@@ -424,10 +451,10 @@ namespace Wose.Desktop.Services.Rendering
 
       if (cell.Kind == Board.Cell.CellType.CharFromMessage)
       {
-        return AppStrings.Format(
+        return GetBlindSolutionLabel(cell, AppStrings.Format(
           "HtmlMessageCharacterLabel",
           character,
-          position);
+          position));
       }
 
       if (cell.MessageIndex != null)
@@ -444,12 +471,21 @@ namespace Wose.Desktop.Services.Rendering
         ? AppStrings.Get("HtmlIntersection")
         : AppStrings.Get("HtmlWordCharacter");
 
-      return AppStrings.Format(
+      return GetBlindSolutionLabel(cell, AppStrings.Format(
         "HtmlWordLabel",
         role,
         character,
         wordNumbers,
-        position);
+        position));
+    }
+
+    private static string GetBlindSolutionLabel(
+      BoardRenderCell cell,
+      string label)
+    {
+      return cell.IsBlind
+        ? AppStrings.Format("HtmlBlindSolutionLabel", label)
+        : label;
     }
 
     private static string GetCellClasses(
@@ -483,6 +519,11 @@ namespace Wose.Desktop.Services.Rendering
       if (cell.MessageIndex != null)
       {
         builder.Append(" message-extraction");
+      }
+
+      if (cell.IsBlind)
+      {
+        builder.Append(" blind");
       }
 
       return builder.ToString();

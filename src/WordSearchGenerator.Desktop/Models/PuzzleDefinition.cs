@@ -7,7 +7,14 @@ namespace Wose.Desktop.Models
 {
   public sealed class PuzzleDefinition : PuzzleGrid
   {
+    public const int MaximumBlindPercentage = 30;
+
     #region Properties
+
+    public int BlindPercentage
+    {
+      get;
+    }
 
     public IReadOnlyList<PuzzleEntry> Entries
     {
@@ -58,7 +65,8 @@ namespace Wose.Desktop.Models
       string entryListHeading,
       string styleId,
       GenerationOptions generation,
-      bool requireExactMessageFit = false) : base(mode, rows, columns)
+      bool requireExactMessageFit = false,
+      int blindPercentage = 0) : base(mode, rows, columns)
     {
       ArgumentNullException.ThrowIfNull(entries);
       ArgumentNullException.ThrowIfNull(secretMessage);
@@ -66,6 +74,18 @@ namespace Wose.Desktop.Models
       ArgumentNullException.ThrowIfNull(entryListHeading);
       ArgumentException.ThrowIfNullOrWhiteSpace(styleId);
       ArgumentNullException.ThrowIfNull(generation);
+
+      if (blindPercentage is < 0 or > MaximumBlindPercentage)
+      {
+        throw new ArgumentOutOfRangeException(nameof(blindPercentage));
+      }
+
+      if (mode != PuzzleMode.Normal && blindPercentage != 0)
+      {
+        throw new ArgumentException(
+          AppStrings.Get("BlindModeNormalOnly"),
+          nameof(blindPercentage));
+      }
 
       var entryArray = entries.ToArray();
 
@@ -90,6 +110,7 @@ namespace Wose.Desktop.Models
       StyleId = styleId;
       Generation = generation;
       RequireExactMessageFit = requireExactMessageFit;
+      BlindPercentage = blindPercentage;
     }
 
     #endregion

@@ -35,6 +35,10 @@
   <data name="GenerationTab" xml:space="preserve"><value>Generování</value></data>
   <data name="PuzzleStyle" xml:space="preserve"><value>Styl osmisměrky</value></data>
   <data name="PuzzleStyleDescription" xml:space="preserve"><value>Vybraný styl se použije v náhledu, při tisku a v exportech.</value></data>
+  <data name="BlindMode" xml:space="preserve"><value>Režim slepých polí</value></data>
+  <data name="BlindModeDescription" xml:space="preserve"><value>Rovnoměrně skryje zadané procento buněk se znaky. Černá pole se nezapočítávají.</value></data>
+  <data name="BlindModeTooltip" xml:space="preserve"><value>Hodnota 0 % režim vypne. Je dostupný pouze v normálním režimu.</value></data>
+  <data name="BlindModeNormalOnly" xml:space="preserve"><value>Režim slepých polí je dostupný pouze v normálním režimu.</value></data>
   <data name="WordsOrQuestions" xml:space="preserve"><value>Slova nebo otázky</value></data>
   <data name="WordsInstructions" xml:space="preserve"><value>Zadejte jedno slovo na řádek. Rozlišují se malá a velká písmena; mezery na začátku a konci se odstraní.</value></data>
   <data name="WordsTooltip" xml:space="preserve"><value>Prázdné řádky a duplicitní slova se stejnou velikostí písmen budou ignorovány</value></data>
@@ -227,11 +231,15 @@
   <data name="HtmlQuizExtractionCell" xml:space="preserve"><value>Výběrová buňka tajenky</value></data>
   <data name="HtmlIntersection" xml:space="preserve"><value>Křížení slov</value></data>
   <data name="HtmlBlackBox" xml:space="preserve"><value>Černé pole</value></data>
+  <data name="HtmlBlindCell" xml:space="preserve"><value>Slepé pole</value></data>
   <data name="HtmlStatistics" xml:space="preserve"><value>{0:N0} buněk osmisměrky, {1:N0} buněk tajenky, {2:N0} černých polí a {3:N0} křížení.</value></data>
+  <data name="HtmlStatisticsBlind" xml:space="preserve"><value>{0:N0} buněk osmisměrky, {1:N0} buněk tajenky, {2:N0} černých polí, {3:N0} křížení a {4:N0} slepých polí.</value></data>
   <data name="HtmlQuizStatistics" xml:space="preserve"><value>{0:N0} buněk odpovědí a otázek, z nichž {1:N0} tvoří tajenku, {2:N0} černých polí a {3:N0} křížení.</value></data>
   <data name="HtmlTutorialHeading" xml:space="preserve"><value>Jak luštit</value></data>
   <data name="HtmlTutorialNormal" xml:space="preserve"><value>Najděte a vyškrtejte všechna níže uvedená slova. Mohou vést kterýmkoli z osmi směrů.</value></data>
   <data name="HtmlTutorialNormalWithMessage" xml:space="preserve"><value>Najděte a vyškrtejte všechna níže uvedená slova. Mohou vést kterýmkoli z osmi směrů. Zbývající písmena čtěte shora dolů a zleva doprava.</value></data>
+  <data name="HtmlTutorialNormalBlind" xml:space="preserve"><value>Najděte a vyškrtejte všechna níže uvedená slova. Mohou vést kterýmkoli z osmi směrů. Některá pole jsou slepá a záměrně nezobrazují znak; chybějící znaky odhadněte.</value></data>
+  <data name="HtmlTutorialNormalBlindWithMessage" xml:space="preserve"><value>Najděte a vyškrtejte všechna níže uvedená slova. Mohou vést kterýmkoli z osmi směrů. Některá pole jsou slepá a záměrně nezobrazují znak; chybějící znaky odhadněte. Zbývající pole čtěte shora dolů a zleva doprava.</value></data>
   <data name="HtmlTutorialQuiz" xml:space="preserve"><value>Odpovězte na každou otázku a odpověď vepište ve směru šipky, počínaje následující buňkou.</value></data>
   <data name="HtmlTutorialQuizWithMessage" xml:space="preserve"><value>Odpovězte na každou otázku a odpověď vepište ve směru šipky, počínaje následující buňkou. Zvýrazněné buňky potom čtěte v pořadí čísel.</value></data>
   <data name="HtmlSecretMessageNormalInstructions" xml:space="preserve"><value>Po nalezení všech slov sem zapište zbývající písmena.</value></data>
@@ -241,6 +249,8 @@
   <data name="HtmlSecretMessageSolutionLabel" xml:space="preserve"><value>Tajenka: {0}</value></data>
   <data name="HtmlPosition" xml:space="preserve"><value>řádek {0}, sloupec {1}</value></data>
   <data name="HtmlBlackBoxLabel" xml:space="preserve"><value>Černé pole, {0}</value></data>
+  <data name="HtmlBlindCellLabel" xml:space="preserve"><value>Slepé pole se skrytým znakem, {0}</value></data>
+  <data name="HtmlBlindSolutionLabel" xml:space="preserve"><value>Původně slepé pole. {0}</value></data>
   <data name="HtmlQuestionLabel" xml:space="preserve"><value>Otázka {0}, směr {1}, {2}</value></data>
   <data name="HtmlQuizAnswerCellLabel" xml:space="preserve"><value>Prázdná buňka odpovědi, {0}</value></data>
   <data name="HtmlQuizExtractionCellLabel" xml:space="preserve"><value>Pozice tajenky {0}, prázdná buňka odpovědi, {1}</value></data>
