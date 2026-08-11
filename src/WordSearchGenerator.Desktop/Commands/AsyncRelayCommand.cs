@@ -2,7 +2,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 
-namespace WordSearchGenerator.Desktop.Commands
+namespace Wose.Desktop.Commands
 {
   public sealed class AsyncRelayCommand : ICommand, INotifyPropertyChanged
   {

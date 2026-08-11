@@ -1,6 +1,6 @@
-using WordSearchGenerator.Desktop.Models.Rendering;
+using Wose.Desktop.Models.Rendering;
 
-namespace WordSearchGenerator.Desktop.Services.Exporting
+namespace Wose.Desktop.Services.Exporting
 {
   public interface IDocxPuzzleExporter
   {

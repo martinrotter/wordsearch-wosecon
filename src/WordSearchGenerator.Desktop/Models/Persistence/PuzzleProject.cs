@@ -1,4 +1,4 @@
-namespace WordSearchGenerator.Desktop.Models.Persistence
+namespace Wose.Desktop.Models.Persistence
 {
   public sealed record PuzzleProject(
     PuzzleDefinition Definition,

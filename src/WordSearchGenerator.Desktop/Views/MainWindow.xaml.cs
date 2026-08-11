@@ -2,14 +2,14 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Threading;
 using CefSharp;
-using WordSearchGenerator.Desktop.Models.Settings;
-using WordSearchGenerator.Desktop.Services.Exporting;
-using WordSearchGenerator.Desktop.Services.Persistence;
-using WordSearchGenerator.Desktop.Services.Rendering;
-using WordSearchGenerator.Desktop.Services.Settings;
-using WordSearchGenerator.Desktop.ViewModels;
+using Wose.Desktop.Models.Settings;
+using Wose.Desktop.Services.Exporting;
+using Wose.Desktop.Services.Persistence;
+using Wose.Desktop.Services.Rendering;
+using Wose.Desktop.Services.Settings;
+using Wose.Desktop.ViewModels;
 
-namespace WordSearchGenerator.Desktop.Views
+namespace Wose.Desktop.Views
 {
   public partial class MainWindow : Window
   {

@@ -1,4 +1,4 @@
-namespace WordSearchGenerator.Desktop.ViewModels
+namespace Wose.Desktop.ViewModels
 {
   public enum DifficultyDisplayState
   {

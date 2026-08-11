@@ -1,6 +1,6 @@
-using WordSearchGenerator.Desktop.Models;
+using Wose.Desktop.Models;
 
-namespace WordSearchGenerator.Desktop.Services
+namespace Wose.Desktop.Services
 {
   public interface IPuzzleGenerator
   {

@@ -1,7 +1,7 @@
 using System.Text;
-using WordSearchGenerator.Common.WoSeCon.Api;
+using Wose.Common.WoSeCon.Api;
 
-namespace WordSearchGenerator.Common
+namespace Wose.Common
 {
   public class Board : PuzzleGrid
   {

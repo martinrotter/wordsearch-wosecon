@@ -1,8 +1,8 @@
-using WordSearchGenerator.Common;
-using WordSearchGenerator.Common.WoSeCon;
-using WordSearchGenerator.Common.WoSeCon.Api;
+using Wose.Common;
+using Wose.Common.WoSeCon;
+using Wose.Common.WoSeCon.Api;
 
-namespace WordSearchGenerator.Tests
+namespace Wose.Tests
 {
   [TestClass]
   public class UnitTests

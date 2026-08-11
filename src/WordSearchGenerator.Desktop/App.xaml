@@ -1,4 +1,4 @@
-<Application x:Class="WordSearchGenerator.Desktop.App"
+<Application x:Class="Wose.Desktop.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <Application.Resources>

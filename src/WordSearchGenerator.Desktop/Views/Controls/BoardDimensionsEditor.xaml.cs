@@ -2,7 +2,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace WordSearchGenerator.Desktop.Views.Controls
+namespace Wose.Desktop.Views.Controls
 {
   public partial class BoardDimensionsEditor : UserControl
   {

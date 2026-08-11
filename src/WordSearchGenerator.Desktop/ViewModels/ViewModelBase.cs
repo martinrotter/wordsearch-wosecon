@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace WordSearchGenerator.Desktop.ViewModels
+namespace Wose.Desktop.ViewModels
 {
   public abstract class ViewModelBase : INotifyPropertyChanged
   {

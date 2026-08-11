@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
-using WordSearchGenerator.Common;
+using Wose.Common;
 
-namespace WordSearchGenerator.Desktop.Models.Rendering
+namespace Wose.Desktop.Models.Rendering
 {
   public sealed class BoardRenderCell
   {

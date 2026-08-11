@@ -2,18 +2,18 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Reflection;
 using System.Text;
-using WordSearchGenerator.Desktop.Localization;
+using Wose.Desktop.Localization;
 
-namespace WordSearchGenerator.Desktop.Services.Rendering
+namespace Wose.Desktop.Services.Rendering
 {
   public sealed class EmbeddedBoardStyleCatalog : IBoardStyleCatalog
   {
-    #region Constants
+    #region Static Fields
 
     public const string EditorialStyleId = "editorial";
 
-    private const string ResourcePrefix =
-      "WordSearchGenerator.Desktop.Resources.BoardStyles.";
+    private static readonly string ResourcePrefix =
+      $"{typeof(Wose.Desktop.App).Namespace}.Resources.BoardStyles.";
 
     #endregion
 

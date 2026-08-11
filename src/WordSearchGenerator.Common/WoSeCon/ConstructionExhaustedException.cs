@@ -1,4 +1,4 @@
-namespace WordSearchGenerator.Common.WoSeCon
+namespace Wose.Common.WoSeCon
 {
   public sealed class ConstructionExhaustedException : InvalidOperationException
   {

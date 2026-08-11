@@ -1,7 +1,7 @@
-using WordSearchGenerator.Desktop.Models;
-using WordSearchGenerator.Desktop.Models.Persistence;
+using Wose.Desktop.Models;
+using Wose.Desktop.Models.Persistence;
 
-namespace WordSearchGenerator.Desktop.Services.Persistence
+namespace Wose.Desktop.Services.Persistence
 {
   public interface IPuzzleProjectSerializer
   {

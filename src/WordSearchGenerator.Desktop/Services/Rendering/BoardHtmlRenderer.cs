@@ -1,12 +1,12 @@
 using System.Globalization;
 using System.Text;
 using System.Text.Encodings.Web;
-using WordSearchGenerator.Common;
-using WordSearchGenerator.Desktop.Localization;
-using WordSearchGenerator.Desktop.Models;
-using WordSearchGenerator.Desktop.Models.Rendering;
+using Wose.Common;
+using Wose.Desktop.Localization;
+using Wose.Desktop.Models;
+using Wose.Desktop.Models.Rendering;
 
-namespace WordSearchGenerator.Desktop.Services.Rendering
+namespace Wose.Desktop.Services.Rendering
 {
   public sealed class BoardHtmlRenderer : IBoardHtmlRenderer
   {

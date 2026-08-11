@@ -1,4 +1,4 @@
-namespace WordSearchGenerator.Desktop.Models
+namespace Wose.Desktop.Models
 {
   public static class WordContainmentValidator
   {

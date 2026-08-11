@@ -1,8 +1,8 @@
 using System.IO;
-using WordSearchGenerator.Desktop.Localization;
-using WordSearchGenerator.Desktop.Models;
+using Wose.Desktop.Localization;
+using Wose.Desktop.Models;
 
-namespace WordSearchGenerator.Desktop.Services.Persistence
+namespace Wose.Desktop.Services.Persistence
 {
   public static class PuzzleInputFileParser
   {

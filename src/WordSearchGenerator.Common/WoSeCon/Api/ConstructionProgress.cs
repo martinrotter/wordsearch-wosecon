@@ -1,4 +1,4 @@
-namespace WordSearchGenerator.Common.WoSeCon.Api
+namespace Wose.Common.WoSeCon.Api
 {
   /// <summary>
   ///   Immutable snapshot of an in-progress WoSeCon search.

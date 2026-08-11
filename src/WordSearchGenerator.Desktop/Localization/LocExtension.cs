@@ -1,6 +1,6 @@
 using System.Windows.Markup;
 
-namespace WordSearchGenerator.Desktop.Localization
+namespace Wose.Desktop.Localization
 {
   [MarkupExtensionReturnType(typeof(string))]
   public sealed class LocExtension : MarkupExtension

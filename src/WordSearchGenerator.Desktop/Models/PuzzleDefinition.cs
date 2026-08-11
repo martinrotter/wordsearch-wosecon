@@ -1,9 +1,9 @@
 using System.Collections.ObjectModel;
-using WordSearchGenerator.Common;
-using WordSearchGenerator.Common.WoSeCon.Api;
-using WordSearchGenerator.Desktop.Localization;
+using Wose.Common;
+using Wose.Common.WoSeCon.Api;
+using Wose.Desktop.Localization;
 
-namespace WordSearchGenerator.Desktop.Models
+namespace Wose.Desktop.Models
 {
   public sealed class PuzzleDefinition : PuzzleGrid
   {

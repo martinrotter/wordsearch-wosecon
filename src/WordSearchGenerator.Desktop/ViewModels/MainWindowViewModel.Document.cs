@@ -1,11 +1,11 @@
 using System.IO;
-using WordSearchGenerator.Common;
-using WordSearchGenerator.Desktop.Localization;
-using WordSearchGenerator.Desktop.Models;
-using WordSearchGenerator.Desktop.Models.Persistence;
-using WordSearchGenerator.Desktop.Models.Rendering;
+using Wose.Common;
+using Wose.Desktop.Localization;
+using Wose.Desktop.Models;
+using Wose.Desktop.Models.Persistence;
+using Wose.Desktop.Models.Rendering;
 
-namespace WordSearchGenerator.Desktop.ViewModels
+namespace Wose.Desktop.ViewModels
 {
   public sealed partial class MainWindowViewModel
   {
@@ -62,7 +62,7 @@ namespace WordSearchGenerator.Desktop.ViewModels
           : Path.GetFileNameWithoutExtension(ProjectFilePath);
         var dirtyMarker = IsDirty ? " *" : string.Empty;
 
-        return $"{documentName}{dirtyMarker} - WoSeCon";
+        return $"{documentName}{dirtyMarker} - WoSe";
       }
     }
 

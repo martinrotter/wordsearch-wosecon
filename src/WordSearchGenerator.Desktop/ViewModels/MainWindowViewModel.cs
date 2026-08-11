@@ -2,16 +2,16 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
-using WordSearchGenerator.Common;
-using WordSearchGenerator.Common.WoSeCon;
-using WordSearchGenerator.Desktop.Commands;
-using WordSearchGenerator.Desktop.Localization;
-using WordSearchGenerator.Desktop.Models;
-using WordSearchGenerator.Desktop.Models.Rendering;
-using WordSearchGenerator.Desktop.Services;
-using WordSearchGenerator.Desktop.Services.Rendering;
+using Wose.Common;
+using Wose.Common.WoSeCon;
+using Wose.Desktop.Commands;
+using Wose.Desktop.Localization;
+using Wose.Desktop.Models;
+using Wose.Desktop.Models.Rendering;
+using Wose.Desktop.Services;
+using Wose.Desktop.Services.Rendering;
 
-namespace WordSearchGenerator.Desktop.ViewModels
+namespace Wose.Desktop.ViewModels
 {
   public sealed partial class MainWindowViewModel : ValidatableViewModelBase
   {

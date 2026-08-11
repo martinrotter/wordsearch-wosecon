@@ -1,3 +1,3 @@
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("WordSearchGenerator.Desktop.Tests")]
+[assembly: InternalsVisibleTo("WoSe.Desktop.Tests")]

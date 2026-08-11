@@ -1,7 +1,7 @@
 using System.Collections;
 using System.ComponentModel;
 
-namespace WordSearchGenerator.Desktop.ViewModels
+namespace Wose.Desktop.ViewModels
 {
   public abstract class ValidatableViewModelBase : ViewModelBase, INotifyDataErrorInfo
   {

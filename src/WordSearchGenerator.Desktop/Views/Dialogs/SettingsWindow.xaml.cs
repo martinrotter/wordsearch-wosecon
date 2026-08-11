@@ -1,7 +1,7 @@
 using System.Windows;
-using WordSearchGenerator.Desktop.ViewModels;
+using Wose.Desktop.ViewModels;
 
-namespace WordSearchGenerator.Desktop.Views.Dialogs
+namespace Wose.Desktop.Views.Dialogs
 {
   public partial class SettingsWindow : Window
   {

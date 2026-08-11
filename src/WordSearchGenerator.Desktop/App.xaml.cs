@@ -1,14 +1,14 @@
 using System.Windows;
-using WordSearchGenerator.Desktop.Localization;
-using WordSearchGenerator.Desktop.Services;
-using WordSearchGenerator.Desktop.Services.Exporting;
-using WordSearchGenerator.Desktop.Services.Persistence;
-using WordSearchGenerator.Desktop.Services.Rendering;
-using WordSearchGenerator.Desktop.Services.Settings;
-using WordSearchGenerator.Desktop.ViewModels;
-using WordSearchGenerator.Desktop.Views;
+using Wose.Desktop.Localization;
+using Wose.Desktop.Services;
+using Wose.Desktop.Services.Exporting;
+using Wose.Desktop.Services.Persistence;
+using Wose.Desktop.Services.Rendering;
+using Wose.Desktop.Services.Settings;
+using Wose.Desktop.ViewModels;
+using Wose.Desktop.Views;
 
-namespace WordSearchGenerator.Desktop
+namespace Wose.Desktop
 {
   public partial class App : Application
   {

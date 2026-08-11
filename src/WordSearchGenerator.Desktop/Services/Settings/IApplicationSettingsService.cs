@@ -1,6 +1,6 @@
-using WordSearchGenerator.Desktop.Models.Settings;
+using Wose.Desktop.Models.Settings;
 
-namespace WordSearchGenerator.Desktop.Services.Settings
+namespace Wose.Desktop.Services.Settings
 {
   public interface IApplicationSettingsService
   {

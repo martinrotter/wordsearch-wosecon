@@ -5,12 +5,12 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Microsoft.Win32;
-using WordSearchGenerator.Common;
-using WordSearchGenerator.Desktop.Localization;
-using WordSearchGenerator.Desktop.Models;
-using WordSearchGenerator.Desktop.Services.Persistence;
+using Wose.Common;
+using Wose.Desktop.Localization;
+using Wose.Desktop.Models;
+using Wose.Desktop.Services.Persistence;
 
-namespace WordSearchGenerator.Desktop.Views
+namespace Wose.Desktop.Views
 {
   public partial class MainWindow
   {
@@ -141,7 +141,7 @@ namespace WordSearchGenerator.Desktop.Views
         name = name.Replace(invalidCharacter, '_');
       }
 
-      return $"{name}.wosecon";
+      return $"{name}.wose";
     }
 
     private async void MainWindowOnClosing(
@@ -306,7 +306,7 @@ namespace WordSearchGenerator.Desktop.Views
       {
         AddExtension = true,
         CheckFileExists = true,
-        DefaultExt = ".wosecon",
+        DefaultExt = ".wose",
         Filter = AppStrings.Get("ProjectFilesFilter"),
         InitialDirectory = GetInitialDirectory(),
         Multiselect = false,
@@ -381,7 +381,7 @@ namespace WordSearchGenerator.Desktop.Views
         var dialog = new SaveFileDialog
         {
           AddExtension = true,
-          DefaultExt = ".wosecon",
+          DefaultExt = ".wose",
           FileName = GetSuggestedProjectName(definition.PuzzleHeading),
           Filter = AppStrings.Get("ProjectSaveFilter"),
           InitialDirectory = GetInitialDirectory(),

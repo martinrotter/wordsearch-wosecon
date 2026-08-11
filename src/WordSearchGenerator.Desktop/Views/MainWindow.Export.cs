@@ -7,10 +7,10 @@ using System.Windows.Media.Imaging;
 using CefSharp;
 using CefSharp.Wpf;
 using Microsoft.Win32;
-using WordSearchGenerator.Desktop.Localization;
-using WordSearchGenerator.Desktop.Models.Rendering;
+using Wose.Desktop.Localization;
+using Wose.Desktop.Models.Rendering;
 
-namespace WordSearchGenerator.Desktop.Views
+namespace Wose.Desktop.Views
 {
   public partial class MainWindow
   {
@@ -222,19 +222,19 @@ namespace WordSearchGenerator.Desktop.Views
       return stream.ToArray();
     }
 
-    private string CreateSuggestedFileName(
-      string extension,
-      bool boardOnly = false)
+    private string CreateSuggestedFileName(string extension)
     {
-      var baseName = string.IsNullOrWhiteSpace(_viewModel.PuzzleHeading)
-        ? AppStrings.Get("DefaultExportBaseName")
-        : _viewModel.PuzzleHeading.Trim();
+      var projectBaseName = string.IsNullOrWhiteSpace(_viewModel.ProjectFilePath)
+        ? null
+        : Path.GetFileNameWithoutExtension(_viewModel.ProjectFilePath);
+      var baseName = !string.IsNullOrWhiteSpace(projectBaseName)
+        ? projectBaseName
+        : string.IsNullOrWhiteSpace(_viewModel.PuzzleHeading)
+          ? AppStrings.Get("DefaultExportBaseName")
+          : _viewModel.PuzzleHeading.Trim();
       var modeSuffix = _viewModel.PreviewMode == BoardPreviewMode.Solution
         ? AppStrings.Get("SolutionFileSuffix")
         : AppStrings.Get("PuzzleFileSuffix");
-      var boardSuffix = boardOnly
-        ? AppStrings.Get("BoardFileSuffix")
-        : string.Empty;
       var invalidCharacters = Path.GetInvalidFileNameChars().ToHashSet();
       var sanitized = new string(baseName
           .Select(character => invalidCharacters.Contains(character)
@@ -248,7 +248,7 @@ namespace WordSearchGenerator.Desktop.Views
         sanitized = AppStrings.Get("DefaultExportBaseName");
       }
 
-      return $"{sanitized}{modeSuffix}{boardSuffix}{extension}";
+      return $"{sanitized}{modeSuffix}{extension}";
     }
 
     private async Task EnsurePreviewIsReadyAsync()
@@ -302,8 +302,7 @@ namespace WordSearchGenerator.Desktop.Views
     {
       var path = ShowExportSaveDialog(
         ".png",
-        AppStrings.Get("PngFilter"),
-        true);
+        AppStrings.Get("PngFilter"));
 
       if (path == null)
       {
@@ -427,15 +426,14 @@ namespace WordSearchGenerator.Desktop.Views
 
     private string? ShowExportSaveDialog(
       string extension,
-      string filter,
-      bool boardOnly = false)
+      string filter)
     {
       var dialog = new SaveFileDialog
       {
         AddExtension = true,
         CheckPathExists = true,
         DefaultExt = extension,
-        FileName = CreateSuggestedFileName(extension, boardOnly),
+        FileName = CreateSuggestedFileName(extension),
         Filter = filter,
         OverwritePrompt = true,
         Title = AppStrings.Get("SaveCurrentPreviewTitle")

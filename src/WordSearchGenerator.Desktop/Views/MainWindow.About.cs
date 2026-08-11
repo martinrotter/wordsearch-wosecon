@@ -1,7 +1,7 @@
 using System.Windows;
-using WordSearchGenerator.Desktop.Views.Dialogs;
+using Wose.Desktop.Views.Dialogs;
 
-namespace WordSearchGenerator.Desktop.Views
+namespace Wose.Desktop.Views
 {
   public partial class MainWindow
   {

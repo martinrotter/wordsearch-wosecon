@@ -1,9 +1,9 @@
 using System.Globalization;
 using System.Windows.Data;
-using WordSearchGenerator.Common;
-using WordSearchGenerator.Desktop.Localization;
+using Wose.Common;
+using Wose.Desktop.Localization;
 
-namespace WordSearchGenerator.Desktop.Converters
+namespace Wose.Desktop.Converters
 {
   public sealed class PuzzleModeDisplayConverter : IValueConverter
   {

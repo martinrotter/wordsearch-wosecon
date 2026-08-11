@@ -1,7 +1,7 @@
-using WordSearchGenerator.Common.WoSeCon.Api;
-using WordSearchGenerator.Desktop.Services;
+using Wose.Common.WoSeCon.Api;
+using Wose.Desktop.Services;
 
-namespace WordSearchGenerator.Desktop.Tests
+namespace Wose.Desktop.Tests
 {
   [TestClass]
   public sealed class MonteCarloProgressTests

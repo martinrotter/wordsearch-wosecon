@@ -3,24 +3,24 @@ using System.Globalization;
 using System.IO;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
-using WordSearchGenerator.Common;
-using WordSearchGenerator.Desktop.Localization;
-using WordSearchGenerator.Desktop.Models;
-using WordSearchGenerator.Desktop.Models.Rendering;
-using WordSearchGenerator.Desktop.Services.Rendering;
+using Wose.Common;
+using Wose.Desktop.Localization;
+using Wose.Desktop.Models;
+using Wose.Desktop.Models.Rendering;
+using Wose.Desktop.Services.Rendering;
 using A = DocumentFormat.OpenXml.Drawing;
 using DW = DocumentFormat.OpenXml.Drawing.Wordprocessing;
 using PIC = DocumentFormat.OpenXml.Drawing.Pictures;
 using W = DocumentFormat.OpenXml.Wordprocessing;
 
-namespace WordSearchGenerator.Desktop.Services.Exporting
+namespace Wose.Desktop.Services.Exporting
 {
   public sealed class DocxPuzzleExporter : IDocxPuzzleExporter
   {
     #region Static Fields
 
-    private const uint PageWidthTwips = 11906;
-    private const uint PageHeightTwips = 16838;
+    private const uint PageWidthTwips = 8391;
+    private const uint PageHeightTwips = 11906;
     private const uint PageMarginTwips = 1021;
     private const long EmusPerTwip = 635;
     private const int MaximumMessageColumns = 18;

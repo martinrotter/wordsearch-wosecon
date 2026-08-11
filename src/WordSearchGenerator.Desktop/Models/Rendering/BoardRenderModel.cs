@@ -1,8 +1,8 @@
 using System.Collections.ObjectModel;
-using WordSearchGenerator.Common;
-using WordSearchGenerator.Common.WoSeCon.Api;
+using Wose.Common;
+using Wose.Common.WoSeCon.Api;
 
-namespace WordSearchGenerator.Desktop.Models.Rendering
+namespace Wose.Desktop.Models.Rendering
 {
   public sealed class BoardRenderModel
   {
