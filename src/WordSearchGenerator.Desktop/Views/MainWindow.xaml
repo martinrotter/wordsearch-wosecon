@@ -325,19 +325,19 @@
                                      Style="{StaticResource SupportingTextStyle}"
                                      Text="{localization:Loc WordsInstructions}"
                                      TextWrapping="Wrap" />
-                          <TextBox x:Name="WordsTextBox"
-                                   Grid.Row="1"
-                                   MinHeight="90"
-                                   Margin="0,5,0,0"
-                                   AcceptsReturn="True"
-                                   AcceptsTab="False"
-                                   HorizontalScrollBarVisibility="Auto"
-                                   Text="{Binding WordsText,
-                                                  UpdateSourceTrigger=PropertyChanged,
-                                                  ValidatesOnNotifyDataErrors=True}"
-                                   TextWrapping="NoWrap"
-                                   ToolTip="{localization:Loc WordsTooltip}"
-                                   VerticalScrollBarVisibility="Auto" />
+                          <viewControls:SharedLetterTextEditor x:Name="WordsTextBox"
+                                                               Grid.Row="1"
+                                                               MinHeight="90"
+                                                               Margin="0,5,0,0"
+                                                               BoundText="{Binding WordsText,
+                                                                                   UpdateSourceTrigger=PropertyChanged,
+                                                                                   ValidatesOnNotifyDataErrors=True}"
+                                                               HorizontalScrollBarVisibility="Auto"
+                                                               SharedLetterBrush="{DynamicResource {x:Static SystemColors.AccentColorBrushKey}}"
+                                                               ShowLineNumbers="False"
+                                                               ToolTip="{localization:Loc WordsTooltip}"
+                                                               VerticalScrollBarVisibility="Auto"
+                                                               WordWrap="False" />
                         </Grid>
 
                         <Grid>

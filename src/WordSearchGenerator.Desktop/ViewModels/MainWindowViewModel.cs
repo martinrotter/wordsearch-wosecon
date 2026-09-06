@@ -928,7 +928,7 @@ namespace Wose.Desktop.ViewModels
       ResetGenerationProgress(
         definition!.Entries.Count,
         definition.Generation.ParallelAttempts);
-      ClearGeneratedBoard();
+      ClearGeneratedBoard(false);
       MarkDocumentChanged(false);
       StatusText = AppStrings.Get("Starting");
       EditorActionState = EditorActionState.Generating;
@@ -954,7 +954,7 @@ namespace Wose.Desktop.ViewModels
           PuzzleHeading,
           EntryListHeading,
           BlindPercentage);
-        SetPreviewMode(BoardPreviewMode.Puzzle, true);
+        SetPreviewMode(PreviewMode, true);
         Elapsed = result.Elapsed;
         TestedPositions = result.TestedPositions;
         Backtrackings = result.Backtrackings;

@@ -231,12 +231,16 @@ namespace Wose.Desktop.ViewModels
       return true;
     }
 
-    private void ClearGeneratedBoard()
+    private void ClearGeneratedBoard(bool resetPreviewMode = true)
     {
       CurrentResult = null;
       _boardRenderModel = null;
       PreviewHtml = string.Empty;
-      PreviewMode = BoardPreviewMode.Puzzle;
+
+      if (resetPreviewMode)
+      {
+        PreviewMode = BoardPreviewMode.Puzzle;
+      }
     }
 
     private ParallelismOption GetOrAddParallelismOption(int parallelAttempts)

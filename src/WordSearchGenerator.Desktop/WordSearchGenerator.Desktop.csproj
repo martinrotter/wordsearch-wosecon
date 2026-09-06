@@ -16,6 +16,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="AvalonEdit" Version="6.3.1.120" />
 		<PackageReference Include="CefSharp.Wpf.NETCore" Version="150.0.110" />
 		<PackageReference Include="DocumentFormat.OpenXml" Version="3.5.1" />
 		<PackageReference Include="FluentIcons.Wpf" Version="2.1.335" />
