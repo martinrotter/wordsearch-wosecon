@@ -360,7 +360,8 @@
                                      Style="{StaticResource SupportingTextStyle}"
                                      Text="{localization:Loc QuizInstructions}"
                                      TextWrapping="Wrap" />
-                          <DataGrid Grid.Row="1"
+                          <DataGrid x:Name="QuizEntriesGrid"
+                                    Grid.Row="1"
                                     MinHeight="90"
                                     Margin="0,5,0,0"
                                     AutoGenerateColumns="False"
@@ -502,7 +503,7 @@
                           <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Slider Grid.Column="0"
-                                Maximum="30"
+                                Maximum="50"
                                 Minimum="0"
                                 IsSnapToTickEnabled="True"
                                 TickFrequency="1"

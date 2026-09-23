@@ -52,6 +52,13 @@ namespace Wose.Desktop.Tests
     }
 
     [TestMethod]
+    public void BlindPercentageAllowsFiftyButRejectsFiftyOne()
+    {
+      Assert.AreEqual(5, CreateModel(50).BlindCellCount);
+      Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => CreateModel(51));
+    }
+
+    [TestMethod]
     public void PuzzleHidesBlindCharactersAndSolutionRevealsThemWithEyeMarker()
     {
       var renderer = new BoardHtmlRenderer(new EmbeddedBoardStyleCatalog());

@@ -7,7 +7,7 @@ namespace Wose.Desktop.Models
 {
   public sealed class PuzzleDefinition : PuzzleGrid
   {
-    public const int MaximumBlindPercentage = 30;
+    public const int MaximumBlindPercentage = 50;
 
     #region Properties
 

@@ -99,6 +99,49 @@ namespace Wose.Desktop.ViewModels
         : AppStrings.Get("QuizEntriesImported");
     }
 
+    internal QuizEntryViewModel InsertPastedQuizEntries(
+      IReadOnlyList<PuzzleEntry> entries,
+      int insertIndex)
+    {
+      ArgumentNullException.ThrowIfNull(entries);
+
+      if (entries.Count == 0)
+      {
+        throw new ArgumentException("At least one entry is required.", nameof(entries));
+      }
+
+      if (insertIndex < 0 || insertIndex > QuizEntries.Count)
+      {
+        throw new ArgumentOutOfRangeException(nameof(insertIndex));
+      }
+
+      if (insertIndex < QuizEntries.Count && QuizEntries[insertIndex].IsEmpty)
+      {
+        QuizEntries.RemoveAt(insertIndex);
+      }
+      else if (QuizEntries.Count == 1 && QuizEntries[0].IsEmpty)
+      {
+        QuizEntries.Clear();
+        insertIndex = 0;
+      }
+
+      QuizEntryViewModel? firstEntry = null;
+
+      foreach (var entry in entries)
+      {
+        var pastedEntry = new QuizEntryViewModel
+        {
+          Answer = entry.Answer,
+          Question = entry.Question ?? string.Empty
+        };
+        QuizEntries.Insert(insertIndex++, pastedEntry);
+        firstEntry ??= pastedEntry;
+      }
+
+      StatusText = AppStrings.Get("QuizEntriesPasted");
+      return firstEntry!;
+    }
+
     internal void LoadProject(PuzzleProject project, string path)
     {
       ArgumentNullException.ThrowIfNull(project);

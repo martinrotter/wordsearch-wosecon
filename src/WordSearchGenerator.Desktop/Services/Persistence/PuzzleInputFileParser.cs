@@ -17,7 +17,7 @@ namespace Wose.Desktop.Services.Persistence
 
       for (var index = 0; index < lines.Length; index++)
       {
-        var line = lines[index];
+        var line = lines[index].TrimStart();
 
         if (string.IsNullOrWhiteSpace(line))
         {
@@ -25,6 +25,15 @@ namespace Wose.Desktop.Services.Persistence
         }
 
         var separatorIndex = line.IndexOf('\t');
+        var separatorLength = 1;
+        var spaceSeparatorIndex = line.IndexOf("  ", StringComparison.Ordinal);
+
+        if (spaceSeparatorIndex >= 0 &&
+            (separatorIndex < 0 || spaceSeparatorIndex < separatorIndex))
+        {
+          separatorIndex = spaceSeparatorIndex;
+          separatorLength = 2;
+        }
 
         if (separatorIndex < 0)
         {
@@ -34,7 +43,7 @@ namespace Wose.Desktop.Services.Persistence
         }
 
         var answer = line[..separatorIndex].Trim();
-        var question = line[(separatorIndex + 1)..].Trim();
+        var question = line[(separatorIndex + separatorLength)..].Trim();
 
         if (answer.Length < 2 || question.Length == 0)
         {

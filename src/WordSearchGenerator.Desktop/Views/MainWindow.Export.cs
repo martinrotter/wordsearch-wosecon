@@ -34,8 +34,10 @@ namespace Wose.Desktop.Views
       ArgumentOutOfRangeException.ThrowIfNegativeOrZero(targetLongSide);
 
       await EnsurePreviewIsReadyAsync();
-      var bounds = await PreviewBrowser
-        .EvaluateScriptAsync<BoardCaptureBounds>(
+      try
+      {
+        var bounds = await PreviewBrowser
+          .EvaluateScriptAsync<BoardCaptureBounds>(
           """
           (() => {
             const board = document.querySelector('.matrix');
@@ -45,11 +47,19 @@ namespace Wose.Desktop.Views
             }
 
             const overlayId = 'wosecon-board-export-overlay';
+            const scrollbarStyleId = 'wosecon-board-export-no-scrollbar';
             document.getElementById(overlayId)?.remove();
+            document.getElementById(scrollbarStyleId)?.remove();
+
+            // The preview scrollbar can overlap a clone scaled to the viewport edge.
+            const scrollbarStyle = document.createElement('style');
+            scrollbarStyle.id = scrollbarStyleId;
+            scrollbarStyle.textContent = 'html, body { overflow: hidden !important; }';
+            document.head.appendChild(scrollbarStyle);
 
             const sourceBounds = board.getBoundingClientRect();
-            const viewportWidth = window.innerWidth;
-            const viewportHeight = window.innerHeight;
+            const viewportWidth = document.documentElement.clientWidth;
+            const viewportHeight = document.documentElement.clientHeight;
             const fitScale = Math.min(
               viewportWidth / sourceBounds.width,
               viewportHeight / sourceBounds.height);
@@ -87,9 +97,6 @@ namespace Wose.Desktop.Views
             };
           })()
           """);
-
-      try
-      {
         if (bounds == null ||
             bounds.Width <= 0 ||
             bounds.Height <= 0 ||
@@ -112,6 +119,7 @@ namespace Wose.Desktop.Views
           """
           (() => {
             document.getElementById('wosecon-board-export-overlay')?.remove();
+            document.getElementById('wosecon-board-export-no-scrollbar')?.remove();
             return true;
           })()
           """);

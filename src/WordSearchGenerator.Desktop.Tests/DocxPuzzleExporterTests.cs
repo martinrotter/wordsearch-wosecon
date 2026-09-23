@@ -160,6 +160,63 @@ namespace Wose.Desktop.Tests
       }
     }
 
+    [TestMethod]
+    public async Task SecretMessageUsesUnderlinedSlotsAndWraps()
+    {
+      var exporter = new DocxPuzzleExporter();
+      var model = CreateModel(
+        PuzzleMode.Normal,
+        "Message puzzle",
+        "ABCDEFGHIJKLM",
+        new PuzzleEntry("ABCDEFGHIJKLM"));
+      var path = CreateTemporaryPath();
+
+      try
+      {
+        await exporter.ExportAsync(
+          path,
+          model,
+          BoardPreviewMode.Puzzle,
+          Png);
+
+        using var document = WordprocessingDocument.Open(path, false);
+        var validationErrors = new OpenXmlValidator()
+          .Validate(document)
+          .ToArray();
+        Assert.HasCount(
+          0,
+          validationErrors,
+          string.Join(
+            Environment.NewLine,
+            validationErrors.Select(error => error.Description)));
+        var table = document.MainDocumentPart?.Document?.Body?
+          .Elements<W.Table>()
+          .First();
+        Assert.IsNotNull(table);
+        var rows = table.Elements<W.TableRow>().ToArray();
+        Assert.AreEqual(2, rows.Length);
+        Assert.AreEqual(19, rows[0].Elements<W.TableCell>().Count());
+        Assert.AreEqual(11, rows[1].Elements<W.TableCell>().Count());
+        Assert.AreEqual((uint)620, rows[0]
+          .GetFirstChild<W.TableRowProperties>()?
+          .GetFirstChild<W.TableRowHeight>()?.Val?.Value);
+        Assert.AreEqual("520", rows[0].Elements<W.TableCell>().First()
+          .GetFirstChild<W.TableCellProperties>()?
+          .GetFirstChild<W.TableCellWidth>()?.Width?.Value);
+        Assert.AreEqual(13, rows.SelectMany(row => row.Elements<W.TableCell>())
+          .Count(cell =>
+            cell.GetFirstChild<W.TableCellProperties>()?
+              .GetFirstChild<W.TableCellBorders>()?
+              .GetFirstChild<W.BottomBorder>() != null));
+
+
+      }
+      finally
+      {
+        DeleteIfPresent(path);
+      }
+    }
+
     private static BoardRenderModel CreateModel(
       PuzzleMode mode,
       string heading,

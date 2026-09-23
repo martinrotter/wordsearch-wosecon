@@ -9,6 +9,7 @@ using Wose.Common;
 using Wose.Desktop.Localization;
 using Wose.Desktop.Models;
 using Wose.Desktop.Services.Persistence;
+using Wose.Desktop.ViewModels;
 
 namespace Wose.Desktop.Views
 {
@@ -172,6 +173,14 @@ namespace Wose.Desktop.Views
     {
       var modifiers = Keyboard.Modifiers;
 
+      if (e.Key == Key.V && modifiers == ModifierKeys.Control &&
+          _viewModel.IsEditorEnabled && _viewModel.IsQuizMode &&
+          QuizEntriesGrid.IsKeyboardFocusWithin && PasteQuizEntries())
+      {
+        e.Handled = true;
+        return;
+      }
+
       switch (e.Key, modifiers)
       {
         case (Key.N, ModifierKeys.Control):
@@ -267,6 +276,54 @@ namespace Wose.Desktop.Views
           AboutOnClick(sender, e);
           break;
       }
+    }
+
+    private bool PasteQuizEntries()
+    {
+      string source;
+
+      try
+      {
+        if (!Clipboard.ContainsText())
+        {
+          return false;
+        }
+
+        source = Clipboard.GetText();
+      }
+      catch (System.Runtime.InteropServices.ExternalException)
+      {
+        return false;
+      }
+
+      if (!source.Contains('\t') &&
+          !source.Contains("  ", StringComparison.Ordinal))
+      {
+        return false;
+      }
+
+      try
+      {
+        var entries = PuzzleInputFileParser.ParseQuizEntries(source);
+        var selectedEntry = QuizEntriesGrid.SelectedItem as QuizEntryViewModel;
+        var insertIndex = selectedEntry == null
+          ? _viewModel.QuizEntries.Count
+          : _viewModel.QuizEntries.IndexOf(selectedEntry);
+        var firstEntry = _viewModel.InsertPastedQuizEntries(entries, insertIndex);
+        QuizEntriesGrid.SelectedItem = firstEntry;
+        QuizEntriesGrid.ScrollIntoView(firstEntry);
+      }
+      catch (InvalidDataException exception)
+      {
+        MessageBox.Show(
+          this,
+          exception.Message,
+          AppStrings.Get("CouldNotPasteQuizEntries"),
+          MessageBoxButton.OK,
+          MessageBoxImage.Error);
+      }
+
+      return true;
     }
 
     private async void NewProjectOnClick(

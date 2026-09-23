@@ -23,7 +23,10 @@ namespace Wose.Desktop.Services.Exporting
     private const uint PageHeightTwips = 11906;
     private const uint PageMarginTwips = 1021;
     private const long EmusPerTwip = 635;
-    private const int MaximumMessageColumns = 18;
+    private const int MaximumMessageColumns = 10;
+    private const uint MessageCellWidthTwips = 520;
+    private const uint MessageCellSpacingTwips = 100;
+    private const uint MessageRowHeightTwips = 620;
     private const int QuizNumberingId = 1;
     private const string BodyStyleId = "PuzzleBody";
     private const string HeadingStyleId = "PuzzleHeading";
@@ -303,14 +306,13 @@ namespace Wose.Desktop.Services.Exporting
       bool showSolution)
     {
       var columnCount = Math.Min(MaximumMessageColumns, message.Length);
-      var availableWidth = PageWidthTwips - PageMarginTwips * 2;
-      var cellWidth = availableWidth / MaximumMessageColumns;
       var table = new W.Table(
         new W.TableProperties(
           new W.TableWidth
           {
             Type = W.TableWidthUnitValues.Dxa,
-            Width = (cellWidth * (uint)columnCount)
+            Width = (MessageCellWidthTwips * (uint)columnCount +
+                     MessageCellSpacingTwips * (uint)(columnCount - 1))
               .ToString(CultureInfo.InvariantCulture)
           },
           new W.TableJustification
@@ -327,16 +329,36 @@ namespace Wose.Desktop.Services.Exporting
       {
         grid.Append(new W.GridColumn
         {
-          Width = cellWidth.ToString(CultureInfo.InvariantCulture)
+          Width = MessageCellWidthTwips.ToString(CultureInfo.InvariantCulture)
         });
+
+        if (index < columnCount - 1)
+        {
+          grid.Append(new W.GridColumn
+          {
+            Width = MessageCellSpacingTwips.ToString(CultureInfo.InvariantCulture)
+          });
+        }
       }
 
       table.Append(grid);
 
       for (var offset = 0; offset < message.Length; offset += columnCount)
       {
-        var row = new W.TableRow();
         var length = Math.Min(columnCount, message.Length - offset);
+        var row = new W.TableRow(
+          new W.TableRowProperties(
+            new W.TableRowHeight
+            {
+              Val = MessageRowHeightTwips,
+              HeightType = W.HeightRuleValues.AtLeast
+            }));
+
+        for (var index = 0; index < (columnCount - length) / 2; index++)
+        {
+          row.Append(CreateEmptyMessageCell(MessageCellWidthTwips));
+          row.Append(CreateEmptyMessageCell(MessageCellSpacingTwips));
+        }
 
         for (var index = 0; index < length; index++)
         {
@@ -344,36 +366,18 @@ namespace Wose.Desktop.Services.Exporting
             ? message[offset + index].ToString()
             : "\u00A0";
           var borders = new W.TableCellBorders(
-            new W.TopBorder
-            {
-              Val = W.BorderValues.Single,
-              Size = 6U,
-              Color = "7F8C8D"
-            },
-            new W.LeftBorder
-            {
-              Val = W.BorderValues.Single,
-              Size = 6U,
-              Color = "7F8C8D"
-            },
             new W.BottomBorder
             {
               Val = W.BorderValues.Single,
-              Size = 6U,
-              Color = "7F8C8D"
-            },
-            new W.RightBorder
-            {
-              Val = W.BorderValues.Single,
-              Size = 6U,
-              Color = "7F8C8D"
+              Size = 10U,
+              Color = "273544"
             });
           var cell = new W.TableCell(
             new W.TableCellProperties(
               new W.TableCellWidth
               {
                 Type = W.TableWidthUnitValues.Dxa,
-                Width = cellWidth.ToString(CultureInfo.InvariantCulture)
+                Width = MessageCellWidthTwips.ToString(CultureInfo.InvariantCulture)
               },
               borders,
               new W.TableCellVerticalAlignment
@@ -388,8 +392,8 @@ namespace Wose.Desktop.Services.Exporting
                 },
                 new W.SpacingBetweenLines
                 {
-                  Before = "60",
-                  After = "60"
+                  Before = "0",
+                  After = "0"
                 },
                 new W.Justification
                 {
@@ -408,12 +412,29 @@ namespace Wose.Desktop.Services.Exporting
                 CreateText(character))));
 
           row.Append(cell);
+
+          if (index < length - 1)
+          {
+            row.Append(CreateEmptyMessageCell(MessageCellSpacingTwips));
+          }
         }
 
         table.Append(row);
       }
 
       return table;
+    }
+
+    private static W.TableCell CreateEmptyMessageCell(uint width)
+    {
+      return new W.TableCell(
+        new W.TableCellProperties(
+          new W.TableCellWidth
+          {
+            Type = W.TableWidthUnitValues.Dxa,
+            Width = width.ToString(CultureInfo.InvariantCulture)
+          }),
+        new W.Paragraph());
     }
 
     private static W.Paragraph CreateTitle(string text)
