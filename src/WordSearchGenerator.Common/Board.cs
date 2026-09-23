@@ -242,64 +242,7 @@ namespace Wose.Common
 
     private void AssignQuizMessageCells()
     {
-      var availableCells = new Dictionary<char, List<(Cell Cell, int Position)>>();
-
-      for (var row = 0; row < Rows; row++)
-        for (var column = 0; column < Columns; column++)
-        {
-          var cell = Matrix[row, column];
-
-          if (cell.Type != Cell.CellType.CharFromText)
-          {
-            continue;
-          }
-
-          if (!availableCells.TryGetValue(cell.Char, out var cellsForCharacter))
-          {
-            cellsForCharacter = [];
-            availableCells.Add(cell.Char, cellsForCharacter);
-          }
-
-          cellsForCharacter.Add((cell, row * Columns + column));
-        }
-
-      for (var messageIndex = 0; messageIndex < Message.Length; messageIndex++)
-      {
-        var messageCharacter = Message[messageIndex];
-
-        if (!availableCells.TryGetValue(messageCharacter, out var matchingCells) ||
-            matchingCells.Count == 0)
-        {
-          throw new MessageCannotBePlacedException(
-            $"message character at index {messageIndex} cannot be assigned to a distinct answer cell");
-        }
-
-        var targetPosition = Message.Length == 1
-          ? (Rows * Columns - 1) / 2.0
-          : (double)messageIndex *
-            (Rows * Columns - 1) /
-            (Message.Length - 1);
-        var nearestCellIndex = 0;
-        var nearestDistance = Math.Abs(
-          matchingCells[0].Position - targetPosition);
-
-        for (var candidateIndex = 1;
-             candidateIndex < matchingCells.Count;
-             candidateIndex++)
-        {
-          var distance = Math.Abs(
-            matchingCells[candidateIndex].Position - targetPosition);
-
-          if (distance < nearestDistance)
-          {
-            nearestCellIndex = candidateIndex;
-            nearestDistance = distance;
-          }
-        }
-
-        matchingCells[nearestCellIndex].Cell.MessageIndex = messageIndex + 1;
-        matchingCells.RemoveAt(nearestCellIndex);
-      }
+      QuizMessageCellAssigner.Assign(this);
     }
 
     private void FillNormalMessageCells()

@@ -954,6 +954,156 @@ namespace Wose.Tests
     }
 
     [TestMethod]
+    public void QuizMessageLimitsEachAnswerToTwoWhenPossible()
+    {
+      var words = Enumerable.Range(0, 3)
+        .Select(index => new WordInfo
+        {
+          Placement = Location(
+            index * 2,
+            0,
+            DirectedLocation.LocationDirection.LeftToRight),
+          Text = "AAAA",
+          WordNumber = index + 1
+        })
+        .ToList();
+
+      var board = new Board(words, 5, 5, PuzzleMode.Quiz, "AAAAAA");
+      var counts = words.Select(word => board.Matrix
+          .OfType<Board.Cell>()
+          .Count(cell => cell.MessageIndex != null &&
+                         cell.Words.Any(owner => ReferenceEquals(owner, word))))
+        .ToArray();
+
+      CollectionAssert.AreEqual(new[] { 2, 2, 2 }, counts);
+    }
+
+    [TestMethod]
+    public void QuizMessageRaisesAnswerLimitOnlyWhenNeeded()
+    {
+      var words = Enumerable.Range(0, 2)
+        .Select(index => new WordInfo
+        {
+          Placement = Location(
+            index * 2,
+            0,
+            DirectedLocation.LocationDirection.LeftToRight),
+          Text = "AAAA",
+          WordNumber = index + 1
+        })
+        .ToList();
+
+      var board = new Board(words, 3, 5, PuzzleMode.Quiz, "AAAAA");
+      var counts = words.Select(word => board.Matrix
+          .OfType<Board.Cell>()
+          .Count(cell => cell.MessageIndex != null &&
+                         cell.Words.Any(owner => ReferenceEquals(owner, word))))
+        .OrderBy(count => count)
+        .ToArray();
+
+      CollectionAssert.AreEqual(new[] { 2, 3 }, counts);
+    }
+
+    [TestMethod]
+    public void QuizMessageRaisesLimitForLettersFoundInOneAnswer()
+    {
+      var answerTexts = new[] { "ZZZ", "AAA", "AAA" };
+      var words = answerTexts.Select((text, index) => new WordInfo
+        {
+          Placement = Location(
+            index * 2,
+            0,
+            DirectedLocation.LocationDirection.LeftToRight),
+          Text = text,
+          WordNumber = index + 1
+        })
+        .ToList();
+
+      var board = new Board(words, 5, 4, PuzzleMode.Quiz, "ZZZ");
+
+      Assert.AreEqual(3, board.Matrix.OfType<Board.Cell>()
+        .Count(cell => cell.MessageIndex != null &&
+                       cell.Words.Any(owner => ReferenceEquals(owner, words[0]))));
+    }
+
+    [TestMethod]
+    public void QuizMessageCountsIntersectionAgainstBothAnswers()
+    {
+      var words = new List<WordInfo>
+      {
+        new()
+        {
+          Placement = Location(
+            1,
+            0,
+            DirectedLocation.LocationDirection.LeftToRight),
+          Text = "AAA",
+          WordNumber = 1
+        },
+        new()
+        {
+          Placement = Location(
+            0,
+            2,
+            DirectedLocation.LocationDirection.TopBottom),
+          Text = "AAA",
+          WordNumber = 2
+        }
+      };
+
+      var board = new Board(words, 4, 4, PuzzleMode.Quiz, "AAAA");
+
+      Assert.IsNull(board.Matrix[1, 2].MessageIndex);
+      Assert.AreEqual(4, board.Matrix.OfType<Board.Cell>()
+        .Count(cell => cell.MessageIndex != null));
+      Assert.IsTrue(words.All(word => board.Matrix.OfType<Board.Cell>()
+        .Count(cell => cell.MessageIndex != null &&
+                       cell.Words.Any(owner => ReferenceEquals(owner, word))) == 2));
+    }
+
+    [TestMethod]
+    public void QuizMessageBalancesThirteenLettersAcrossSixAnswers()
+    {
+      var answerTexts = new[]
+      {
+        "TOTTENHAM",
+        "ETIHAD",
+        "EVERTON",
+        "BLACKPOOL",
+        "SOUTHGATE",
+        "ARSENAL"
+      };
+      var words = answerTexts.Select((text, index) => new WordInfo
+        {
+          Placement = Location(
+            index * 2,
+            0,
+            DirectedLocation.LocationDirection.LeftToRight),
+          Text = text,
+          WordNumber = index + 1
+        })
+        .ToList();
+
+      var board = new Board(words, 12, 14, PuzzleMode.Quiz, "PREMIERLEAGUE");
+      var counts = words.Select(word => board.Matrix
+          .OfType<Board.Cell>()
+          .Count(cell => cell.MessageIndex != null &&
+                         cell.Words.Any(owner => ReferenceEquals(owner, word))))
+        .ToArray();
+
+      Assert.AreEqual(13, counts.Sum());
+      Assert.IsTrue(counts.Max() <= 3);
+      var repeated = new Board(words, 12, 14, PuzzleMode.Quiz, "PREMIERLEAGUE");
+      CollectionAssert.AreEqual(
+        board.Matrix.OfType<Board.Cell>()
+          .Select(cell => cell.MessageIndex)
+          .ToArray(),
+        repeated.Matrix.OfType<Board.Cell>()
+          .Select(cell => cell.MessageIndex)
+          .ToArray());
+    }
+
+    [TestMethod]
     public void QuizMessageRejectsReusingTheSameAnswerCell()
     {
       var words = new List<WordInfo>
