@@ -155,9 +155,74 @@ namespace Wose.Desktop.Services.Exporting
         PuzzleDocumentPresentation.GetSecretMessageInstructions(
           model,
           previewMode)));
+
+      SecretMessageTemplate.TrySplit(
+        model.SecretMessageSentence,
+        out var prefix,
+        out var suffix);
+
+      if (!string.IsNullOrWhiteSpace(prefix) ||
+          !string.IsNullOrWhiteSpace(suffix))
+      {
+        body.Append(CreateMessageSentenceParagraph(
+          prefix,
+          model.SecretMessage,
+          suffix,
+          PuzzleDocumentPresentation.IsSolution(previewMode)));
+        return;
+      }
+
       body.Append(CreateMessageTable(
         model.SecretMessage,
         PuzzleDocumentPresentation.IsSolution(previewMode)));
+    }
+
+    private static W.Paragraph CreateMessageSentenceParagraph(
+      string prefix,
+      string message,
+      string suffix,
+      bool showSolution)
+    {
+      var paragraph = new W.Paragraph(
+        new W.ParagraphProperties(
+          new W.ParagraphStyleId
+          {
+            Val = BodyStyleId
+          },
+          new W.SpacingBetweenLines
+          {
+            After = "160"
+          },
+          new W.Justification
+          {
+            Val = W.JustificationValues.Center
+          }));
+
+      paragraph.Append(new W.Run(
+        new W.RunProperties(new W.FontSize { Val = "28" }),
+        CreateText(prefix)));
+
+      for (var index = 0; index < message.Length; index++)
+      {
+        var character = showSolution
+          ? message[index].ToString()
+          : "\u00A0";
+        paragraph.Append(new W.Run(
+          new W.RunProperties(
+            new W.FontSize { Val = "28" },
+            new W.Underline { Val = W.UnderlineValues.Single }),
+          CreateText($"\u00A0\u00A0{character}\u00A0\u00A0")));
+
+        if (index < message.Length - 1)
+        {
+          paragraph.Append(new W.Run(CreateText("\u2009")));
+        }
+      }
+
+      paragraph.Append(new W.Run(
+        new W.RunProperties(new W.FontSize { Val = "28" }),
+        CreateText(suffix)));
+      return paragraph;
     }
 
     private static W.Paragraph CreateBodyParagraph(

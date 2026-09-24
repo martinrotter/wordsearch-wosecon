@@ -46,6 +46,11 @@ namespace Wose.Desktop.Models
       get;
     }
 
+    public string SecretMessageSentence
+    {
+      get;
+    }
+
     public string StyleId
     {
       get;
@@ -66,7 +71,8 @@ namespace Wose.Desktop.Models
       string styleId,
       GenerationOptions generation,
       bool requireExactMessageFit = false,
-      int blindPercentage = 0) : base(mode, rows, columns)
+      int blindPercentage = 0,
+      string? secretMessageSentence = null) : base(mode, rows, columns)
     {
       ArgumentNullException.ThrowIfNull(entries);
       ArgumentNullException.ThrowIfNull(secretMessage);
@@ -103,8 +109,18 @@ namespace Wose.Desktop.Models
           nameof(entries));
       }
 
+      var sentence = secretMessageSentence ?? SecretMessageTemplate.Marker;
+
+      if (!SecretMessageTemplate.TrySplit(sentence, out _, out _))
+      {
+        throw new ArgumentException(
+          AppStrings.Get("SecretMessageSentenceInvalid"),
+          nameof(secretMessageSentence));
+      }
+
       Entries = new ReadOnlyCollection<PuzzleEntry>(entryArray);
       SecretMessage = secretMessage;
+      SecretMessageSentence = sentence;
       PuzzleHeading = puzzleHeading.Trim();
       EntryListHeading = entryListHeading.Trim();
       StyleId = styleId;

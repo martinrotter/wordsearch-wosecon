@@ -50,6 +50,8 @@
   <data name="SecretMessageDescription" xml:space="preserve"><value>The message fills cells not occupied by words. Remaining vacant cells become black boxes.</value></data>
   <data name="SecretMessageQuizDescription" xml:space="preserve"><value>Each message character must occur in the answers. Matching answer cells are highlighted and numbered in message order; unused cells become black boxes.</value></data>
   <data name="SecretMessageTooltip" xml:space="preserve"><value>Spaces are preserved as message characters</value></data>
+  <data name="SecretMessageSentenceDescription" xml:space="preserve"><value>Sentence containing the secret message. Include &lt;TAJENKA&gt; exactly once, or leave only the marker for a standalone message.</value></data>
+  <data name="SecretMessageSentenceInvalid" xml:space="preserve"><value>The sentence must contain exactly one &lt;TAJENKA&gt; marker.</value></data>
   <data name="RequireExactMessageFit" xml:space="preserve"><value>No black boxes</value></data>
   <data name="RequireExactMessageFitTooltip" xml:space="preserve"><value>Only accept a Normal-mode board when no black boxes remain.</value></data>
   <data name="SpaceCharacter" xml:space="preserve"><value>space</value></data>
@@ -239,9 +241,9 @@
   <data name="HtmlQuizStatistics" xml:space="preserve"><value>{0:N0} answer and question cells, of which {1:N0} extract the secret message, {2:N0} black boxes and {3:N0} intersections.</value></data>
   <data name="HtmlTutorialHeading" xml:space="preserve"><value>How to solve</value></data>
   <data name="HtmlTutorialNormal" xml:space="preserve"><value>Find and cross out every word listed below. Words can run in any of the eight directions.</value></data>
-  <data name="HtmlTutorialNormalWithMessage" xml:space="preserve"><value>Find and cross out every word listed below. Words can run in any of the eight directions. Read the remaining letters from top to bottom and left to right.</value></data>
+  <data name="HtmlTutorialNormalWithMessage" xml:space="preserve"><value>Find and cross out every word listed below. Words can run in any of the eight directions. Read the remaining letters row by row, from left to right, starting at the top.</value></data>
   <data name="HtmlTutorialNormalBlind" xml:space="preserve"><value>Find and cross out every word listed below. Words can run in any of the eight directions. Some cells are blind and intentionally show no character; infer their missing characters.</value></data>
-  <data name="HtmlTutorialNormalBlindWithMessage" xml:space="preserve"><value>Find and cross out every word listed below. Words can run in any of the eight directions. Some cells are blind and intentionally show no character; infer their missing characters. Read the remaining cells from top to bottom and left to right.</value></data>
+  <data name="HtmlTutorialNormalBlindWithMessage" xml:space="preserve"><value>Find and cross out every word listed below. Words can run in any of the eight directions. Some cells are blind and intentionally show no character; infer their missing characters. Read the remaining cells row by row, from left to right, starting at the top.</value></data>
   <data name="HtmlTutorialQuiz" xml:space="preserve"><value>Answer each question, then write its answer in the arrow's direction, starting in the next cell.</value></data>
   <data name="HtmlTutorialQuizWithMessage" xml:space="preserve"><value>Answer each question, then write its answer in the arrow's direction, starting in the next cell. Read the highlighted cells in number order.</value></data>
   <data name="HtmlSecretMessageNormalInstructions" xml:space="preserve"><value>Write the remaining letters here after finding all words.</value></data>

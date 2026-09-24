@@ -66,6 +66,7 @@ namespace Wose.Desktop.ViewModels
     private bool _requireExactMessageFit;
     private string _rowsText = NewProjectRowsText;
     private string _secretMessage = NewProjectSecretMessage;
+    private string _secretMessageSentence = SecretMessageTemplate.Marker;
     private string _selectedStyleId;
     private ParallelismOption _selectedParallelismOption;
     private string _statusText = AppStrings.Get("Idle");
@@ -453,6 +454,20 @@ namespace Wose.Desktop.ViewModels
       }
     }
 
+    public string SecretMessageSentence
+    {
+      get => _secretMessageSentence;
+      set
+      {
+        if (SetProperty(ref _secretMessageSentence, value ?? string.Empty))
+        {
+          MarkDocumentChanged(false);
+          RefreshEditorState();
+          RefreshPreviewText();
+        }
+      }
+    }
+
     public bool RequireExactMessageFit
     {
       get => _requireExactMessageFit;
@@ -834,7 +849,8 @@ namespace Wose.Desktop.ViewModels
           SelectedParallelismOption.ParallelAttempts,
           int.Parse(MaximumAttemptTimeSecondsText)),
         RequireExactMessageFit,
-        IsNormalMode ? BlindPercentage : 0);
+        IsNormalMode ? BlindPercentage : 0,
+        SecretMessageSentence);
     }
 
     private static string FormatDifficulty(
@@ -953,7 +969,8 @@ namespace Wose.Desktop.ViewModels
           result,
           PuzzleHeading,
           EntryListHeading,
-          BlindPercentage);
+          BlindPercentage,
+          SecretMessageSentence);
         SetPreviewMode(PreviewMode, true);
         Elapsed = result.Elapsed;
         TestedPositions = result.TestedPositions;
@@ -1110,7 +1127,8 @@ namespace Wose.Desktop.ViewModels
         CurrentResult,
         PuzzleHeading,
         EntryListHeading,
-        BlindPercentage);
+        BlindPercentage,
+        SecretMessageSentence);
       SetPreviewMode(PreviewMode, true);
     }
 
@@ -1412,6 +1430,14 @@ namespace Wose.Desktop.ViewModels
       }
 
       SetErrors(nameof(SecretMessage), messageErrors);
+      SetErrors(
+        nameof(SecretMessageSentence),
+        SecretMessageTemplate.TrySplit(
+          SecretMessageSentence,
+          out _,
+          out _)
+          ? []
+          : [AppStrings.Get("SecretMessageSentenceInvalid")]);
     }
 
     private void ValidateMaximumAttemptTime()

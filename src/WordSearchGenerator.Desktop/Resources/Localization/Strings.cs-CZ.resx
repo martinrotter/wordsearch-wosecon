@@ -50,6 +50,8 @@
   <data name="SecretMessageDescription" xml:space="preserve"><value>Tajenka vyplní buňky neobsazené slovy. Zbývající volné buňky budou černé.</value></data>
   <data name="SecretMessageQuizDescription" xml:space="preserve"><value>Každý znak tajenky se musí vyskytovat v odpovědích. Odpovídající buňky budou zvýrazněny a očíslovány v pořadí tajenky; nepoužité buňky budou černé.</value></data>
   <data name="SecretMessageTooltip" xml:space="preserve"><value>Mezery zůstanou zachovány jako znaky tajenky</value></data>
+  <data name="SecretMessageSentenceDescription" xml:space="preserve"><value>Věta s tajenkou. Značku &lt;TAJENKA&gt; vložte právě jednou; pokud nechcete další text, ponechte pouze značku.</value></data>
+  <data name="SecretMessageSentenceInvalid" xml:space="preserve"><value>Věta musí obsahovat právě jednu značku &lt;TAJENKA&gt;.</value></data>
   <data name="RequireExactMessageFit" xml:space="preserve"><value>Bez černých políček</value></data>
   <data name="RequireExactMessageFitTooltip" xml:space="preserve"><value>Přijmout osmisměrku v normálním režimu pouze tehdy, když nezůstanou žádná černá políčka.</value></data>
   <data name="SpaceCharacter" xml:space="preserve"><value>mezera</value></data>
@@ -239,9 +241,9 @@
   <data name="HtmlQuizStatistics" xml:space="preserve"><value>{0:N0} buněk odpovědí a otázek, z nichž {1:N0} tvoří tajenku, {2:N0} černých polí a {3:N0} křížení.</value></data>
   <data name="HtmlTutorialHeading" xml:space="preserve"><value>Jak luštit</value></data>
   <data name="HtmlTutorialNormal" xml:space="preserve"><value>Najděte a vyškrtejte všechna níže uvedená slova. Mohou vést kterýmkoli z osmi směrů.</value></data>
-  <data name="HtmlTutorialNormalWithMessage" xml:space="preserve"><value>Najděte a vyškrtejte všechna níže uvedená slova. Mohou vést kterýmkoli z osmi směrů. Zbývající písmena čtěte shora dolů a zleva doprava.</value></data>
+  <data name="HtmlTutorialNormalWithMessage" xml:space="preserve"><value>Najděte a vyškrtejte všechna níže uvedená slova. Mohou vést kterýmkoli z osmi směrů. Zbývající písmena čtěte po řádcích zleva doprava, postupně shora dolů.</value></data>
   <data name="HtmlTutorialNormalBlind" xml:space="preserve"><value>Najděte a vyškrtejte všechna níže uvedená slova. Mohou vést kterýmkoli z osmi směrů. Některá pole jsou slepá a záměrně nezobrazují znak; chybějící znaky odhadněte.</value></data>
-  <data name="HtmlTutorialNormalBlindWithMessage" xml:space="preserve"><value>Najděte a vyškrtejte všechna níže uvedená slova. Mohou vést kterýmkoli z osmi směrů. Některá pole jsou slepá a záměrně nezobrazují znak; chybějící znaky odhadněte. Zbývající pole čtěte shora dolů a zleva doprava.</value></data>
+  <data name="HtmlTutorialNormalBlindWithMessage" xml:space="preserve"><value>Najděte a vyškrtejte všechna níže uvedená slova. Mohou vést kterýmkoli z osmi směrů. Některá pole jsou slepá a záměrně nezobrazují znak; chybějící znaky odhadněte. Zbývající pole čtěte po řádcích zleva doprava, postupně shora dolů.</value></data>
   <data name="HtmlTutorialQuiz" xml:space="preserve"><value>Odpovězte na každou otázku a odpověď vepište ve směru šipky, počínaje následující buňkou.</value></data>
   <data name="HtmlTutorialQuizWithMessage" xml:space="preserve"><value>Odpovězte na každou otázku a odpověď vepište ve směru šipky, počínaje následující buňkou. Zvýrazněné buňky potom čtěte v pořadí čísel.</value></data>
   <data name="HtmlSecretMessageNormalInstructions" xml:space="preserve"><value>Po nalezení všech slov sem zapište zbývající písmena.</value></data>

@@ -63,6 +63,11 @@ namespace Wose.Desktop.Models.Rendering
       get;
     }
 
+    public string SecretMessageSentence
+    {
+      get;
+    }
+
     public string PuzzleHeading
     {
       get;
@@ -91,6 +96,7 @@ namespace Wose.Desktop.Models.Rendering
       string puzzleHeading,
       string entryListHeading,
       string secretMessage,
+      string secretMessageSentence,
       int blindPercentage,
       int puzzleCellCount,
       int messageCellCount,
@@ -105,6 +111,7 @@ namespace Wose.Desktop.Models.Rendering
       PuzzleHeading = puzzleHeading;
       EntryListHeading = entryListHeading;
       SecretMessage = secretMessage;
+      SecretMessageSentence = secretMessageSentence;
       BlindPercentage = blindPercentage;
       BlindCellCount = Cells.Count(cell => cell.IsBlind);
       PuzzleCellCount = puzzleCellCount;
@@ -121,7 +128,8 @@ namespace Wose.Desktop.Models.Rendering
       GenerationResult result,
       string? puzzleHeading = null,
       string? entryListHeading = null,
-      int? blindPercentage = null)
+      int? blindPercentage = null,
+      string? secretMessageSentence = null)
     {
       ArgumentNullException.ThrowIfNull(result);
 
@@ -175,6 +183,7 @@ namespace Wose.Desktop.Models.Rendering
         (puzzleHeading ?? result.Definition.PuzzleHeading).Trim(),
         (entryListHeading ?? result.Definition.EntryListHeading).Trim(),
         result.Definition.SecretMessage,
+        secretMessageSentence ?? result.Definition.SecretMessageSentence,
         effectiveBlindPercentage,
         result.PuzzleCellCount,
         result.MessageCellCount,

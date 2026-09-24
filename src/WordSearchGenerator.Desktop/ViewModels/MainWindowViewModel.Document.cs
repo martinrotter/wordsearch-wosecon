@@ -158,6 +158,7 @@ namespace Wose.Desktop.ViewModels
         RowsText = definition.Rows.ToString();
         ColumnsText = definition.Columns.ToString();
         SecretMessage = definition.SecretMessage;
+        SecretMessageSentence = definition.SecretMessageSentence;
         RequireExactMessageFit = definition.RequireExactMessageFit;
         BlindPercentage = definition.BlindPercentage;
         PuzzleHeading = definition.PuzzleHeading;
@@ -235,6 +236,7 @@ namespace Wose.Desktop.ViewModels
         ColumnsText = NewProjectColumnsText;
         WordsText = NewProjectWordsText;
         SecretMessage = NewProjectSecretMessage;
+        SecretMessageSentence = SecretMessageTemplate.Marker;
         RequireExactMessageFit = false;
         BlindPercentage = 0;
         PuzzleHeading = string.Empty;
@@ -344,7 +346,8 @@ namespace Wose.Desktop.ViewModels
         result,
         PuzzleHeading,
         EntryListHeading,
-        BlindPercentage);
+        BlindPercentage,
+        SecretMessageSentence);
       SetPreviewMode(BoardPreviewMode.Puzzle, true);
       Elapsed = result.Elapsed;
       TestedPositions = result.TestedPositions;

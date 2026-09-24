@@ -179,6 +179,7 @@ namespace Wose.Desktop.Services.Persistence
         RequireExactMessageFit = definition.RequireExactMessageFit,
         Rows = definition.Rows,
         SecretMessage = definition.SecretMessage,
+        SecretMessageSentence = definition.SecretMessageSentence,
         StyleId = definition.StyleId
       };
     }
@@ -409,7 +410,8 @@ namespace Wose.Desktop.Services.Persistence
             file.ParallelAttempts,
             file.MaximumAttemptTimeSeconds),
           file.RequireExactMessageFit,
-          file.BlindPercentage);
+          file.BlindPercentage,
+          file.SecretMessageSentence);
       }
       catch (Exception exception)
         when (exception is ArgumentException)
@@ -651,6 +653,12 @@ namespace Wose.Desktop.Services.Persistence
       }
 
       public required string SecretMessage
+      {
+        get;
+        set;
+      }
+
+      public string? SecretMessageSentence
       {
         get;
         set;

@@ -284,6 +284,13 @@ namespace Wose.Desktop.Services.Rendering
         : AppStrings.Format(
           "HtmlSecretMessagePlaceholderLabel",
           model.SecretMessage.Length);
+      SecretMessageTemplate.TrySplit(
+        model.SecretMessageSentence,
+        out var sentencePrefix,
+        out var sentenceSuffix);
+      var hasSentenceContext =
+        !string.IsNullOrWhiteSpace(sentencePrefix) ||
+        !string.IsNullOrWhiteSpace(sentenceSuffix);
 
       builder.AppendLine("      <section class=\"secret-message\">");
       builder.Append("        <h2>");
@@ -295,13 +302,30 @@ namespace Wose.Desktop.Services.Rendering
           model,
           previewMode)));
       builder.AppendLine("</p>");
-      builder.Append("        <div class=\"message-slots\" aria-label=\"");
+
+      if (hasSentenceContext)
+      {
+        builder.Append("        <div class=\"message-sentence\">");
+
+        if (sentencePrefix.Length != 0)
+        {
+          builder.Append("<span class=\"message-context\">");
+          builder.Append(Encode(sentencePrefix));
+          builder.Append("</span>");
+        }
+      }
+
+      builder.Append(hasSentenceContext
+        ? "<span class=\"message-slots\" aria-label=\""
+        : "        <div class=\"message-slots\" aria-label=\"");
       builder.Append(Encode(accessibleLabel));
-      builder.AppendLine("\">");
+      builder.Append(hasSentenceContext ? "\">" : "\">\n");
 
       foreach (var character in model.SecretMessage)
       {
-        builder.Append("          <span class=\"message-slot\" aria-hidden=\"true\">");
+        builder.Append(hasSentenceContext
+          ? "<span class=\"message-slot\" aria-hidden=\"true\">"
+          : "          <span class=\"message-slot\" aria-hidden=\"true\">");
 
         if (isSolution)
         {
@@ -314,10 +338,23 @@ namespace Wose.Desktop.Services.Rendering
           builder.Append("&#160;");
         }
 
-        builder.AppendLine("</span>");
+        builder.Append(hasSentenceContext ? "</span>" : "</span>\n");
       }
 
-      builder.AppendLine("        </div>");
+      builder.Append(hasSentenceContext ? "</span>" : "        </div>\n");
+
+      if (hasSentenceContext)
+      {
+        if (sentenceSuffix.Length != 0)
+        {
+          builder.Append("<span class=\"message-context\">");
+          builder.Append(Encode(sentenceSuffix));
+          builder.Append("</span>");
+        }
+
+        builder.AppendLine("</div>");
+      }
+
       builder.AppendLine("      </section>");
     }
 

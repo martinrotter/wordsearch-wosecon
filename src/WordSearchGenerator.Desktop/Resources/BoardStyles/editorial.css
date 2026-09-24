@@ -112,18 +112,37 @@ body {
 }
 
 .cell.quiz-question {
-  flex-direction: column;
-  gap: 1px;
-  background: var(--quiz);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  place-content: stretch;
+  place-items: stretch;
+  background: #eafaf2;
   font-weight: 700;
 }
 
+.quiz-number,
+.quiz-arrow {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
 .quiz-number {
-  font-size: clamp(6px, 30cqi, 18px);
+  background: #d7f2e4;
+  color: #153c2c;
+  font-size: clamp(9px, 42cqi, 26px);
+  font-weight: 800;
 }
 
 .quiz-arrow {
-  font-size: clamp(7px, 40cqi, 24px);
+  border-top: 1px solid #b4dcc8;
+  background: #eafaf2;
+  color: #215943;
+  font-size: clamp(11px, 46cqi, 28px);
+  font-weight: 600;
 }
 
 .solution .cell.word {
@@ -143,21 +162,25 @@ body {
   background: var(--message);
 }
 
+.cell.message-extraction {
+  border: 1px solid #b77900;
+}
+
 .message-index {
   position: absolute;
-  top: 4%;
-  right: 4%;
+  top: 0;
+  right: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 38cqi;
-  min-height: 32cqi;
-  padding: 1cqi 4cqi;
-  border: 1px solid #b77900;
-  border-radius: 4px;
+  min-width: 36cqi;
+  min-height: 39cqi;
+  padding: 0.5cqi 0.75cqi;
+  border-bottom: 1px solid #b77900;
+  border-left: 1px solid #b77900;
   background: #fff6d5;
   color: #513800;
-  font-size: clamp(7px, 24cqi, 15px);
+  font-size: clamp(9px, 30cqi, 19px);
   font-weight: 800;
   font-variant-numeric: tabular-nums;
   line-height: 1;
@@ -215,6 +238,25 @@ body {
   flex-wrap: wrap;
   justify-content: center;
   gap: 9px 6px;
+}
+
+.message-sentence {
+  text-align: center;
+  font-size: 20px;
+  line-height: 2.5;
+}
+
+.message-sentence .message-slots {
+  display: inline;
+}
+
+.message-sentence .message-slot {
+  margin: 0 2px;
+  vertical-align: middle;
+}
+
+.message-context {
+  white-space: pre-wrap;
 }
 
 .message-slot {
@@ -401,6 +443,10 @@ body {
     width: 38px;
     height: 44px;
     font-size: 28px;
+  }
+
+  .message-sentence {
+    font-size: 25px;
   }
 
   .matrix {

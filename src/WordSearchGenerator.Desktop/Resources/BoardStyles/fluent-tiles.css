@@ -246,6 +246,25 @@ body {
   gap: 9px 6px;
 }
 
+.message-sentence {
+  text-align: center;
+  font-size: 20px;
+  line-height: 2.5;
+}
+
+.message-sentence .message-slots {
+  display: inline;
+}
+
+.message-sentence .message-slot {
+  margin: 0 2px;
+  vertical-align: middle;
+}
+
+.message-context {
+  white-space: pre-wrap;
+}
+
 .message-slot {
   display: inline-flex;
   align-items: flex-end;
@@ -446,6 +465,10 @@ body {
     width: 38px;
     height: 44px;
     font-size: 28px;
+  }
+
+  .message-sentence {
+    font-size: 25px;
   }
 
   .matrix {
