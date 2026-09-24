@@ -399,7 +399,7 @@ body {
 
 @media print {
   @page {
-    margin: 12mm;
+    margin: 0;
   }
 
   body {
@@ -416,8 +416,40 @@ body {
     backdrop-filter: none;
   }
 
+  .document-title {
+    font-size: 46px;
+  }
+
+  .tutorial h2,
+  .secret-message h2,
+  .entries h2 {
+    font-size: 27px;
+  }
+
+  .tutorial p,
+  .secret-message-instructions {
+    font-size: 21px;
+    line-height: 1.4;
+  }
+
+  .question-list,
+  .word-list {
+    font-size: 25px;
+    line-height: 1.3;
+  }
+
+  .word-list {
+    columns: 2 220px;
+  }
+
+  .message-slot {
+    width: 38px;
+    height: 44px;
+    font-size: 28px;
+  }
+
   .matrix {
-    width: min(100%, 185mm);
+    width: 100%;
     box-shadow: none;
   }
 
