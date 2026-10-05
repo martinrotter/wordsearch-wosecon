@@ -143,6 +143,44 @@ body {
   font-size: clamp(7px, 40cqi, 24px);
 }
 
+/* Keep the ruled grid while giving the contour a uniform cell coordinate system. */
+.matrix.quiz-outlined {
+  position: relative;
+  gap: 0;
+  isolation: isolate;
+}
+
+.matrix.quiz-outlined .cell {
+  border: 0.5px solid var(--line);
+}
+
+.quiz-outlined .quiz-number,
+.quiz-outlined .quiz-arrow,
+.question-list li[style]::marker {
+  color: var(--quiz-word-color);
+}
+
+.quiz-word-outlines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+.quiz-word-outline {
+  fill: none;
+  stroke-width: 3;
+  stroke-linejoin: miter;
+}
+
+.quiz-outlined .message-index {
+  z-index: 2;
+}
+
 .solution .cell.word {
   background: var(--word);
 }

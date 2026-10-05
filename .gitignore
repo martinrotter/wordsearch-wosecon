@@ -4,6 +4,7 @@
 /artifacts/
 /tmp/
 publish/
+docs/prototypes
 
 # Test, coverage, and benchmark output
 TestResults/

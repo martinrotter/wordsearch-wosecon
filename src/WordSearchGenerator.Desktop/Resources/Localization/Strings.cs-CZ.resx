@@ -246,6 +246,7 @@
   <data name="HtmlTutorialNormalBlindWithMessage" xml:space="preserve"><value>Najděte a vyškrtejte všechna níže uvedená slova. Mohou vést kterýmkoli z osmi směrů. Některá pole jsou slepá a záměrně nezobrazují znak; chybějící znaky odhadněte. Zbývající pole čtěte po řádcích zleva doprava, postupně shora dolů.</value></data>
   <data name="HtmlTutorialQuiz" xml:space="preserve"><value>Odpovězte na každou otázku a odpověď vepište ve směru šipky, počínaje následující buňkou.</value></data>
   <data name="HtmlTutorialQuizWithMessage" xml:space="preserve"><value>Odpovězte na každou otázku a odpověď vepište ve směru šipky, počínaje následující buňkou. Zvýrazněné buňky potom čtěte v pořadí čísel.</value></data>
+  <data name="HtmlTutorialQuizOutlines" xml:space="preserve"><value>Sledujte obrys stejné barvy až ke konci každé odpovědi.</value></data>
   <data name="HtmlSecretMessageNormalInstructions" xml:space="preserve"><value>Po nalezení všech slov sem zapište zbývající písmena.</value></data>
   <data name="HtmlSecretMessageQuizInstructions" xml:space="preserve"><value>Po vyřešení odpovědí sem zapište znaky ze zvýrazněných očíslovaných buněk.</value></data>
   <data name="HtmlSecretMessageSolutionInstructions" xml:space="preserve"><value>Vyplněná tajenka.</value></data>

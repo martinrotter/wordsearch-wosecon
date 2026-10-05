@@ -145,6 +145,50 @@ body {
   font-weight: 600;
 }
 
+/* A gapless coordinate system keeps the SVG aligned at every preview size. */
+.matrix.quiz-outlined {
+  position: relative;
+  gap: 0;
+  padding: 0;
+  isolation: isolate;
+}
+
+.matrix.quiz-outlined .cell {
+  border: 0.5px solid var(--line);
+}
+
+.matrix.quiz-outlined .cell.message-extraction {
+  border: 1px solid #b77900;
+}
+
+.quiz-outlined .quiz-number,
+.quiz-outlined .quiz-arrow,
+.question-list li[style]::marker {
+  color: var(--quiz-word-color);
+}
+
+.quiz-word-outlines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+.quiz-word-outline {
+  fill: none;
+  stroke-width: 3.5;
+  stroke-linejoin: round;
+}
+
+/* Extraction numbers remain legible where a contour crosses their badge. */
+.quiz-outlined .message-index {
+  z-index: 2;
+}
+
 .solution .cell.word {
   background: var(--word);
 }

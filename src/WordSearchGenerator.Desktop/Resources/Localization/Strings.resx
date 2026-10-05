@@ -246,6 +246,7 @@
   <data name="HtmlTutorialNormalBlindWithMessage" xml:space="preserve"><value>Find and cross out every word listed below. Words can run in any of the eight directions. Some cells are blind and intentionally show no character; infer their missing characters. Read the remaining cells row by row, from left to right, starting at the top.</value></data>
   <data name="HtmlTutorialQuiz" xml:space="preserve"><value>Answer each question, then write its answer in the arrow's direction, starting in the next cell.</value></data>
   <data name="HtmlTutorialQuizWithMessage" xml:space="preserve"><value>Answer each question, then write its answer in the arrow's direction, starting in the next cell. Read the highlighted cells in number order.</value></data>
+  <data name="HtmlTutorialQuizOutlines" xml:space="preserve"><value>Follow the matching colored outline to the end of each answer.</value></data>
   <data name="HtmlSecretMessageNormalInstructions" xml:space="preserve"><value>Write the remaining letters here after finding all words.</value></data>
   <data name="HtmlSecretMessageQuizInstructions" xml:space="preserve"><value>Write the letters from the highlighted numbered cells here after solving the answers.</value></data>
   <data name="HtmlSecretMessageSolutionInstructions" xml:space="preserve"><value>Completed secret message.</value></data>

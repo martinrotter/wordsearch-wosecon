@@ -141,6 +141,45 @@ body {
   font-size: clamp(7px, 40cqi, 24px);
 }
 
+/* Tile margins preserve the gutters on a uniform pitch shared with the SVG. */
+.matrix.quiz-outlined {
+  --quiz-outline-padding: 8px;
+  position: relative;
+  gap: 0;
+  isolation: isolate;
+}
+
+.matrix.quiz-outlined .cell {
+  margin: 3.5%;
+}
+
+.quiz-outlined .quiz-number,
+.quiz-outlined .quiz-arrow,
+.question-list li[style]::marker {
+  color: var(--quiz-word-color);
+}
+
+.quiz-word-outlines {
+  position: absolute;
+  inset: var(--quiz-outline-padding);
+  width: calc(100% - 2 * var(--quiz-outline-padding));
+  height: calc(100% - 2 * var(--quiz-outline-padding));
+  pointer-events: none;
+  z-index: 1;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+.quiz-word-outline {
+  fill: none;
+  stroke-width: 4;
+  stroke-linejoin: round;
+}
+
+.quiz-outlined .message-index {
+  z-index: 2;
+}
+
 .solution .cell.word {
   border-color: #b7d1fa;
   background: var(--word);
@@ -405,6 +444,10 @@ body {
     padding: 5px;
     gap: 2px;
     border-radius: 12px;
+  }
+
+  .matrix.quiz-outlined {
+    --quiz-outline-padding: 5px;
   }
 
   .cell {

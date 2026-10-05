@@ -44,6 +44,7 @@ namespace Wose.Desktop.Services.Rendering
       }
 
       var isSolution = PuzzleDocumentPresentation.IsSolution(previewMode);
+      var includeQuizOutlines = model.Mode == PuzzleMode.Quiz;
       var browserTitle = string.IsNullOrWhiteSpace(model.PuzzleHeading)
         ? isSolution
           ? AppStrings.Get("HtmlPuzzleSolution")
@@ -60,11 +61,11 @@ namespace Wose.Desktop.Services.Rendering
         isSolution,
         styleId,
         styleCss);
-      AppendMatrix(builder, model, isSolution);
+      AppendMatrix(builder, model, isSolution, includeQuizOutlines, styleId);
 
       if (PuzzleDocumentPresentation.ShouldIncludeTutorial(previewMode))
       {
-        AppendTutorial(builder, model);
+        AppendTutorial(builder, model, includeQuizOutlines);
       }
 
       if (PuzzleDocumentPresentation.ShouldIncludeSecretMessage(model))
@@ -77,7 +78,7 @@ namespace Wose.Desktop.Services.Rendering
         AppendSolutionDetails(builder, model);
       }
 
-      AppendEntries(builder, model, previewMode);
+      AppendEntries(builder, model, previewMode, includeQuizOutlines);
       builder.AppendLine("    </main>");
       builder.AppendLine("  </body>");
       builder.AppendLine("</html>");
@@ -129,7 +130,8 @@ namespace Wose.Desktop.Services.Rendering
     private static void AppendEntries(
       StringBuilder builder,
       BoardRenderModel model,
-      BoardPreviewMode previewMode)
+      BoardPreviewMode previewMode,
+      bool includeQuizOutlines)
     {
       var includeQuizAnswers =
         PuzzleDocumentPresentation.ShouldIncludeQuizAnswers(
@@ -167,7 +169,14 @@ namespace Wose.Desktop.Services.Rendering
         {
           builder.Append("          <li value=\"");
           builder.Append(entry.Number.ToString(CultureInfo.InvariantCulture));
-          builder.Append("\"><span class=\"question\">");
+          builder.Append('"');
+
+          if (includeQuizOutlines)
+          {
+            AppendQuizColor(builder, entry.Number);
+          }
+
+          builder.Append("><span class=\"question\">");
           builder.Append(Encode(entry.Question ?? string.Empty));
           builder.Append("</span>");
 
@@ -191,9 +200,13 @@ namespace Wose.Desktop.Services.Rendering
     private static void AppendMatrix(
       StringBuilder builder,
       BoardRenderModel model,
-      bool isSolution)
+      bool isSolution,
+      bool includeQuizOutlines,
+      string styleId)
     {
-      builder.Append("      <div class=\"matrix\" style=\"--columns: ");
+      builder.Append(includeQuizOutlines
+        ? "      <div class=\"matrix quiz-outlined\" style=\"--columns: "
+        : "      <div class=\"matrix\" style=\"--columns: ");
       builder.Append(model.Columns.ToString(CultureInfo.InvariantCulture));
       builder.Append(";\" role=\"grid\" aria-rowcount=\"");
       builder.Append(model.Rows.ToString(CultureInfo.InvariantCulture));
@@ -212,6 +225,11 @@ namespace Wose.Desktop.Services.Rendering
         builder.Append(Encode(label));
         builder.Append("\"");
 
+        if (includeQuizOutlines && cell.Kind == Board.Cell.CellType.QuizQuestion)
+        {
+          AppendQuizColor(builder, cell.QuizQuestionNumber);
+        }
+
         if (isSolution)
         {
           builder.Append(" title=\"");
@@ -224,7 +242,44 @@ namespace Wose.Desktop.Services.Rendering
         builder.AppendLine("</div>");
       }
 
+      if (includeQuizOutlines)
+      {
+        AppendQuizOutlines(builder, model, styleId);
+      }
+
       builder.AppendLine("      </div>");
+    }
+
+    private static void AppendQuizColor(StringBuilder builder, int number)
+    {
+      builder.Append(" style=\"--quiz-word-color: ");
+      builder.Append(QuizWordOutline.GetColor(number));
+      builder.Append(";\"");
+    }
+
+    private static void AppendQuizOutlines(
+      StringBuilder builder, BoardRenderModel model, string styleId)
+    {
+      builder.Append("        <svg class=\"quiz-word-outlines\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 ");
+      builder.Append((model.Columns * QuizWordOutline.CellSize).ToString(CultureInfo.InvariantCulture));
+      builder.Append(' ');
+      builder.Append((model.Rows * QuizWordOutline.CellSize).ToString(CultureInfo.InvariantCulture));
+      builder.AppendLine("\" preserveAspectRatio=\"none\" aria-hidden=\"true\" focusable=\"false\">");
+
+      // Fluent tiles have their own borders and gutters inside each cell pitch.
+      var insetOffset = styleId == "fluent-tiles" ? 3 : 0;
+      foreach (var outline in QuizWordOutline.Create(model, insetOffset))
+      {
+        builder.Append("          <path class=\"quiz-word-outline\" data-word-number=\"");
+        builder.Append(outline.Number.ToString(CultureInfo.InvariantCulture));
+        builder.Append("\" stroke=\"");
+        builder.Append(outline.Color);
+        builder.Append("\" d=\"");
+        builder.Append(outline.PathData);
+        builder.AppendLine("\" />");
+      }
+
+      builder.AppendLine("        </svg>");
     }
 
     private static void AppendCellContent(
@@ -360,7 +415,8 @@ namespace Wose.Desktop.Services.Rendering
 
     private static void AppendTutorial(
       StringBuilder builder,
-      BoardRenderModel model)
+      BoardRenderModel model,
+      bool includeQuizOutlines)
     {
       builder.AppendLine("      <section class=\"tutorial\">");
       builder.Append("        <h2>");
@@ -369,6 +425,13 @@ namespace Wose.Desktop.Services.Rendering
       builder.Append("        <p>");
       builder.Append(Encode(
         PuzzleDocumentPresentation.GetTutorialText(model)));
+
+      if (includeQuizOutlines)
+      {
+        builder.Append(' ');
+        builder.Append(Encode(AppStrings.Get("HtmlTutorialQuizOutlines")));
+      }
+
       builder.AppendLine("</p>");
       builder.AppendLine("      </section>");
     }
